@@ -1,0 +1,40 @@
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.6;
+}
+
+.hero {
+  background-color: #f5f5f5;
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.hero h1 {
+  margin-bottom: 0.5rem;
+}
+
+.hero .cta {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.services, .contact {
+  padding: 2rem;
+  text-align: center;
+}
+
+.services ul {
+  list-style: none;
+  padding: 0;
+}
+
+.services li {
+  margin: 0.5rem 0;
+}
