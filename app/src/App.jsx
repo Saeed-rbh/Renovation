@@ -16,7 +16,7 @@ function App() {
       <header className="hero">
         <h2>Home Renovations in Toronto</h2>
         <p>From kitchens to whole-home makeovers, we bring your vision to life.</p>
-        <button className="cta">Schedule a Consultation</button>
+        <a href="#contact" className="cta">Schedule a Consultation</a>
       </header>
 
       <section id="about" className="about">
