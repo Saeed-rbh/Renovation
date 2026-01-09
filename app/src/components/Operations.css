@@ -1,0 +1,120 @@
+.operations-section {
+    padding: 0;
+    /* Full bleed */
+    overflow: hidden;
+}
+
+.operations-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2px;
+    /* Slight gap for separation */
+    background: #000;
+}
+
+@media (min-width: 768px) {
+    .operations-grid {
+        grid-template-columns: repeat(3, 1fr);
+        height: 600px;
+        /* Taller section */
+    }
+}
+
+.op-item {
+    position: relative;
+    height: 400px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (min-width: 768px) {
+    .op-item {
+        height: 100%;
+    }
+}
+
+.op-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    z-index: 1;
+    filter: grayscale(80%) brightness(0.7);
+    /* Cinematic look */
+}
+
+/* Gradient Overlay */
+.op-item::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(15, 23, 42, 0.8), rgba(56, 189, 248, 0.2));
+    z-index: 2;
+    transition: all 0.4s ease;
+    opacity: 0.8;
+}
+
+.op-item:hover .op-bg {
+    transform: scale(1.1);
+    filter: grayscale(0%) brightness(1);
+    /* Restore color on hover */
+}
+
+.op-item:hover::after {
+    opacity: 0.4;
+    background: linear-gradient(45deg, rgba(15, 23, 42, 0.6), rgba(244, 63, 94, 0.2));
+}
+
+.op-content {
+    position: relative;
+    z-index: 3;
+    text-align: center;
+    color: #fff;
+    padding: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(15, 23, 42, 0.3);
+    backdrop-filter: blur(8px);
+    border-radius: 4px;
+    transform: translateY(20px);
+    transition: transform 0.4s ease, background 0.4s;
+}
+
+.op-item:hover .op-content {
+    transform: translateY(0);
+    background: rgba(15, 23, 42, 0.6);
+}
+
+.op-content h2 {
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+    letter-spacing: 3px;
+    font-weight: 300;
+    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.op-btn {
+    display: inline-block;
+    padding: 12px 30px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+    text-transform: uppercase;
+    font-weight: 500;
+    letter-spacing: 1px;
+    transition: all 0.3s;
+    background: transparent;
+}
+
+.op-btn:hover {
+    background: #fff;
+    color: var(--bg-dark);
+    border-color: #fff;
+}

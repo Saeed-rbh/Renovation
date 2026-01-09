@@ -1,0 +1,125 @@
+.about-page {
+    padding-top: 80px;
+}
+
+/* About Hero */
+.about-hero {
+    padding: 2rem 0 1rem;
+    text-align: center;
+}
+
+/* About Content */
+.about-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    align-items: stretch;
+}
+
+.about-text {
+    padding: 25px;
+}
+
+/* Stats Section */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    text-align: center;
+}
+
+.stat-item {
+    padding: 20px 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-icon {
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.stat-item h3 {
+    font-size: 2rem;
+    color: var(--text-light);
+    margin-bottom: 5px;
+}
+
+/* Location Section */
+.location-content {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 25px;
+}
+
+.address-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin: 15px 0;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    display: inline-flex;
+}
+
+/* Contact Integration */
+.contact-panel {
+    padding: 30px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.contact-intro {
+    margin-bottom: 25px;
+    font-size: 1.1rem;
+}
+
+.contact-methods {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.contact-method {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: rgba(255, 255, 255, 0.02);
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    min-width: 250px;
+}
+
+.icon-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(56, 189, 248, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color);
+}
+
+.contact-link {
+    color: var(--primary-color);
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.contact-link:hover {
+    text-decoration: underline;
+}
+
+.contact-method h4 {
+    color: var(--text-light);
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}

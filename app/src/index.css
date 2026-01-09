@@ -1,11 +1,145 @@
-body {
-  margin: 0;
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  color: #222;
-  background: linear-gradient(135deg, #e3edf7, #ffffff);
-  min-height: 100vh;
+:root {
+  /* Dark Glassmorphism Palette - HomeV Branding */
+  --bg-dark: #0A0A0A;
+  /* Rich Black */
+  --bg-darker: #000000;
+  /* Pure Black */
+
+  --primary-color: #D4A373;
+  /* Rose Gold/Copper */
+  --secondary-color: #333333;
+  /* Dark Grey */
+
+  --text-light: #F8FAFC;
+  --text-dim: #94A3B8;
+
+  --glass-bg: rgba(20, 20, 20, 0.6);
+  /* Neutral dark glass */
+  --glass-border: rgba(212, 163, 115, 0.1);
+  /* Rose gold hint border */
+  --glass-highlight: rgba(255, 255, 255, 0.05);
+  --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+
+  --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-h1, h2 {
-  color: #111;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-dark);
+  color: var(--text-light);
+  line-height: 1.6;
+  background-image:
+    radial-gradient(circle at 15% 50%, rgba(212, 163, 115, 0.08), transparent 25%),
+    radial-gradient(circle at 85% 30%, rgba(255, 255, 255, 0.03), transparent 25%);
+  background-attachment: fixed;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: var(--transition);
+}
+
+ul {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* Utility Classes */
+.container {
+  max-width: 1400px;
+  /* Wider container for modern look */
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.section {
+  padding: 100px 0;
+}
+
+/* Glass Panel Utility */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 16px;
+}
+
+/* Button Styles */
+.btn {
+  display: inline-block;
+  padding: 14px 36px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 0.9rem;
+  transition: var(--transition);
+  cursor: pointer;
+  border: none;
+  border-radius: 50px;
+  /* Pill shape */
+  position: relative;
+  backdrop-filter: blur(4px);
+}
+
+.btn-primary {
+  background: linear-gradient(90deg, var(--primary-color), rgba(212, 163, 115, 0.2));
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(212, 163, 115, 0.1);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(212, 163, 115, 0.2);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--primary-color);
+  color: var(--text-light);
+  backdrop-filter: blur(4px);
+}
+
+.btn-outline:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--text-light);
+  transform: translateY(-2px);
+}
+
+.text-center {
+  text-align: center;
+}
+
+.grid {
+  display: grid;
+  gap: 30px;
+}
+
+/* Typography Overrides */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--text-light);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+p {
+  color: var(--text-dim);
 }

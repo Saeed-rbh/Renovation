@@ -1,0 +1,124 @@
+.operation-details-page {
+    padding-top: 80px;
+    min-height: 100vh;
+}
+
+.operation-hero {
+    padding: 6rem 0 5rem;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    border-bottom: 1px solid var(--glass-border);
+    margin-bottom: 50px;
+}
+
+.operation-hero-title {
+    font-size: 3.5rem;
+    color: var(--text-light);
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.operation-hero-subtitle {
+    font-size: 1.2rem;
+    color: var(--text-dim);
+    max-width: 800px;
+    line-height: 1.6;
+}
+
+/* Layout */
+.operation-content-wrapper {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 40px;
+    margin-bottom: 80px;
+}
+
+.operation-main-content {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.content-section {
+    padding: 30px;
+}
+
+.content-section h2 {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    font-size: 1.6rem;
+}
+
+.content-section p {
+    font-size: 1.05rem;
+    line-height: 1.8;
+}
+
+/* Sidebar */
+.operation-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.sidebar-widget {
+    padding: 25px;
+}
+
+.sidebar-widget h3 {
+    font-size: 1.2rem;
+    color: var(--text-light);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--text-dim);
+    padding: 10px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.sidebar-link:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--primary-color);
+    padding-left: 15px;
+}
+
+.sidebar-text {
+    margin-bottom: 20px;
+}
+
+.full-width {
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+
+@media (max-width: 900px) {
+    .operation-content-wrapper {
+        grid-template-columns: 1fr;
+    }
+
+    .operation-sidebar {
+        order: -1;
+        /* Sidebar on top or move to bottom if preferred */
+    }
+}
+
+@media (max-width: 768px) {
+    .operation-hero-title {
+        font-size: 2.5rem;
+    }
+}
