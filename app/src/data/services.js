@@ -41,20 +41,7 @@ export const services = [
             'Exterior Siding Matching'
         ]
     },
-    {
-        id: 4,
-        title: 'Underpinning & Foundation',
-        image: 'https://images.unsplash.com/photo-1623161099834-c7be7e915993?q=80&w=2376&auto=format&fit=crop',
-        description: 'Strengthen your home from the ground up. If you have a wet basement or want more headroom, we can help. We take structural work seriously, ensuring your home is safe and solid.',
-        features: [
-            'Basement Lowering (Underpinning)',
-            'Waterproofing Foundations',
-            'Crack Repair',
-            'Concrete Floor Pouring',
-            'Weeping Tile Installation',
-            'Sump Pump Installation'
-        ]
-    },
+
     {
         id: 5,
         title: 'Heating & Cooling (HVAC)',

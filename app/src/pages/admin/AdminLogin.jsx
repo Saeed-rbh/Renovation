@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Lock } from 'lucide-react';
+import { Lock, User } from 'lucide-react';
 import './Admin.css';
 
 const AdminLogin = ({ onLogin }) => {
@@ -34,29 +34,40 @@ const AdminLogin = ({ onLogin }) => {
                 <form className="login-form" onSubmit={handleSubmit}>
                     <div className="form-group">
                         <label>Username</label>
-                        <input
-                            type="text"
-                            className="form-input"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                        />
+                        <div className="input-wrapper">
+                            <User className="input-icon" size={20} />
+                            <input
+                                type="text"
+                                className="form-input"
+                                placeholder="Enter username"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                            />
+                        </div>
                     </div>
                     <div className="form-group">
                         <label>Password</label>
-                        <input
-                            type="password"
-                            className="form-input"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
+                        <div className="input-wrapper">
+                            <Lock className="input-icon" size={20} />
+                            <input
+                                type="password"
+                                className="form-input"
+                                placeholder="Enter password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                        </div>
                     </div>
 
                     {error && <div className="error-message">{error}</div>}
 
-                    <button type="submit" className="btn btn-primary login-btn">Login</button>
-                    <p style={{ fontSize: '0.8rem', color: 'var(--text-dim)', marginTop: '10px' }}>
-                        Default: admin / admin123
-                    </p>
+                    <button type="submit" className="btn btn-primary login-btn">
+                        Login to Dashboard
+                    </button>
+
+                    <div className="login-footer">
+                        Secure Admin Environment
+                    </div>
                 </form>
             </div>
         </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Outlet, NavLink, useNavigate, Navigate } from 'react-router-dom';
-import { LayoutDashboard, FolderKanban, Briefcase, Inbox, LogOut } from 'lucide-react';
+import { LayoutDashboard, FolderKanban, Briefcase, Inbox, LogOut, Info } from 'lucide-react';
 import '../pages/admin/Admin.css';
 
 const AdminLayout = ({ isAuthenticated, onLogout }) => {
@@ -28,6 +28,10 @@ const AdminLayout = ({ isAuthenticated, onLogout }) => {
                     <NavLink to="/admin/services" className={({ isActive }) => `admin-nav-item ${isActive ? 'active' : ''}`}>
                         <Briefcase size={20} />
                         <span>Services</span>
+                    </NavLink>
+                    <NavLink to="/admin/about" className={({ isActive }) => `admin-nav-item ${isActive ? 'active' : ''}`}>
+                        <Info size={20} />
+                        <span>About Us</span>
                     </NavLink>
                     <NavLink to="/admin/inbox" className={({ isActive }) => `admin-nav-item ${isActive ? 'active' : ''}`}>
                         <Inbox size={20} />

@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { Phone, Mail, MapPin, Linkedin, Instagram } from 'lucide-react';
 import './Footer.css';
 
@@ -27,11 +28,11 @@ const Footer = () => {
                     <div className="footer-col">
                         <h3 className="footer-title">Our Services</h3>
                         <ul className="footer-links">
-                            <li><a href="#kitchen">Kitchen</a></li>
-                            <li><a href="#bathroom">Bathroom</a></li>
-                            <li><a href="#additions">Home Additions</a></li>
-                            <li><a href="#underpinning">Underpinning</a></li>
-                            <li><a href="#hvac">HVAC</a></li>
+                            <li><Link to="/services/1">Kitchen</Link></li>
+                            <li><Link to="/services/2">Bathroom</Link></li>
+                            <li><Link to="/services/3">Home Additions</Link></li>
+
+                            <li><Link to="/services/5">HVAC</Link></li>
                         </ul>
                     </div>
 
@@ -41,13 +42,7 @@ const Footer = () => {
                             <a href="#" className="social-icon"><Linkedin size={24} /></a>
                             <a href="#" className="social-icon"><Instagram size={24} /></a>
                         </div>
-                        <div className="newsletter">
-                            <h4>Subscribe to our newsletter</h4>
-                            <form className="newsletter-form">
-                                <input type="email" placeholder="Email Address" />
-                                <button type="submit" className="btn btn-primary">Sign Up</button>
-                            </form>
-                        </div>
+
                     </div>
                 </div>
 
