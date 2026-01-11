@@ -105,3 +105,33 @@
     font-size: 0.8rem;
     letter-spacing: 1px;
 }
+
+@media (max-width: 768px) {
+    .home-preview .services-grid {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        gap: 20px;
+        padding-bottom: 20px;
+        scrollbar-width: none;
+        /* Firefox */
+        -ms-overflow-style: none;
+        /* IE/Edge */
+    }
+
+    .home-preview .services-grid::-webkit-scrollbar {
+        display: none;
+    }
+
+    .home-preview .service-card-link {
+        flex: 0 0 85%;
+        /* Show most of one card and a bit of the next */
+        scroll-snap-align: center;
+        min-width: 0;
+        /* Allow flex item to shrink properly */
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+    }
+}

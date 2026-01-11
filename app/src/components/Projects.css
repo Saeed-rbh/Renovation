@@ -61,3 +61,29 @@
     font-weight: 600;
     opacity: 0.9;
 }
+
+@media (max-width: 768px) {
+    .home-preview .projects-grid {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        gap: 20px;
+        padding-bottom: 20px;
+        scrollbar-width: none;
+        /* Firefox */
+        -ms-overflow-style: none;
+        /* IE/Edge */
+    }
+
+    .home-preview .projects-grid::-webkit-scrollbar {
+        display: none;
+    }
+
+    .home-preview .project-card-link {
+        flex: 0 0 85%;
+        /* Show most of one card and a bit of the next */
+        scroll-snap-align: center;
+        min-width: 0;
+        /* Allow flex item to shrink properly */
+    }
+}

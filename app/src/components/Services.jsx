@@ -24,10 +24,10 @@ const Services = ({ preview = false }) => {
         fetchServices();
     }, []);
 
-    const displayData = preview ? services.slice(0, 3) : services;
+    const displayData = services;
 
     return (
-        <section className="section services" id="services">
+        <section className={`section services ${preview ? 'home-preview' : ''}`} id="services">
             <div className="container">
                 <div className="section-header text-center">
                     <h2 className="section-title">Our Services</h2>

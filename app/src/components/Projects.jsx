@@ -25,10 +25,10 @@ const Projects = ({ preview = false }) => {
         fetchProjects();
     }, []);
 
-    const displayProjects = preview ? projects.slice(0, 3) : projects;
+    const displayProjects = projects;
 
     return (
-        <section className="section projects" id="projects">
+        <section className={`section projects ${preview ? 'home-preview' : ''}`} id="projects">
             <div className="container">
                 <div className="section-header text-center">
                     <h2 className="section-title">Our Projects</h2>
