@@ -1,18 +1,62 @@
-import React from 'react';
-import { FolderKanban, Briefcase, Inbox, Users } from 'lucide-react';
+import React, { useState } from 'react';
+import { FolderKanban, Briefcase, Inbox, Users, Database } from 'lucide-react';
 import { projects } from '../../data/projects';
 import { services } from '../../data/services';
+import { db } from '../../firebase';
+import { writeBatch, doc } from 'firebase/firestore';
 
 const AdminDashboard = () => {
+    const [seeding, setSeeding] = useState(false);
+
     // Calculate stats
-    const totalProjects = projects.length;
+    const totalProjects = projects.length; // Note: This will eventually need to read from DB to be accurate dynamic stats
     const totalServices = services.length;
+
+    const handleSeedData = async () => {
+        if (!window.confirm("This will overwrite/add sample data to your database. Continue?")) return;
+        setSeeding(true);
+        try {
+            const batch = writeBatch(db);
+
+            // Seed Projects
+            projects.forEach(p => {
+                const docRef = doc(db, "projects", String(p.id));
+                // Remove the explicit 'id' field from data if desired, or keep it. Keeping it is fine.
+                batch.set(docRef, p);
+            });
+
+            // Seed Services
+            services.forEach(s => {
+                const docRef = doc(db, "services", String(s.id));
+                batch.set(docRef, s);
+            });
+
+            await batch.commit();
+            alert("Success! Sample data added to database.");
+        } catch (error) {
+            console.error("Error seeding data:", error);
+            alert("Failed to seed data: " + error.message);
+        } finally {
+            setSeeding(false);
+        }
+    };
 
     return (
         <div>
             <div className="admin-header">
-                <h1>Dashboard Overview</h1>
-                <span style={{ color: 'var(--text-dim)' }}>Welcome back, Admin</span>
+                <div>
+                    <h1>Dashboard Overview</h1>
+                    <span style={{ color: 'var(--text-dim)' }}>Welcome back, Admin</span>
+                </div>
+                <button
+                    onClick={handleSeedData}
+                    disabled={seeding}
+                    className="btn btn-outline"
+                    style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                >
+                    <Database size={18} />
+                    {seeding ? 'Seeding...' : 'Reset/Seed Sample Data'}
+                </button>
             </div>
 
             <div className="stats-grid-admin">
@@ -57,39 +101,7 @@ const AdminDashboard = () => {
                 </div>
             </div>
 
-            <div className="admin-card">
-                <h3 style={{ marginBottom: '20px' }}>Recent Activity</h3>
-                <table className="admin-table">
-                    <thead>
-                        <tr>
-                            <th>Action</th>
-                            <th>Item</th>
-                            <th>Time</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>New Message</td>
-                            <td>Inquiry from John Doe</td>
-                            <td>2 mins ago</td>
-                            <td><span style={{ color: '#FCD34D' }}>Unread</span></td>
-                        </tr>
-                        <tr>
-                            <td>Project Update</td>
-                            <td>Modern Kitchen Renovation</td>
-                            <td>4 hours ago</td>
-                            <td><span style={{ color: '#34D399' }}>Published</span></td>
-                        </tr>
-                        <tr>
-                            <td>New Message</td>
-                            <td>Quote request for Basement</td>
-                            <td>Yesterday</td>
-                            <td><span style={{ color: '#60A5FA' }}>Read</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+
         </div>
     );
 };
