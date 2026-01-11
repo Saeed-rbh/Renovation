@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { Save, X, Plus, Trash2, Image as ImageIcon } from 'lucide-react';
+import React, { useState } from 'react';
+import { Save, X, Plus, Trash2 } from 'lucide-react';
+import { doc, setDoc, collection, addDoc } from 'firebase/firestore';
+import { db } from '../../firebase';
 import ImageUploader from '../../components/admin/ImageUploader';
 
 const AdminProjectEditor = ({ project, onSave, onCancel }) => {
     // Initialize state with project data or defaults for new project
     const [formData, setFormData] = useState({
-        id: project?.id || Date.now(), // Simple ID generation for new items
+        id: project?.id || '',
         title: project?.title || '',
         category: project?.category || 'Renovation',
         location: project?.location || '',
@@ -14,6 +16,7 @@ const AdminProjectEditor = ({ project, onSave, onCancel }) => {
         comparisons: project?.comparisons || [],
         gallery: project?.gallery || []
     });
+    const [isSaving, setIsSaving] = useState(false);
 
     // Handlers for basic fields
     const handleChange = (e) => {
@@ -65,15 +68,34 @@ const AdminProjectEditor = ({ project, onSave, onCancel }) => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        onSave(formData);
+        setIsSaving(true);
+        try {
+            if (project?.id) {
+                // Update existing
+                const docRef = doc(db, "projects", project.id.toString());
+                await setDoc(docRef, formData);
+            } else {
+                // Create new
+                // We'll let Firestore generate the ID or use a timestamp if we want to sort by it easily without a timestamp field. 
+                // Using addDoc is standard.
+                const collRef = collection(db, "projects");
+                await addDoc(collRef, formData);
+            }
+            onSave(); // Notify parent to refresh
+        } catch (error) {
+            console.error("Error saving project:", error);
+            alert("Failed to save project.");
+        } finally {
+            setIsSaving(false);
+        }
     };
 
     return (
         <div className="admin-card">
             <div className="admin-header" style={{ marginBottom: '20px' }}>
-                <h2>{project ? 'Edit Project' : 'New Project'}</h2>
+                <h2>{project ? 'Edit Project' : 'New Project Beta'}</h2>
                 <div style={{ display: 'flex', gap: '10px' }}>
                     <button type="button" onClick={onCancel} className="action-btn" style={{ padding: '8px 16px' }}>
                         Cancel

@@ -1,10 +1,29 @@
+import { useState, useEffect } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../firebase';
 import './Services.css';
 
-import { services } from '../data/services';
-
 const Services = ({ preview = false }) => {
+    const [services, setServices] = useState([]);
+
+    useEffect(() => {
+        const fetchServices = async () => {
+            try {
+                const querySnapshot = await getDocs(collection(db, "services"));
+                const servicesData = querySnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                setServices(servicesData);
+            } catch (error) {
+                console.error("Error fetching services:", error);
+            }
+        };
+        fetchServices();
+    }, []);
+
     const displayData = preview ? services.slice(0, 3) : services;
 
     return (

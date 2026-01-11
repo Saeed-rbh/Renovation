@@ -1,17 +1,36 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
-import { services } from '../data/services';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase';
 import { ArrowLeft, CheckCircle } from 'lucide-react';
 import './ServiceDetailsPage.css';
 
 const ServiceDetailsPage = () => {
     const { id } = useParams();
-    const service = services.find(s => s.id === parseInt(id));
+    const [service, setService] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-    // Scroll to top on load
+    // Fetch Service and Scroll to top
     useEffect(() => {
         window.scrollTo(0, 0);
+
+        const fetchService = async () => {
+            try {
+                const docRef = doc(db, "services", id);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    setService({ id: docSnap.id, ...docSnap.data() });
+                }
+            } catch (error) {
+                console.error("Error fetching service:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchService();
     }, [id]);
+
+    if (loading) return <div className="page-container" style={{ paddingTop: '100px', textAlign: 'center' }}>Loading...</div>;
 
     if (!service) {
         return <Navigate to="/services" replace />;

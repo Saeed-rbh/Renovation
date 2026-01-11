@@ -1,13 +1,63 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
-import { projects as initialProjects } from '../../data/projects';
+import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { db } from '../../firebase';
 import AdminProjectEditor from './AdminProjectEditor';
 
+class ErrorBoundary extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { hasError: false, error: null };
+    }
+
+    static getDerivedStateFromError(error) {
+        return { hasError: true, error };
+    }
+
+    componentDidCatch(error, errorInfo) {
+        console.error("ErrorBoundary caught an error", error, errorInfo);
+    }
+
+    render() {
+        if (this.state.hasError) {
+            return (
+                <div style={{ padding: '20px', color: '#ff4444', border: '1px solid #ff4444', borderRadius: '8px', background: 'rgba(255,0,0,0.1)' }}>
+                    <h3 style={{ marginTop: 0 }}>Something went wrong in the Project Editor.</h3>
+                    <pre style={{ whiteSpace: 'pre-wrap', marginBottom: '20px' }}>{this.state.error && this.state.error.toString()}</pre>
+                    <button onClick={() => window.location.reload()} className="btn btn-primary">Reload Page</button>
+                </div>
+            );
+        }
+
+        return this.props.children;
+    }
+}
+
 const AdminProjects = () => {
-    // Local state for projects to simulate persistence during session
-    const [projects, setProjects] = useState(initialProjects);
+    const [projects, setProjects] = useState([]);
     const [isEditing, setIsEditing] = useState(false);
     const [currentProject, setCurrentProject] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    const fetchProjects = async () => {
+        setLoading(true);
+        try {
+            const querySnapshot = await getDocs(collection(db, "projects"));
+            const projectsData = querySnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            setProjects(projectsData);
+        } catch (error) {
+            console.error("Error fetching projects:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchProjects();
+    }, []);
 
     // Enter Edit Mode (New or Existing)
     const handleAdd = () => {
@@ -20,22 +70,22 @@ const AdminProjects = () => {
         setIsEditing(true);
     };
 
-    const handleDelete = (id) => {
+    const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this project?')) {
-            setProjects(projects.filter(p => p.id !== id));
+            try {
+                await deleteDoc(doc(db, "projects", id.toString()));
+                setProjects(projects.filter(p => p.id !== id));
+            } catch (error) {
+                console.error("Error deleting project:", error);
+                alert("Failed to delete project.");
+            }
         }
     };
 
-    // Save Changes
-    const handleSave = (savedProject) => {
-        if (currentProject) {
-            // Update existing
-            setProjects(projects.map(p => p.id === savedProject.id ? savedProject : p));
-        } else {
-            // Add new
-            setProjects([...projects, { ...savedProject, id: Date.now() }]);
-        }
+    // Called after Editor successfully saves to DB
+    const handleSave = () => {
         setIsEditing(false);
+        fetchProjects(); // Refresh list
     };
 
     const handleCancel = () => {
@@ -43,18 +93,18 @@ const AdminProjects = () => {
         setCurrentProject(null);
     };
 
-    // Render Editor if Editing
     if (isEditing) {
         return (
-            <AdminProjectEditor
-                project={currentProject}
-                onSave={handleSave}
-                onCancel={handleCancel}
-            />
+            <ErrorBoundary>
+                <AdminProjectEditor
+                    project={currentProject}
+                    onSave={handleSave}
+                    onCancel={handleCancel}
+                />
+            </ErrorBoundary>
         );
     }
 
-    // Render Table
     return (
         <div>
             <div className="admin-header">
@@ -80,13 +130,17 @@ const AdminProjects = () => {
                             {projects.map(project => (
                                 <tr key={project.id}>
                                     <td>
-                                        <img
-                                            src={project.mainImage}
-                                            alt={project.title}
-                                            style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '8px' }}
-                                        />
+                                        <div style={{ width: '50px', height: '50px', borderRadius: '8px', overflow: 'hidden', background: 'rgba(255,255,255,0.05)' }}>
+                                            {project.mainImage && (
+                                                <img
+                                                    src={project.mainImage}
+                                                    alt={project.title}
+                                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                                />
+                                            )}
+                                        </div>
                                     </td>
-                                    <td>{project.title}</td>
+                                    <td style={{ fontWeight: '500', color: 'var(--primary-color)' }}>{project.title}</td>
                                     <td>{project.category}</td>
                                     <td>{project.location}</td>
                                     <td>

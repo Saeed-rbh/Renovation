@@ -1,59 +1,98 @@
-import React from 'react';
-import { Trash2, MailOpen } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { collection, getDocs, query, doc, deleteDoc } from 'firebase/firestore';
+import { db } from '../../firebase';
+import { Mail, Phone, Calendar, Trash2 } from 'lucide-react';
 
 const AdminInbox = () => {
-    // Mock Data
-    const messages = [
-        { id: 1, name: 'John Doe', email: 'john@example.com', subject: 'Kitchen Renovation Inquiry', date: '2023-10-25', status: 'unread' },
-        { id: 2, name: 'Sarah Smith', email: 'sarah@example.com', subject: 'Basement Quote', date: '2023-10-24', status: 'read' },
-        { id: 3, name: 'Mike Ross', email: 'mike@example.com', subject: 'Bathroom Remodel', date: '2023-10-23', status: 'read' },
-    ];
+    const [messages, setMessages] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    const fetchMessages = async () => {
+        setLoading(true);
+        try {
+            const q = query(collection(db, "messages"));
+            const querySnapshot = await getDocs(q);
+            const msgs = querySnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            })).sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+            setMessages(msgs);
+        } catch (error) {
+            console.error("Error fetching messages:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchMessages();
+    }, []);
+
+    const handleDelete = async (id) => {
+        if (window.confirm('Delete this message?')) {
+            try {
+                await deleteDoc(doc(db, "messages", id));
+                setMessages(messages.filter(m => m.id !== id));
+            } catch (error) {
+                console.error("Error deleting message:", error);
+            }
+        }
+    };
+
+    const formatDate = (timestamp) => {
+        if (!timestamp) return 'Just now';
+        return new Date(timestamp.seconds * 1000).toLocaleString();
+    };
 
     return (
         <div>
             <div className="admin-header">
                 <h1>Inbox</h1>
-                <span style={{ color: 'var(--text-dim)' }}>3 Total Messages</span>
+                <div style={{ color: 'var(--text-dim)' }}>
+                    {messages.length} Messages
+                </div>
             </div>
 
             <div className="admin-card">
-                <div className="admin-table-container">
-                    <table className="admin-table">
-                        <thead>
-                            <tr>
-                                <th>Status</th>
-                                <th>From</th>
-                                <th>Subject</th>
-                                <th>Date</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {messages.map(msg => (
-                                <tr key={msg.id}>
-                                    <td>
-                                        <span style={{
-                                            color: msg.status === 'unread' ? '#FCD34D' : '#60A5FA',
-                                            fontWeight: 'bold',
-                                            fontSize: '0.8rem'
-                                        }}>
-                                            {msg.status.toUpperCase()}
+                <div className="inbox-list">
+                    {messages.map(msg => (
+                        <div key={msg.id} className={`inbox-message ${msg.read ? 'read' : 'unread'}`}>
+                            <div className="message-header">
+                                <div className="message-meta">
+                                    <h3>{msg.name}</h3>
+                                    <div className="message-contact">
+                                        <span className="meta-item">
+                                            <Mail size={14} /> <a href={`mailto:${msg.email}`}>{msg.email}</a>
                                         </span>
-                                    </td>
-                                    <td>
-                                        <div style={{ fontWeight: '500', color: 'var(--text-light)' }}>{msg.name}</div>
-                                        <div style={{ fontSize: '0.8rem' }}>{msg.email}</div>
-                                    </td>
-                                    <td>{msg.subject}</td>
-                                    <td>{msg.date}</td>
-                                    <td>
-                                        <button className="action-btn" title="View"><MailOpen size={16} /></button>
-                                        <button className="action-btn delete" title="Delete"><Trash2 size={16} /></button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                                        {msg.phone && (
+                                            <span className="meta-item">
+                                                <Phone size={14} /> <a href={`tel:${msg.phone}`}>{msg.phone}</a>
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="message-actions">
+                                    <span className="message-date">
+                                        <Calendar size={14} /> {formatDate(msg.createdAt)}
+                                    </span>
+                                    <button onClick={() => handleDelete(msg.id)} className="action-btn delete" title="Delete Message">
+                                        <Trash2 size={16} />
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="message-body">
+                                {msg.message}
+                            </div>
+                        </div>
+                    ))}
+
+                    {messages.length === 0 && !loading && (
+                        <div className="empty-state">
+                            <Mail size={48} />
+                            <p>No messages yet.</p>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

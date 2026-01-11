@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
 import { Save, X, Plus, Trash2 } from 'lucide-react';
+import { doc, setDoc, collection, addDoc } from 'firebase/firestore';
+import { db } from '../../firebase';
 import ImageUploader from '../../components/admin/ImageUploader';
 
 const AdminServiceEditor = ({ service, onSave, onCancel }) => {
     // Initialize state with service data or defaults
     const [formData, setFormData] = useState({
-        id: service?.id || Date.now(),
+        id: service?.id || '',
         title: service?.title || '',
         description: service?.description || '',
         image: service?.image || '', // Using 'image' field from schema
         features: service?.features || []
     });
+    const [isSaving, setIsSaving] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -38,9 +41,26 @@ const AdminServiceEditor = ({ service, onSave, onCancel }) => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        onSave(formData);
+        setIsSaving(true);
+        try {
+            if (service?.id) {
+                // Update existing
+                const docRef = doc(db, "services", service.id.toString());
+                await setDoc(docRef, formData);
+            } else {
+                // Create new
+                const collRef = collection(db, "services");
+                await addDoc(collRef, formData);
+            }
+            onSave();
+        } catch (error) {
+            console.error("Error saving service:", error);
+            alert("Failed to save service.");
+        } finally {
+            setIsSaving(false);
+        }
     };
 
     return (

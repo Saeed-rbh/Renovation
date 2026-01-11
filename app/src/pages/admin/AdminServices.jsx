@@ -1,12 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
-import { services as initialServices } from '../../data/services';
+import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { db } from '../../firebase';
 import AdminServiceEditor from './AdminServiceEditor';
 
 const AdminServices = () => {
-    const [services, setServices] = useState(initialServices);
+    const [services, setServices] = useState([]);
     const [isEditing, setIsEditing] = useState(false);
     const [currentService, setCurrentService] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    const fetchServices = async () => {
+        try {
+            const querySnapshot = await getDocs(collection(db, "services"));
+            const servicesData = querySnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            setServices(servicesData);
+        } catch (error) {
+            console.error("Error fetching services:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchServices();
+    }, []);
 
     // Enter Edit Mode
     const handleAdd = () => {
@@ -19,22 +40,22 @@ const AdminServices = () => {
         setIsEditing(true);
     };
 
-    const handleDelete = (id) => {
+    const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this service?')) {
-            setServices(services.filter(s => s.id !== id));
+            try {
+                await deleteDoc(doc(db, "services", id.toString()));
+                setServices(services.filter(s => s.id !== id));
+            } catch (error) {
+                console.error("Error deleting service:", error);
+                alert("Failed to delete service.");
+            }
         }
     };
 
-    // Save Changes
-    const handleSave = (savedService) => {
-        if (currentService) {
-            // Update existing
-            setServices(services.map(s => s.id === savedService.id ? savedService : s));
-        } else {
-            // Add new
-            setServices([...services, { ...savedService, id: Date.now() }]);
-        }
+    // Called after Editor successfully saves to DB
+    const handleSave = () => {
         setIsEditing(false);
+        fetchServices(); // Refresh list
     };
 
     const handleCancel = () => {

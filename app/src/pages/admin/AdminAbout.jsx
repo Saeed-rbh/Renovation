@@ -1,11 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Save, Info } from 'lucide-react';
-import { aboutData } from '../../data/about';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { db } from '../../firebase';
+import { aboutData as defaultAboutData } from '../../data/about';
 
 const AdminAbout = () => {
-    // Initialize state with current data
-    const [formData, setFormData] = useState(aboutData);
+    const [formData, setFormData] = useState(defaultAboutData);
     const [isSaving, setIsSaving] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const docRef = doc(db, "content", "about");
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    setFormData(docSnap.data());
+                } else {
+                    // Initialize with default data if empty
+                    await setDoc(docRef, defaultAboutData);
+                }
+            } catch (error) {
+                console.error("Error fetching about data:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchData();
+    }, []);
 
     const handleChange = (section, field, value) => {
         setFormData(prev => ({
@@ -23,15 +45,21 @@ const AdminAbout = () => {
         setFormData(prev => ({ ...prev, stats: newStats }));
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         setIsSaving(true);
-        // Simulate API call
-        setTimeout(() => {
-            console.log("Saved Data:", formData);
-            alert("Changes saved successfully! (In a real app, this would persist to a database/file)");
+        try {
+            const docRef = doc(db, "content", "about");
+            await setDoc(docRef, formData);
+            alert("Changes saved to Firebase!");
+        } catch (error) {
+            console.error("Error saving data:", error);
+            alert("Failed to save changes.");
+        } finally {
             setIsSaving(false);
-        }, 1000);
+        }
     };
+
+    if (isLoading) return <div className="admin-page">Loading...</div>;
 
     return (
         <div className="admin-page">

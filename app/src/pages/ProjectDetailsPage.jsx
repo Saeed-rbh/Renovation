@@ -1,18 +1,37 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
-import { projects } from '../data/projects';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase';
 import BeforeAfterSlider from '../components/BeforeAfterSlider';
 import { MapPin, ArrowLeft } from 'lucide-react';
 import './ProjectDetailsPage.css';
 
 const ProjectDetailsPage = () => {
     const { id } = useParams();
-    const project = projects.find(p => p.id === parseInt(id));
+    const [project, setProject] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-    // Scroll to top on load
+    // Fetch Project and Scroll to top
     useEffect(() => {
         window.scrollTo(0, 0);
+
+        const fetchProject = async () => {
+            try {
+                const docRef = doc(db, "projects", id);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    setProject({ id: docSnap.id, ...docSnap.data() });
+                }
+            } catch (error) {
+                console.error("Error fetching project:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchProject();
     }, [id]);
+
+    if (loading) return <div className="page-container" style={{ paddingTop: '100px', textAlign: 'center' }}>Loading...</div>;
 
     if (!project) {
         return <Navigate to="/projects" replace />;

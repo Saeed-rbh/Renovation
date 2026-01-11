@@ -1,10 +1,32 @@
+import { useState, useEffect } from 'react';
 import './Projects.css';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
-
-import { projects } from '../data/projects';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../firebase';
 
 const Projects = ({ preview = false }) => {
+    const [projects, setProjects] = useState([]);
+
+    useEffect(() => {
+        const fetchProjects = async () => {
+            try {
+                const querySnapshot = await getDocs(collection(db, "projects"));
+                const projectsData = querySnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                // If preview is true, we might want to limit, but for now just slice in render if needed or limit query
+                setProjects(projectsData);
+            } catch (error) {
+                console.error("Error fetching projects:", error);
+            }
+        };
+        fetchProjects();
+    }, []);
+
+    const displayProjects = preview ? projects.slice(0, 3) : projects;
+
     return (
         <section className="section projects" id="projects">
             <div className="container">
@@ -14,7 +36,7 @@ const Projects = ({ preview = false }) => {
                 </div>
 
                 <div className="projects-grid">
-                    {projects.map((project) => (
+                    {displayProjects.map((project) => (
                         <Link to={`/projects/${project.id}`} key={project.id} className="project-card-link">
                             <div className="project-card">
                                 <img src={project.mainImage} alt={project.title} className="project-image" />

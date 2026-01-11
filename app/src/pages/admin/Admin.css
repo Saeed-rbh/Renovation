@@ -3,7 +3,6 @@
     display: flex;
     min-height: 100vh;
     padding-top: 80px;
-    /* Header space */
     background-color: var(--bg-dark);
 }
 
@@ -25,7 +24,6 @@
 .admin-content {
     flex: 1;
     margin-left: 250px;
-    /* Sidebar width */
     padding: 30px;
     min-height: calc(100vh - 80px);
 }
@@ -158,7 +156,6 @@
     align-items: center;
     justify-content: center;
     padding-top: 0;
-    /* Remove header padding for full center */
     background: radial-gradient(circle at center, rgba(212, 163, 115, 0.05) 0%, transparent 70%);
 }
 
@@ -238,7 +235,6 @@
 .form-input {
     width: 100%;
     padding: 14px 16px 14px 48px;
-    /* Left padding for icon */
     background: rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
@@ -300,4 +296,98 @@
     color: var(--text-dim);
     margin-top: 20px;
     opacity: 0.6;
+}
+
+/* Inbox Styles */
+.inbox-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.inbox-message {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 20px;
+    transition: all 0.2s ease;
+}
+
+.inbox-message:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.message-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.message-meta h3 {
+    margin: 0 0 5px 0;
+    color: var(--primary-color);
+    font-size: 1.1rem;
+}
+
+.message-contact {
+    display: flex;
+    gap: 15px;
+    font-size: 0.9rem;
+    color: var(--text-dim);
+}
+
+.message-contact a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.message-contact a:hover {
+    color: var(--text-light);
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.message-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.message-date {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+}
+
+.message-body {
+    color: var(--text-light);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-dim);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.empty-state svg {
+    opacity: 0.3;
 }

@@ -1,22 +1,24 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../../firebase';
 import { Lock, User } from 'lucide-react';
 import './Admin.css';
 
-const AdminLogin = ({ onLogin }) => {
+const AdminLogin = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Simulated Authentication
-        if (username === 'admin' && password === 'admin123') {
-            onLogin();
+        try {
+            await signInWithEmailAndPassword(auth, username, password);
             navigate('/admin/dashboard');
-        } else {
-            setError('Invalid credentials');
+        } catch (err) {
+            console.error(err);
+            setError('Invalid email or password');
         }
     };
 

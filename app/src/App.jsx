@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { auth } from './firebase';
 import Header from './components/Header';
 import Footer from './components/Footer';
 
@@ -23,11 +25,27 @@ import AdminAbout from './pages/admin/AdminAbout';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
 
-  const handleLogin = () => setIsAuthenticated(true);
-  const handleLogout = () => setIsAuthenticated(false);
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setIsAuthenticated(!!user);
+      setLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error("Error signing out: ", error);
+    }
+  };
+
+  if (loading) return <div className="loading-screen">Loading...</div>;
 
   return (
     <div className="app">
@@ -42,7 +60,7 @@ function App() {
         <Route path="/about" element={<AboutPage />} />
 
         {/* Admin Routes */}
-        <Route path="/admin/login" element={<AdminLogin onLogin={handleLogin} />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin" element={<AdminLayout isAuthenticated={isAuthenticated} onLogout={handleLogout} />}>
           <Route index element={<Navigate to="/admin/dashboard" replace />} />
           <Route path="dashboard" element={<AdminDashboard />} />
