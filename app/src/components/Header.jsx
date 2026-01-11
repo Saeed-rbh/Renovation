@@ -20,10 +20,12 @@ const Header = () => {
         <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
             <div className="container header-container">
                 <div className="logo">
-                    <Link to="/" className="logo-text">
-                        <span style={{ color: 'var(--primary-color)' }}>HOME</span>
-                        <span style={{ color: 'var(--secondary-color)' }}>V</span>
-                        <span className="logo-subtext">CONSTRUCTION</span>
+                    <Link to="/" className="logo-link">
+                        <img src="/logo.png" alt="HomeV Construction" className="logo-image" />
+                        <div className="logo-text-wrapper">
+                            <span className="logo-brand">HOME<span className="logo-highlight">V</span></span>
+                            <span className="logo-tagline">CONSTRUCTION</span>
+                        </div>
                     </Link>
                 </div>
 

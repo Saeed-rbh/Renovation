@@ -12,7 +12,6 @@
 
 .header.scrolled {
     background-color: rgba(10, 10, 10, 0.7);
-    /* Neutral Dark with transparency */
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--glass-border);
@@ -27,42 +26,42 @@
     height: 100%;
 }
 
-.logo-text {
-    font-size: 1.8rem;
-    font-weight: 800;
-    letter-spacing: 1px;
+.logo-link {
+    display: flex;
+    align-items: center;
+}
+
+.logo-image {
+    height: 45px;
+    width: auto;
+    object-fit: contain;
+    margin-right: 12px;
+}
+
+.logo-text-wrapper {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     line-height: 1;
-    text-align: center;
-    text-decoration: none;
-    align-items: center;
-    /* Center align items */
 }
 
-/* Container for HOME V part */
-.logo-text>span:not(.logo-subtext) {
-    display: inline-block;
+.logo-brand {
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    color: var(--primary-color);
 }
 
-/* Override standard link layout for the logo to be side-by-side for HOME V */
-.logo-text {
-    flex-direction: row;
-    /* Default back to row for HOME V */
-    align-items: baseline;
-    flex-wrap: wrap;
-}
-
-.logo-subtext {
-    font-size: 0.5rem;
-    letter-spacing: 3px;
+.logo-highlight {
     color: var(--text-light);
-    font-weight: 400;
-    width: 100%;
-    /* Force new line */
+}
+
+.logo-tagline {
+    font-size: 0.5rem;
+    letter-spacing: 2px;
+    color: var(--text-dim);
     text-transform: uppercase;
-    margin-top: -2px;
-    text-align: center;
+    font-weight: 500;
 }
 
 .nav-menu {
@@ -144,11 +143,9 @@
     .nav-menu {
         position: fixed;
         top: 70px;
-        /* Below header */
         left: 0;
         right: 0;
         background-color: rgba(10, 10, 10, 0.85);
-        /* Glassy Background */
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
         padding: 20px;
