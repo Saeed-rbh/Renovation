@@ -22,6 +22,7 @@ import AdminProjects from './pages/admin/AdminProjects';
 import AdminServices from './pages/admin/AdminServices';
 import AdminInbox from './pages/admin/AdminInbox';
 import AdminAbout from './pages/admin/AdminAbout';
+import AdminSocials from './pages/admin/AdminSocials';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -68,6 +69,7 @@ function App() {
           <Route path="services" element={<AdminServices />} />
           <Route path="inbox" element={<AdminInbox />} />
           <Route path="about" element={<AdminAbout />} />
+          <Route path="socials" element={<AdminSocials />} />
         </Route>
       </Routes>
       {!isAdminRoute && <Footer />}

@@ -7,7 +7,7 @@
     padding: 4rem 0 3rem;
     background-size: cover;
     background-position: center;
-    background-attachment: fixed;
+    background-attachment: inherit;
     border-bottom: 1px solid var(--glass-border);
     margin-bottom: 40px;
 }
@@ -17,7 +17,6 @@
     align-items: center;
     gap: 8px;
     color: var(--text-dim);
-    margin-bottom: 20px;
     transition: color 0.3s ease;
     font-size: 0.95rem;
 }
@@ -37,7 +36,13 @@
     font-size: 0.8rem;
     letter-spacing: 1px;
     text-transform: uppercase;
-    margin-bottom: 15px;
+}
+
+.project-top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
 .project-hero-title {
@@ -65,7 +70,7 @@
 }
 
 .project-description {
-    padding: 40px;
+    padding: 30px 20px;
 }
 
 .project-description h2 {
@@ -135,6 +140,12 @@
 }
 
 @media (max-width: 768px) {
+    .project-hero {
+        background-attachment: scroll;
+        background-position: center top;
+        /* improved positioning for mobile */
+    }
+
     .project-hero-title {
         font-size: 2.2rem;
     }

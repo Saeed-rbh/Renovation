@@ -1,8 +1,55 @@
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Phone, Mail, MapPin, Linkedin, Instagram } from 'lucide-react';
+import { Phone, Mail, MapPin, Linkedin, Instagram, Facebook, Twitter, Youtube, Globe } from 'lucide-react';
+import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase';
 import './Footer.css';
 
 const Footer = () => {
+    const [socials, setSocials] = useState([]);
+    const [services, setServices] = useState([]);
+    const [contact, setContact] = useState({
+        address: "10 Westcreek Dr, Woodbridge, ON L4L 9R5, Canada",
+        email: "info@home-rise.com",
+        phone: "+1 647-961-2051"
+    });
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                // Fetch Socials
+                const socialSnap = await getDocs(collection(db, "social_links"));
+                setSocials(socialSnap.docs.map(doc => doc.data()));
+
+                // Fetch Services
+                const serviceSnap = await getDocs(collection(db, "services"));
+                const serviceData = serviceSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                setServices(serviceData);
+
+                // Fetch Contact Info
+                const aboutDoc = await getDoc(doc(db, "content", "about"));
+                if (aboutDoc.exists() && aboutDoc.data().contact) {
+                    setContact(aboutDoc.data().contact);
+                }
+
+            } catch (error) {
+                console.error("Error fetching footer data:", error);
+            }
+        };
+        fetchData();
+    }, []);
+
+    const getIcon = (platform) => {
+        switch (platform) {
+            case 'Instagram': return Instagram;
+            case 'Linkedin': return Linkedin;
+            case 'Facebook': return Facebook;
+            case 'Twitter': return Twitter;
+            case 'Youtube': return Youtube;
+            default: return Globe;
+        }
+    };
+
     return (
         <footer className="footer" id="contact">
             <div className="container">
@@ -12,15 +59,15 @@ const Footer = () => {
                         <ul className="footer-contact">
                             <li>
                                 <MapPin size={20} className="footer-icon" />
-                                <span>10 Westcreek Dr, Woodbridge, ON L4L 9R5, Canada</span>
+                                <span>{contact.address}</span>
                             </li>
                             <li>
                                 <Mail size={20} className="footer-icon" />
-                                <span>info@home-rise.com</span>
+                                <span>{contact.email}</span>
                             </li>
                             <li>
                                 <Phone size={20} className="footer-icon" />
-                                <span>+1 647-961-2051</span>
+                                <span>{contact.phone}</span>
                             </li>
                         </ul>
                     </div>
@@ -28,19 +75,33 @@ const Footer = () => {
                     <div className="footer-col">
                         <h3 className="footer-title">Our Services</h3>
                         <ul className="footer-links">
-                            <li><Link to="/services/1">Kitchen</Link></li>
-                            <li><Link to="/services/2">Bathroom</Link></li>
-                            <li><Link to="/services/3">Home Additions</Link></li>
-
-                            <li><Link to="/services/5">HVAC</Link></li>
+                            {services.length > 0 ? (
+                                services.map(service => (
+                                    <li key={service.id}>
+                                        <Link to={`/services/${service.id}`}>{service.title}</Link>
+                                    </li>
+                                ))
+                            ) : (
+                                <li>Loading services...</li>
+                            )}
                         </ul>
                     </div>
 
                     <div className="footer-col">
                         <h3 className="footer-title">Follow Us</h3>
                         <div className="social-links">
-                            <a href="#" className="social-icon"><Linkedin size={24} /></a>
-                            <a href="#" className="social-icon"><Instagram size={24} /></a>
+                            {socials.length > 0 ? (
+                                socials.map((social, index) => {
+                                    const Icon = getIcon(social.platform);
+                                    return (
+                                        <a key={index} href={social.url} target="_blank" rel="noreferrer" className="social-icon">
+                                            <Icon size={24} />
+                                        </a>
+                                    );
+                                })
+                            ) : (
+                                <span style={{ color: 'var(--text-dim)' }}>No social links yet.</span>
+                            )}
                         </div>
 
                     </div>

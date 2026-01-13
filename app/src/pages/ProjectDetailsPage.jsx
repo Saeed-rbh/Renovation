@@ -43,10 +43,12 @@ const ProjectDetailsPage = () => {
                 backgroundImage: `radial-gradient(circle at center, rgba(10,10,10,0.8), rgba(10,10,10,0.95)), url(${project.mainImage})`
             }}>
                 <div className="container">
-                    <Link to="/projects" className="back-link">
-                        <ArrowLeft size={20} /> Back to Projects
-                    </Link>
-                    <span className="project-category-badge">{project.category}</span>
+                    <div className="project-top-bar">
+                        <Link to="/projects" className="back-link">
+                            <ArrowLeft size={20} /> Back to Projects
+                        </Link>
+                        <span className="project-category-badge">{project.category}</span>
+                    </div>
                     <h1 className="project-hero-title">{project.title}</h1>
                     <div className="project-location">
                         <MapPin size={18} className="location-icon" />
