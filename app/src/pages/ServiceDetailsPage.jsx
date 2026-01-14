@@ -4,6 +4,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { ArrowLeft, CheckCircle } from 'lucide-react';
 import './ServiceDetailsPage.css';
+import Loading from '../components/Loading';
 
 const ServiceDetailsPage = () => {
     const { id } = useParams();
@@ -30,7 +31,7 @@ const ServiceDetailsPage = () => {
         fetchService();
     }, [id]);
 
-    if (loading) return <div className="page-container" style={{ paddingTop: '100px', textAlign: 'center' }}>Loading...</div>;
+    if (loading) return <Loading fullScreen />;
 
     if (!service) {
         return <Navigate to="/services" replace />;

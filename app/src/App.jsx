@@ -4,6 +4,7 @@ import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from './firebase';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import Loading from './components/Loading';
 
 // Pages
 import HomePage from './pages/HomePage';
@@ -46,7 +47,7 @@ function App() {
     }
   };
 
-  if (loading) return <div className="loading-screen">Loading...</div>;
+  if (loading) return <Loading fullScreen />;
 
   return (
     <div className="app">

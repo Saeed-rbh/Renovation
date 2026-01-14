@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
+import Loading from '../../components/Loading';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import AdminProjectEditor from './AdminProjectEditor';
@@ -127,34 +128,47 @@ const AdminProjects = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {projects.map(project => (
-                                <tr key={project.id}>
-                                    <td>
-                                        <div style={{ width: '50px', height: '50px', borderRadius: '8px', overflow: 'hidden', background: 'rgba(255,255,255,0.05)' }}>
-                                            {project.mainImage && (
-                                                <img
-                                                    src={project.mainImage}
-                                                    alt={project.title}
-                                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                                />
-                                            )}
+
+                            {loading ? (
+                                <tr>
+                                    <td colSpan="5">
+                                        <div style={{ padding: '40px' }}>
+                                            <Loading text="Loading projects..." />
                                         </div>
                                     </td>
-                                    <td style={{ fontWeight: '500', color: 'var(--primary-color)' }}>{project.title}</td>
-                                    <td>{project.category}</td>
-                                    <td>{project.location}</td>
-                                    <td>
-                                        <button onClick={() => handleEdit(project)} className="action-btn">Edit</button>
-                                        <button onClick={() => handleDelete(project.id)} className="action-btn delete">Delete</button>
-                                    </td>
                                 </tr>
-                            ))}
-                            {projects.length === 0 && (
-                                <tr>
-                                    <td colSpan="5" style={{ textAlign: 'center', padding: '30px', color: 'var(--text-dim)' }}>
-                                        No projects found.
-                                    </td>
-                                </tr>
+                            ) : (
+                                <>
+                                    {projects.map(project => (
+                                        <tr key={project.id}>
+                                            <td>
+                                                <div style={{ width: '50px', height: '50px', borderRadius: '8px', overflow: 'hidden', background: 'rgba(255,255,255,0.05)' }}>
+                                                    {project.mainImage && (
+                                                        <img
+                                                            src={project.mainImage}
+                                                            alt={project.title}
+                                                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                                        />
+                                                    )}
+                                                </div>
+                                            </td>
+                                            <td style={{ fontWeight: '500', color: 'var(--primary-color)' }}>{project.title}</td>
+                                            <td>{project.category}</td>
+                                            <td>{project.location}</td>
+                                            <td>
+                                                <button onClick={() => handleEdit(project)} className="action-btn">Edit</button>
+                                                <button onClick={() => handleDelete(project.id)} className="action-btn delete">Delete</button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    {projects.length === 0 && (
+                                        <tr>
+                                            <td colSpan="5" style={{ textAlign: 'center', padding: '30px', color: 'var(--text-dim)' }}>
+                                                No projects found.
+                                            </td>
+                                        </tr>
+                                    )}
+                                </>
                             )}
                         </tbody>
                     </table>

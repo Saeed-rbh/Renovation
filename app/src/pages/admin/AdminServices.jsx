@@ -3,6 +3,7 @@ import { Plus } from 'lucide-react';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import AdminServiceEditor from './AdminServiceEditor';
+import Loading from '../../components/Loading';
 
 const AdminServices = () => {
     const [services, setServices] = useState([]);
@@ -94,35 +95,47 @@ const AdminServices = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {services.map(service => (
-                                <tr key={service.id}>
-                                    <td>
-                                        <div style={{ width: '40px', height: '40px', borderRadius: '4px', overflow: 'hidden', background: 'rgba(255,255,255,0.05)' }}>
-                                            {service.image && (
-                                                <img
-                                                    src={service.image}
-                                                    alt=""
-                                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                                />
-                                            )}
+                            {loading ? (
+                                <tr>
+                                    <td colSpan="4">
+                                        <div style={{ padding: '40px' }}>
+                                            <Loading text="Loading services..." />
                                         </div>
                                     </td>
-                                    <td style={{ fontWeight: '500', color: 'var(--primary-color)' }}>{service.title}</td>
-                                    <td style={{ color: 'var(--text-dim)', maxWidth: '300px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                        {service.description}
-                                    </td>
-                                    <td>
-                                        <button onClick={() => handleEdit(service)} className="action-btn">Edit</button>
-                                        <button onClick={() => handleDelete(service.id)} className="action-btn delete">Delete</button>
-                                    </td>
                                 </tr>
-                            ))}
-                            {services.length === 0 && (
-                                <tr>
-                                    <td colSpan="4" style={{ textAlign: 'center', padding: '30px', color: 'var(--text-dim)' }}>
-                                        No services found.
-                                    </td>
-                                </tr>
+                            ) : (
+                                <>
+                                    {services.map(service => (
+                                        <tr key={service.id}>
+                                            <td>
+                                                <div style={{ width: '40px', height: '40px', borderRadius: '4px', overflow: 'hidden', background: 'rgba(255,255,255,0.05)' }}>
+                                                    {service.image && (
+                                                        <img
+                                                            src={service.image}
+                                                            alt=""
+                                                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                                        />
+                                                    )}
+                                                </div>
+                                            </td>
+                                            <td style={{ fontWeight: '500', color: 'var(--primary-color)' }}>{service.title}</td>
+                                            <td style={{ color: 'var(--text-dim)', maxWidth: '300px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                                {service.description}
+                                            </td>
+                                            <td>
+                                                <button onClick={() => handleEdit(service)} className="action-btn">Edit</button>
+                                                <button onClick={() => handleDelete(service.id)} className="action-btn delete">Delete</button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    {services.length === 0 && (
+                                        <tr>
+                                            <td colSpan="4" style={{ textAlign: 'center', padding: '30px', color: 'var(--text-dim)' }}>
+                                                No services found.
+                                            </td>
+                                        </tr>
+                                    )}
+                                </>
                             )}
                         </tbody>
                     </table>

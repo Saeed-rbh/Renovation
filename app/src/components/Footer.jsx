@@ -4,6 +4,7 @@ import { Phone, Mail, MapPin, Linkedin, Instagram, Facebook, Twitter, Youtube, G
 import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import './Footer.css';
+import Loading from './Loading';
 
 const Footer = () => {
     const [socials, setSocials] = useState([]);
@@ -82,7 +83,7 @@ const Footer = () => {
                                     </li>
                                 ))
                             ) : (
-                                <li>Loading services...</li>
+                                <li><Loading text="Loading..." /></li>
                             )}
                         </ul>
                     </div>

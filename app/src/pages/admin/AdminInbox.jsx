@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { collection, getDocs, query, doc, deleteDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { Mail, Phone, Calendar, Trash2 } from 'lucide-react';
+import Loading from '../../components/Loading';
 
 const AdminInbox = () => {
     const [messages, setMessages] = useState([]);
@@ -55,43 +56,53 @@ const AdminInbox = () => {
 
             <div className="admin-card">
                 <div className="inbox-list">
-                    {messages.map(msg => (
-                        <div key={msg.id} className={`inbox-message ${msg.read ? 'read' : 'unread'}`}>
-                            <div className="message-header">
-                                <div className="message-meta">
-                                    <h3>{msg.name}</h3>
-                                    <div className="message-contact">
-                                        <span className="meta-item">
-                                            <Mail size={14} /> <a href={`mailto:${msg.email}`}>{msg.email}</a>
-                                        </span>
-                                        {msg.phone && (
-                                            <span className="meta-item">
-                                                <Phone size={14} /> <a href={`tel:${msg.phone}`}>{msg.phone}</a>
+                    {loading ? (
+                        <div style={{ padding: '40px' }}>
+                            <Loading text="Loading messages..." />
+                        </div>
+                    ) : (
+                        <>
+                            {messages.map(msg => (
+                                <div key={msg.id} className={`inbox-message ${msg.read ? 'read' : 'unread'}`}>
+                                    <div className="message-header">
+                                        <div className="message-meta">
+                                            <h3>{msg.name}</h3>
+                                            <div className="message-contact">
+                                                <span className="meta-item">
+                                                    <Mail size={14} /> <a href={`mailto:${msg.email}`}>{msg.email}</a>
+                                                </span>
+                                                {msg.phone && (
+                                                    <span className="meta-item">
+                                                        <Phone size={14} /> <a href={`tel:${msg.phone}`}>{msg.phone}</a>
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+                                        <div className="message-actions">
+                                            <span className="message-date">
+                                                <Calendar size={14} /> {formatDate(msg.createdAt)}
                                             </span>
-                                        )}
+                                            <button onClick={() => handleDelete(msg.id)} className="action-btn delete" title="Delete Message">
+                                                <Trash2 size={16} />
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div className="message-body">
+                                        {msg.message}
                                     </div>
                                 </div>
-                                <div className="message-actions">
-                                    <span className="message-date">
-                                        <Calendar size={14} /> {formatDate(msg.createdAt)}
-                                    </span>
-                                    <button onClick={() => handleDelete(msg.id)} className="action-btn delete" title="Delete Message">
-                                        <Trash2 size={16} />
-                                    </button>
+                            ))}
+
+
+
+                            {messages.length === 0 && (
+                                <div className="empty-state">
+                                    <Mail size={48} />
+                                    <p>No messages yet.</p>
                                 </div>
-                            </div>
-
-                            <div className="message-body">
-                                {msg.message}
-                            </div>
-                        </div>
-                    ))}
-
-                    {messages.length === 0 && !loading && (
-                        <div className="empty-state">
-                            <Mail size={48} />
-                            <p>No messages yet.</p>
-                        </div>
+                            )}
+                        </>
                     )}
                 </div>
             </div>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { Trash2, Plus, Save, Facebook, Linkedin, Instagram, Twitter, Youtube, Globe } from 'lucide-react';
+import Loading from '../../components/Loading';
 
 const AdminSocials = () => {
     const [socials, setSocials] = useState([]);
@@ -64,7 +65,7 @@ const AdminSocials = () => {
         }
     };
 
-    if (loading) return <div>Loading settings...</div>;
+    if (loading) return <Loading text="Loading settings..." />;
 
     return (
         <div className="admin-page">

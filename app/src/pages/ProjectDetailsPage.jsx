@@ -5,6 +5,7 @@ import { db } from '../firebase';
 import BeforeAfterSlider from '../components/BeforeAfterSlider';
 import { MapPin, ArrowLeft } from 'lucide-react';
 import './ProjectDetailsPage.css';
+import Loading from '../components/Loading';
 
 const ProjectDetailsPage = () => {
     const { id } = useParams();
@@ -31,7 +32,7 @@ const ProjectDetailsPage = () => {
         fetchProject();
     }, [id]);
 
-    if (loading) return <div className="page-container" style={{ paddingTop: '100px', textAlign: 'center' }}>Loading...</div>;
+    if (loading) return <Loading fullScreen />;
 
     if (!project) {
         return <Navigate to="/projects" replace />;

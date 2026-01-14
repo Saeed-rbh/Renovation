@@ -3,6 +3,7 @@ import { Save, Info } from 'lucide-react';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { aboutData as defaultAboutData } from '../../data/about';
+import Loading from '../../components/Loading';
 
 const AdminAbout = () => {
     const [formData, setFormData] = useState(defaultAboutData);
@@ -59,7 +60,7 @@ const AdminAbout = () => {
         }
     };
 
-    if (isLoading) return <div className="admin-page">Loading...</div>;
+    if (isLoading) return <Loading text="Loading content..." />;
 
     return (
         <div className="admin-page">

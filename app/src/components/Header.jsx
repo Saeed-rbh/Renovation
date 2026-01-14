@@ -23,7 +23,7 @@ const Header = () => {
                     <Link to="/" className="logo-link">
                         <img src="/logo.png" alt="HomeV Construction" className="logo-image" />
                         <div className="logo-text-wrapper">
-                            <span className="logo-brand">HOME<span className="logo-highlight">V</span></span>
+                            <span className="logo-brand" style={{ color: 'var(--text-light)' }}>HOM<span style={{ color: 'var(--primary-color)' }}>EV</span></span>
                             <span className="logo-tagline">CONSTRUCTION</span>
                         </div>
                     </Link>
