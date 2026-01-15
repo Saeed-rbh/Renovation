@@ -5,9 +5,11 @@ import { Link } from 'react-router-dom';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
 import './Services.css';
+import SkeletonLoader from './SkeletonLoader';
 
 const Services = ({ preview = false }) => {
     const [services, setServices] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchServices = async () => {
@@ -20,6 +22,8 @@ const Services = ({ preview = false }) => {
                 setServices(servicesData);
             } catch (error) {
                 console.error("Error fetching services:", error);
+            } finally {
+                setLoading(false);
             }
         };
         fetchServices();
@@ -42,25 +46,29 @@ const Services = ({ preview = false }) => {
                 </motion.div>
 
                 <div className="services-grid">
-                    {displayData.map((service, index) => (
-                        <Link to={`/services/${service.id}`} key={service.id} className="service-card-link">
-                            <motion.div
-                                className="service-card"
-                                initial={{ opacity: 0, y: 10 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                whileHover={{ y: -10 }}
-                                viewport={{ once: true, margin: "-50px" }}
-                                transition={{ duration: 0.6, ease: "easeOut", delay: index * 0.05 }}
-                            >
-                                <div className="service-image-wrapper">
-                                    <img src={service.image} alt={service.title} className="service-image" loading="lazy" />
-                                </div>
-                                <div className="service-info">
-                                    <h3 className="service-title">{service.title}</h3>
-                                </div>
-                            </motion.div>
-                        </Link>
-                    ))}
+                    {loading ? (
+                        <SkeletonLoader type="card" count={preview ? 3 : 6} />
+                    ) : (
+                        displayData.map((service, index) => (
+                            <Link to={`/services/${service.id}`} key={service.id} className="service-card-link">
+                                <motion.div
+                                    className="service-card"
+                                    initial={{ opacity: 0, y: 10 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    whileHover={{ y: -10 }}
+                                    viewport={{ once: true, margin: "-50px" }}
+                                    transition={{ duration: 0.6, ease: "easeOut", delay: index * 0.05 }}
+                                >
+                                    <div className="service-image-wrapper">
+                                        <img src={service.image} alt={service.title} className="service-image" loading="lazy" />
+                                    </div>
+                                    <div className="service-info">
+                                        <h3 className="service-title">{service.title}</h3>
+                                    </div>
+                                </motion.div>
+                            </Link>
+                        ))
+                    )}
                 </div>
                 {preview && (
                     <motion.div

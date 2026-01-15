@@ -5,9 +5,11 @@ import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
+import SkeletonLoader from './SkeletonLoader';
 
 const Projects = ({ preview = false }) => {
     const [projects, setProjects] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchProjects = async () => {
@@ -17,10 +19,11 @@ const Projects = ({ preview = false }) => {
                     id: doc.id,
                     ...doc.data()
                 }));
-                // If preview is true, we might want to limit, but for now just slice in render if needed or limit query
                 setProjects(projectsData);
             } catch (error) {
                 console.error("Error fetching projects:", error);
+            } finally {
+                setLoading(false);
             }
         };
         fetchProjects();
@@ -43,24 +46,28 @@ const Projects = ({ preview = false }) => {
                 </motion.div>
 
                 <div className="projects-grid">
-                    {displayProjects.map((project, index) => (
-                        <Link to={`/projects/${project.id}`} key={project.id} className="project-card-link">
-                            <motion.div
-                                className="project-card"
-                                initial={{ opacity: 0, y: 10 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                whileHover={{ y: -8 }}
-                                viewport={{ once: true, margin: "-50px" }}
-                                transition={{ duration: 0.6, ease: "easeOut", delay: index * 0.05 }}
-                            >
-                                <img src={project.mainImage} alt={project.title} className="project-image" loading="lazy" />
-                                <div className="project-info">
-                                    <h3 className="project-title">{project.title}</h3>
-                                    <p className="project-category">{project.category}</p>
-                                </div>
-                            </motion.div>
-                        </Link>
-                    ))}
+                    {loading ? (
+                        <SkeletonLoader type="card" count={preview ? 3 : 6} />
+                    ) : (
+                        displayProjects.map((project, index) => (
+                            <Link to={`/projects/${project.id}`} key={project.id} className="project-card-link">
+                                <motion.div
+                                    className="project-card"
+                                    initial={{ opacity: 0, y: 10 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    whileHover={{ y: -8 }}
+                                    viewport={{ once: true, margin: "-50px" }}
+                                    transition={{ duration: 0.6, ease: "easeOut", delay: index * 0.05 }}
+                                >
+                                    <img src={project.mainImage} alt={project.title} className="project-image" loading="lazy" />
+                                    <div className="project-info">
+                                        <h3 className="project-title">{project.title}</h3>
+                                        <p className="project-category">{project.category}</p>
+                                    </div>
+                                </motion.div>
+                            </Link>
+                        ))
+                    )}
                 </div>
                 {preview && (
                     <motion.div

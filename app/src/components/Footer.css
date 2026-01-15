@@ -3,8 +3,8 @@
     border-top: 1px solid var(--glass-border);
     backdrop-filter: blur(20px);
     color: var(--text-dim);
-    padding-top: 100px;
-    margin-top: 60px;
+    padding-top: 40px;
+    margin-top: 0px;
 }
 
 .footer-grid {
@@ -100,7 +100,7 @@
 
 
 .footer-bottom {
-    padding: 30px 0;
+    padding: 0;
     color: rgba(255, 255, 255, 0.3);
     font-size: 0.85rem;
     letter-spacing: 0.5px;

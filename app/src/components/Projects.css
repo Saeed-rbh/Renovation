@@ -54,12 +54,11 @@
 }
 
 .project-category {
-    color: var(--primary-color);
-    font-size: 0.85rem;
+    font-size: 0.9rem;
+    color: rgba(212, 163, 115, 0.9);
     text-transform: uppercase;
-    letter-spacing: 2px;
-    font-weight: 600;
-    opacity: 0.9;
+    letter-spacing: 1.5px;
+    font-weight: 400;
 }
 
 @media (max-width: 768px) {

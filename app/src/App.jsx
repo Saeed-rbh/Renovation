@@ -6,6 +6,7 @@ import { auth } from './firebase';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Loading from './components/Loading';
+import ScrollToTop from './components/ScrollToTop';
 
 // Pages (Lazy Loaded)
 const HomePage = React.lazy(() => import('./pages/HomePage'));
@@ -79,6 +80,7 @@ function App() {
         </AnimatePresence>
       </Suspense>
       {!isAdminRoute && <Footer />}
+      <ScrollToTop />
     </div>
   );
 }
