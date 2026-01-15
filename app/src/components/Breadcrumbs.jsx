@@ -11,10 +11,13 @@ const Breadcrumbs = ({ items }) => {
                 alignItems: 'center',
                 gap: '8px',
                 listStyle: 'none',
-                padding: 0,
-                margin: 0,
+                padding: '0px',
+                margin: '0px',
                 fontSize: '0.9rem',
-                color: 'var(--text-dim)'
+                color: 'var(--text-dim)',
+                marginLeft: '10px',
+                marginTop: '0px',
+                marginBottom: '-15px'
             }}>
                 <li>
                     <Link to="/" style={{

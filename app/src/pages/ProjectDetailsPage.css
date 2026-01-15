@@ -1,10 +1,10 @@
 .project-details-page {
-    padding-top: 80px;
+    padding-top: 0;
     min-height: 100vh;
 }
 
 .project-hero {
-    padding: 4rem 0 3rem;
+    padding: 8rem 0 3rem;
     background-size: cover;
     background-position: center;
     background-attachment: inherit;
