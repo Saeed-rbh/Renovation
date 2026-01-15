@@ -32,10 +32,11 @@
 }
 
 .logo-image {
-    height: 45px;
+    height: 65px;
     width: auto;
     object-fit: contain;
     margin-right: 12px;
+    margin-top: 10px;
 }
 
 .logo-text-wrapper {
@@ -185,4 +186,30 @@
         border-radius: 50px;
         color: var(--primary-color);
     }
+}
+
+.secondary-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    margin-left: 0px;
+}
+
+.secondary-logo {
+    height: 30px;
+    width: auto;
+    object-fit: contain;
+    margin-left: 0;
+}
+
+.secondary-text {
+    color: var(--text-light);
+    font-size: 0.6rem;
+    font-weight: 100;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    line-height: 1;
+    margin-top: 2px;
+    margin-left: 2px;
 }

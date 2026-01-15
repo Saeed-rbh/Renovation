@@ -41,7 +41,7 @@ export const operations = [
     },
     {
         id: 'investment',
-        title: 'Investment Opportunities',
+        title: 'Investment',
         image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=2573&auto=format&fit=crop', // Keys/House instead of city/business
         description: 'Interested in local real estate? We partner with neighbors and local investors on small-scale flip projects and developments.',
         content: [

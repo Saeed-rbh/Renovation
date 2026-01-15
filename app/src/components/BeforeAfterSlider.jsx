@@ -52,7 +52,10 @@ const BeforeAfterSlider = ({ beforeImage, afterImage }) => {
             onMouseDown={handleMouseDown}
             onTouchMove={handleTouchMove}
         >
-            <div className="img-container before-img">
+            <div
+                className="img-container before-img"
+                style={{ clipPath: `polygon(0 0, ${sliderPosition}% 0, ${sliderPosition}% 100%, 0 100%)` }}
+            >
                 <img src={beforeImage} alt="Before" draggable="false" />
                 <span className="label before-label">BEFORE</span>
             </div>
