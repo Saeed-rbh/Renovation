@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import './BeforeAfterSlider.css';
 import { ArrowLeftRight } from 'lucide-react';
 
@@ -45,7 +46,7 @@ const BeforeAfterSlider = ({ beforeImage, afterImage }) => {
     }, []);
 
     return (
-        <div className="before-after-wrapper" style={{ position: 'relative' }}>
+        <div className="before-after-wrapper" style={{ position: 'relative', width: '100%' }}>
             <div
                 className="slider-container"
                 ref={sliderRef}
@@ -77,17 +78,45 @@ const BeforeAfterSlider = ({ beforeImage, afterImage }) => {
                 >
                     {afterImage ? <img src={afterImage} alt="After" draggable="false" decoding="async" /> : <div style={{ width: '100%', height: '100%', background: '#333' }}></div>}
                     <span className="label after-label">AFTER</span>
+                    {/* Shimmer Effect */}
+                    <motion.div
+                        className="shimmer-effect"
+                        initial={{ x: '-100%', opacity: 0 }}
+                        animate={{ x: '200%', opacity: [0, 0.3, 0] }}
+                        transition={{
+                            repeat: Infinity,
+                            repeatDelay: 3,
+                            duration: 1.5,
+                            ease: "easeInOut"
+                        }}
+                        style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            width: '50%',
+                            height: '100%',
+                            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)',
+                            transform: 'skewX(-20deg)',
+                            pointerEvents: 'none'
+                        }}
+                    />
                 </div>
 
-                <div
+                <motion.div
                     className="slider-handle"
                     style={{ left: `${sliderPosition}%`, zIndex: 20 }}
+                    animate={{ scale: isDragging ? 1.1 : 1 }}
+                    whileHover={{ scale: 1.1 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
                 >
                     <div className="handle-line"></div>
-                    <div className="handle-circle">
+                    <motion.div
+                        className="handle-circle"
+                        animate={{ boxShadow: isDragging ? "0 0 0 4px rgba(255,255,255,0.3)" : "0 0 0 0px rgba(255,255,255,0)" }}
+                    >
                         <ArrowLeftRight size={20} color="#121926" />
-                    </div>
-                </div>
+                    </motion.div>
+                </motion.div>
             </div>
         </div>
     );

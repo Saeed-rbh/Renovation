@@ -53,11 +53,11 @@ const Projects = ({ preview = false }) => {
                             <Link to={`/projects/${project.id}`} key={project.id} className="project-card-link">
                                 <motion.div
                                     className="project-card"
-                                    initial={{ opacity: 0, y: 10 }}
+                                    initial={{ opacity: 0, y: 30 }}
                                     whileInView={{ opacity: 1, y: 0 }}
-                                    whileHover={{ y: -8 }}
+                                    whileHover={{ y: -8, scale: 1.02, transition: { duration: 0.2 } }}
                                     viewport={{ once: true, margin: "-50px" }}
-                                    transition={{ duration: 0.6, ease: "easeOut", delay: index * 0.05 }}
+                                    transition={{ duration: 0.5, ease: "easeOut", delay: index * 0.1 }}
                                 >
                                     <img src={project.mainImage} alt={project.title} className="project-image" loading="lazy" decoding="async" />
                                     <div className="project-info">

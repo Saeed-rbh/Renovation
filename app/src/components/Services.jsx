@@ -53,11 +53,11 @@ const Services = ({ preview = false }) => {
                             <Link to={`/services/${service.id}`} key={service.id} className="service-card-link">
                                 <motion.div
                                     className="service-card"
-                                    initial={{ opacity: 0, y: 10 }}
+                                    initial={{ opacity: 0, y: 30 }}
                                     whileInView={{ opacity: 1, y: 0 }}
-                                    whileHover={{ y: -10 }}
+                                    whileHover={{ y: -8, scale: 1.02, transition: { duration: 0.2 } }}
                                     viewport={{ once: true, margin: "-50px" }}
-                                    transition={{ duration: 0.6, ease: "easeOut", delay: index * 0.05 }}
+                                    transition={{ duration: 0.5, ease: "easeOut", delay: index * 0.1 }}
                                 >
                                     <div className="service-image-wrapper">
                                         <img src={service.image} alt={service.title} className="service-image" loading="lazy" decoding="async" />

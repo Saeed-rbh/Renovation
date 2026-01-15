@@ -2,7 +2,7 @@ export const operations = [
     {
         id: 'construction',
         title: 'Construction',
-        image: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=2631&auto=format&fit=crop', // Residential framing/site
+        image: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=800&auto=format&fit=crop', // Residential framing/site
         description: 'Quality residential construction built to last. We focus on custom home projects and functional additions that improve your family’s daily life.',
         content: [
             {
@@ -22,7 +22,7 @@ export const operations = [
     {
         id: 'renovation',
         title: 'Renovation',
-        image: 'https://images.unsplash.com/photo-1541123356219-284ebe98ae3b?q=80&w=2670&auto=format&fit=crop', // Reliable modern living room image (same as project 1 main, known to work)
+        image: 'https://images.unsplash.com/photo-1541123356219-284ebe98ae3b?q=80&w=800&auto=format&fit=crop', // Reliable modern living room image (same as project 1 main, known to work)
         description: 'Breathing new life into local homes. We treat your renovation with the same care and attention we would our own.',
         content: [
             {
@@ -42,7 +42,7 @@ export const operations = [
     {
         id: 'investment',
         title: 'Investment',
-        image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=2573&auto=format&fit=crop', // Keys/House instead of city/business
+        image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=800&auto=format&fit=crop', // Keys/House instead of city/business
         description: 'Interested in local real estate? We partner with neighbors and local investors on small-scale flip projects and developments.',
         content: [
             {
