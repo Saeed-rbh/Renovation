@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './AboutPage.css';
 import PageTransition from '../components/PageTransition';
+import SEO from '../components/SEO';
 import { MapPin, Phone, Mail, Send } from 'lucide-react';
 import { aboutData as defaultAboutData } from '../data/about';
 import { doc, getDoc, addDoc, collection, serverTimestamp } from 'firebase/firestore';
@@ -32,6 +33,7 @@ const AboutPage = () => {
 
     return (
         <PageTransition>
+            <SEO title="About Us" description={aboutInfo.hero.subtitle || "Learn about our story, commitment to quality, and professional team."} />
             <div className="about-page">
                 {/* Hero Section */}
                 <section className="about-hero">

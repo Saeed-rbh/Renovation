@@ -9,6 +9,7 @@ import { MapPin, ArrowLeft } from 'lucide-react';
 import './ProjectDetailsPage.css';
 import Loading from '../components/Loading';
 import Lightbox from '../components/Lightbox';
+import SEO from '../components/SEO';
 import { AnimatePresence } from 'framer-motion';
 
 const ProjectDetailsPage = () => {
@@ -69,6 +70,7 @@ const ProjectDetailsPage = () => {
 
     return (
         <PageTransition>
+            <SEO title={project.title} description={project.description ? project.description.substring(0, 150) + "..." : "Project details."} />
             <div className="project-details-page">
                 <div className="project-hero" style={{ // Optional: use main image as faint background or just dark header
                     backgroundImage: `radial-gradient(circle at center, rgba(10,10,10,0.8), rgba(10,10,10,0.95)), url(${project.mainImage})`
