@@ -37,8 +37,8 @@
 .service-card {
     position: relative;
     overflow: hidden;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    background: rgb(42 42 42 / 60%);
+    transition: box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), background 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    background: rgb(150 129 122 / 9%);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--glass-border);
@@ -50,7 +50,6 @@
 }
 
 .service-card:hover {
-    transform: translateY(-10px);
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2), 0 0 20px rgba(212, 163, 115, 0.1);
     border-color: rgb(121 85 72 / 72%);
 }

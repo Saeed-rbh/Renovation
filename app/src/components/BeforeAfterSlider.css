@@ -2,14 +2,17 @@
     position: relative;
     width: 100%;
     max-width: 900px;
-    height: 500px;
-    /* Adjust based on preference or aspect ratio */
+    aspect-ratio: 16/9;
+    min-height: 300px;
     margin: 0 auto;
     overflow: hidden;
     border-radius: 12px;
     cursor: col-resize;
     box-shadow: var(--glass-shadow);
-    background-color: #000;
+    background-color: #222;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .img-container {

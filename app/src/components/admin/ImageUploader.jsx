@@ -1,15 +1,35 @@
-import React, { useRef } from 'react';
-import { Upload, X, Image as ImageIcon } from 'lucide-react';
+import React, { useRef, useState } from 'react';
+import { Upload, X, Loader2 } from 'lucide-react';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { storage } from '../../firebase';
 
 const ImageUploader = ({ value, onChange, label, height = '200px' }) => {
     const fileInputRef = useRef(null);
+    const [uploading, setUploading] = useState(false);
 
-    const handleFileSelect = (e) => {
+    const handleFileSelect = async (e) => {
         const file = e.target.files[0];
-        if (file) {
-            // Create a local blob URL for preview/session use
-            const objectUrl = URL.createObjectURL(file);
-            onChange(objectUrl);
+        if (!file) return;
+
+        try {
+            setUploading(true);
+            // Create a unique filename
+            const timestamp = Date.now();
+            const storageRef = ref(storage, `uploads/${timestamp}_${file.name}`);
+
+            // Upload to Firebase Storage
+            const snapshot = await uploadBytes(storageRef, file);
+
+            // Get the persistent URL
+            const downloadURL = await getDownloadURL(snapshot.ref);
+
+            onChange(downloadURL);
+        } catch (error) {
+            console.error("Error uploading image:", error);
+            alert("Failed to upload image. Please try again.");
+        } finally {
+            setUploading(false);
+            if (fileInputRef.current) fileInputRef.current.value = '';
         }
     };
 
@@ -22,7 +42,9 @@ const ImageUploader = ({ value, onChange, label, height = '200px' }) => {
     };
 
     const handleClick = () => {
-        fileInputRef.current?.click();
+        if (!uploading) {
+            fileInputRef.current?.click();
+        }
     };
 
     return (
@@ -47,21 +69,24 @@ const ImageUploader = ({ value, onChange, label, height = '200px' }) => {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    cursor: 'pointer',
+                    cursor: uploading ? 'wait' : 'pointer',
                     position: 'relative',
                     transition: 'all 0.2s ease',
                     overflow: 'hidden'
                 }}
                 className="image-uploader-dropzone"
             >
-                {!value && (
+                {uploading ? (
+                    <div style={{ textAlign: 'center', color: 'var(--primary-color)' }}>
+                        <Loader2 size={32} className="spin-animation" />
+                        <p style={{ margin: '10px 0 0', fontSize: '0.9rem' }}>Uploading...</p>
+                    </div>
+                ) : !value ? (
                     <div style={{ textAlign: 'center', color: 'var(--text-dim)', pointerEvents: 'none' }}>
                         <Upload size={32} style={{ marginBottom: '10px', opacity: 0.7 }} />
                         <p style={{ margin: 0, fontSize: '0.9rem' }}>Click to Upload Image</p>
                     </div>
-                )}
-
-                {value && (
+                ) : (
                     <>
                         <div style={{
                             position: 'absolute',
@@ -96,6 +121,10 @@ const ImageUploader = ({ value, onChange, label, height = '200px' }) => {
                     </>
                 )}
             </div>
+            <style>{`
+                .spin-animation { animation: spin 1s linear infinite; }
+                @keyframes spin { 100% { transform: rotate(360deg); } }
+            `}</style>
         </div>
     );
 };

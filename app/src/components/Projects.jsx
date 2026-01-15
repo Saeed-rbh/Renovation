@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import './Projects.css';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
@@ -30,30 +31,50 @@ const Projects = ({ preview = false }) => {
     return (
         <section className={`section projects ${preview ? 'home-preview' : ''}`} id="projects">
             <div className="container">
-                <div className="section-header text-center">
+                <motion.div
+                    className="section-header text-center"
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    transition={{ duration: 0.8, ease: "easeOut" }}
+                >
                     <h2 className="section-title">Our Projects</h2>
                     <div className="section-divider"></div>
-                </div>
+                </motion.div>
 
                 <div className="projects-grid">
-                    {displayProjects.map((project) => (
+                    {displayProjects.map((project, index) => (
                         <Link to={`/projects/${project.id}`} key={project.id} className="project-card-link">
-                            <div className="project-card">
+                            <motion.div
+                                className="project-card"
+                                initial={{ opacity: 0, y: 10 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                whileHover={{ y: -8 }}
+                                viewport={{ once: true, margin: "-50px" }}
+                                transition={{ duration: 0.6, ease: "easeOut", delay: index * 0.05 }}
+                            >
                                 <img src={project.mainImage} alt={project.title} className="project-image" />
                                 <div className="project-info">
                                     <h3 className="project-title">{project.title}</h3>
                                     <p className="project-category">{project.category}</p>
                                 </div>
-                            </div>
+                            </motion.div>
                         </Link>
                     ))}
                 </div>
                 {preview && (
-                    <div className="text-center" style={{ marginTop: '40px' }}>
+                    <motion.div
+                        className="text-center"
+                        style={{ marginTop: '40px' }}
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.4 }}
+                    >
                         <Link to="/projects" className="btn btn-primary">
                             View All Projects <ArrowRight size={20} style={{ marginLeft: '10px' }} />
                         </Link>
-                    </div>
+                    </motion.div>
                 )}
             </div>
         </section>

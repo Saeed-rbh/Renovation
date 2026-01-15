@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from './firebase';
 import Header from './components/Header';
@@ -52,27 +53,29 @@ function App() {
   return (
     <div className="app">
       {!isAdminRoute && <Header />}
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/projects" element={<ProjectsPage />} />
-        <Route path="/projects/:id" element={<ProjectDetailsPage />} />
-        <Route path="/services" element={<ServicesPage />} />
-        <Route path="/services/:id" element={<ServiceDetailsPage />} />
-        <Route path="/operations/:id" element={<OperationDetailsPage />} />
-        <Route path="/about" element={<AboutPage />} />
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/projects" element={<ProjectsPage />} />
+          <Route path="/projects/:id" element={<ProjectDetailsPage />} />
+          <Route path="/services" element={<ServicesPage />} />
+          <Route path="/services/:id" element={<ServiceDetailsPage />} />
+          <Route path="/operations/:id" element={<OperationDetailsPage />} />
+          <Route path="/about" element={<AboutPage />} />
 
-        {/* Admin Routes */}
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin" element={<AdminLayout isAuthenticated={isAuthenticated} onLogout={handleLogout} />}>
-          <Route index element={<Navigate to="/admin/dashboard" replace />} />
-          <Route path="dashboard" element={<AdminDashboard />} />
-          <Route path="projects" element={<AdminProjects />} />
-          <Route path="services" element={<AdminServices />} />
-          <Route path="inbox" element={<AdminInbox />} />
-          <Route path="about" element={<AdminAbout />} />
-          <Route path="socials" element={<AdminSocials />} />
-        </Route>
-      </Routes>
+          {/* Admin Routes */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={<AdminLayout isAuthenticated={isAuthenticated} onLogout={handleLogout} />}>
+            <Route index element={<Navigate to="/admin/dashboard" replace />} />
+            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="projects" element={<AdminProjects />} />
+            <Route path="services" element={<AdminServices />} />
+            <Route path="inbox" element={<AdminInbox />} />
+            <Route path="about" element={<AdminAbout />} />
+            <Route path="socials" element={<AdminSocials />} />
+          </Route>
+        </Routes>
+      </AnimatePresence>
       {!isAdminRoute && <Footer />}
     </div>
   );

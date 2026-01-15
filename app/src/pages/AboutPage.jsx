@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './AboutPage.css';
+import PageTransition from '../components/PageTransition';
 import { MapPin, Phone, Mail, Send } from 'lucide-react';
 import { aboutData as defaultAboutData } from '../data/about';
 import { doc, getDoc, addDoc, collection, serverTimestamp } from 'firebase/firestore';
@@ -30,67 +31,69 @@ const AboutPage = () => {
     }, []);
 
     return (
-        <div className="about-page">
-            {/* Hero Section */}
-            <section className="about-hero">
-                <div className="container">
-                    <h1 className="hero-title">{aboutInfo.hero.title}</h1>
-                    <p className="hero-subtitle">{aboutInfo.hero.subtitle}</p>
-                </div>
-            </section>
-
-            {/* Main Content */}
-            <div className="container about-container">
-                {/* Main Glass Panel */}
-                <div className="about-main glass-panel">
-                    {/* Story Section */}
-                    <div className="about-story">
-                        <div className="story-content">
-                            <h2>{aboutInfo.story.title}</h2>
-                            <p>{aboutInfo.story.paragraph1}</p>
-                            <p>{aboutInfo.story.paragraph2}</p>
-                        </div>
+        <PageTransition>
+            <div className="about-page">
+                {/* Hero Section */}
+                <section className="about-hero">
+                    <div className="container">
+                        <h1 className="hero-title">{aboutInfo.hero.title}</h1>
+                        <p className="hero-subtitle">{aboutInfo.hero.subtitle}</p>
                     </div>
+                </section>
 
-                    {/* Inline Stats Strip */}
-                    <div className="stats-strip">
-                        {aboutInfo.stats.map((stat, index) => (
-                            <React.Fragment key={index}>
-                                <div className="stat-inline">
-                                    <span className="stat-number">{stat.number}</span>
-                                    <span className="stat-label">{stat.label}</span>
-                                </div>
-                                {index < aboutInfo.stats.length - 1 && <div className="stat-divider"></div>}
-                            </React.Fragment>
-                        ))}
-                    </div>
-
-                    {/* Minimal Footer: Location & Contact */}
-                    <div className="about-footer">
-                        <div className="footer-item">
-                            <MapPin size={18} className="footer-icon" />
-                            <span>{aboutInfo.contact.address}</span>
+                {/* Main Content */}
+                <div className="container about-container">
+                    {/* Main Glass Panel */}
+                    <div className="about-main glass-panel">
+                        {/* Story Section */}
+                        <div className="about-story">
+                            <div className="story-content">
+                                <h2>{aboutInfo.story.title}</h2>
+                                <p>{aboutInfo.story.paragraph1}</p>
+                                <p>{aboutInfo.story.paragraph2}</p>
+                            </div>
                         </div>
-                        <div className="footer-links">
-                            <a href={`tel:${aboutInfo.contact.phone.replace(/\D/g, '')}`} className="footer-link">
-                                <Phone size={18} />
-                                <span>{aboutInfo.contact.phone}</span>
-                            </a>
-                            <a href={`mailto:${aboutInfo.contact.email}`} className="footer-link">
-                                <Mail size={18} />
-                                <span>{aboutInfo.contact.email}</span>
-                            </a>
-                        </div>
-                    </div>
 
-                    {/* Contact Form Section */}
-                    <div className="contact-section">
-                        <h2>Send us a Message</h2>
-                        <ContactForm />
+                        {/* Inline Stats Strip */}
+                        <div className="stats-strip">
+                            {aboutInfo.stats.map((stat, index) => (
+                                <React.Fragment key={index}>
+                                    <div className="stat-inline">
+                                        <span className="stat-number">{stat.number}</span>
+                                        <span className="stat-label">{stat.label}</span>
+                                    </div>
+                                    {index < aboutInfo.stats.length - 1 && <div className="stat-divider"></div>}
+                                </React.Fragment>
+                            ))}
+                        </div>
+
+                        {/* Minimal Footer: Location & Contact */}
+                        <div className="about-footer">
+                            <div className="footer-item">
+                                <MapPin size={18} className="footer-icon" />
+                                <span>{aboutInfo.contact.address}</span>
+                            </div>
+                            <div className="footer-links">
+                                <a href={`tel:${aboutInfo.contact.phone.replace(/\D/g, '')}`} className="footer-link">
+                                    <Phone size={18} />
+                                    <span>{aboutInfo.contact.phone}</span>
+                                </a>
+                                <a href={`mailto:${aboutInfo.contact.email}`} className="footer-link">
+                                    <Mail size={18} />
+                                    <span>{aboutInfo.contact.email}</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        {/* Contact Form Section */}
+                        <div className="contact-section">
+                            <h2>Send us a Message</h2>
+                            <ContactForm />
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </PageTransition>
     );
 };
 

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { collection, getDocs } from 'firebase/firestore';
@@ -29,31 +30,51 @@ const Services = ({ preview = false }) => {
     return (
         <section className={`section services ${preview ? 'home-preview' : ''}`} id="services">
             <div className="container">
-                <div className="section-header text-center">
+                <motion.div
+                    className="section-header text-center"
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    transition={{ duration: 0.8, ease: "easeOut" }}
+                >
                     <h2 className="section-title">Our Services</h2>
                     <div className="section-divider"></div>
-                </div>
+                </motion.div>
 
                 <div className="services-grid">
-                    {displayData.map((service) => (
+                    {displayData.map((service, index) => (
                         <Link to={`/services/${service.id}`} key={service.id} className="service-card-link">
-                            <div className="service-card">
+                            <motion.div
+                                className="service-card"
+                                initial={{ opacity: 0, y: 10 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                whileHover={{ y: -10 }}
+                                viewport={{ once: true, margin: "-50px" }}
+                                transition={{ duration: 0.6, ease: "easeOut", delay: index * 0.05 }}
+                            >
                                 <div className="service-image-wrapper">
                                     <img src={service.image} alt={service.title} className="service-image" />
                                 </div>
                                 <div className="service-info">
                                     <h3 className="service-title">{service.title}</h3>
                                 </div>
-                            </div>
+                            </motion.div>
                         </Link>
                     ))}
                 </div>
                 {preview && (
-                    <div className="text-center" style={{ marginTop: '40px' }}>
+                    <motion.div
+                        className="text-center"
+                        style={{ marginTop: '40px' }}
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.4 }}
+                    >
                         <Link to="/services" className="btn btn-primary">
                             View All Services <ArrowRight size={20} style={{ marginLeft: '10px' }} />
                         </Link>
-                    </div>
+                    </motion.div>
                 )}
             </div>
         </section>

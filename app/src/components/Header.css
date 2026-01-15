@@ -32,7 +32,7 @@
 }
 
 .logo-image {
-    height: 65px;
+    height: 55px;
     width: auto;
     object-fit: contain;
     margin-right: 12px;
@@ -73,7 +73,8 @@
     border-radius: 50px;
     backdrop-filter: blur(2px);
     -webkit-backdrop-filter: blur(2px);
-    border: 1px solid rgba(212, 163, 115, 0.2);
+    border: 1px solid rgba(148, 116, 84, 0.466);
+    background: #00000026;
 }
 
 .nav-link {
@@ -197,7 +198,7 @@
 }
 
 .secondary-logo {
-    height: 30px;
+    height: 25px;
     width: auto;
     object-fit: contain;
     margin-left: 0;
@@ -205,7 +206,7 @@
 
 .secondary-text {
     color: var(--text-light);
-    font-size: 0.6rem;
+    font-size: 0.55rem;
     font-weight: 100;
     text-transform: uppercase;
     letter-spacing: 1px;
