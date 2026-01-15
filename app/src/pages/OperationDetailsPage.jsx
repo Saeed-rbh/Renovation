@@ -4,6 +4,7 @@ import { operations } from '../data/operations';
 import { ArrowLeft, ChevronRight } from 'lucide-react';
 import PageTransition from '../components/PageTransition';
 import './OperationDetailsPage.css';
+import Breadcrumbs from '../components/Breadcrumbs';
 
 const OperationDetailsPage = () => {
     const { id } = useParams();
@@ -34,6 +35,12 @@ const OperationDetailsPage = () => {
                 </div>
 
                 <div className="container">
+                    <div style={{ marginTop: '20px' }}>
+                        <Breadcrumbs items={[
+                            { label: 'Operations' }, // Assuming no dedicated operations list page, just static label or home
+                            { label: operation.title }
+                        ]} />
+                    </div>
                     <div className="operation-content-wrapper">
                         <div className="operation-main-content">
                             {operation.content.map((section, index) => (

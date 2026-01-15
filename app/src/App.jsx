@@ -1,5 +1,6 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
+
 import { AnimatePresence } from 'framer-motion';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from './firebase';
@@ -7,6 +8,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import Loading from './components/Loading';
 import ScrollToTop from './components/ScrollToTop';
+import ErrorBoundary from './components/ErrorBoundary';
 
 // Pages (Lazy Loaded)
 const HomePage = React.lazy(() => import('./pages/HomePage'));
@@ -76,6 +78,9 @@ function App() {
               <Route path="about" element={<AdminAbout />} />
               <Route path="socials" element={<AdminSocials />} />
             </Route>
+
+            {/* Catch-all redirect to Home */}
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </AnimatePresence>
       </Suspense>

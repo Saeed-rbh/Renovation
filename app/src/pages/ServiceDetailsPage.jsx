@@ -6,6 +6,7 @@ import { ArrowLeft, CheckCircle } from 'lucide-react';
 import PageTransition from '../components/PageTransition';
 import './ServiceDetailsPage.css';
 import Loading from '../components/Loading';
+import Breadcrumbs from '../components/Breadcrumbs';
 
 const ServiceDetailsPage = () => {
     const { id } = useParams();
@@ -53,6 +54,12 @@ const ServiceDetailsPage = () => {
                 </div>
 
                 <div className="container">
+                    <div style={{ marginTop: '20px' }}>
+                        <Breadcrumbs items={[
+                            { label: 'Services', path: '/services' },
+                            { label: service.title }
+                        ]} />
+                    </div>
                     <div className="service-content-grid">
                         <div className="service-info glass-panel">
                             <h2>Service Description</h2>

@@ -50,8 +50,9 @@
 }
 
 .service-card:hover {
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2), 0 0 20px rgba(212, 163, 115, 0.1);
-    border-color: rgb(121 85 72 / 72%);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3), 0 0 30px rgba(212, 163, 115, 0.15);
+    border-color: rgba(201, 160, 119, 0.4);
+    transform: translateY(-5px);
 }
 
 .service-image-wrapper {

@@ -11,6 +11,7 @@ import Loading from '../components/Loading';
 import Lightbox from '../components/Lightbox';
 import SEO from '../components/SEO';
 import { AnimatePresence } from 'framer-motion';
+import Breadcrumbs from '../components/Breadcrumbs';
 
 const ProjectDetailsPage = () => {
     const { id } = useParams();
@@ -91,6 +92,12 @@ const ProjectDetailsPage = () => {
                 </div>
 
                 <div className="container">
+                    <div style={{ marginTop: '20px' }}>
+                        <Breadcrumbs items={[
+                            { label: 'Projects', path: '/projects' },
+                            { label: project.title }
+                        ]} />
+                    </div>
                     <div className="project-content-grid">
                         <div className="project-description glass-panel">
                             <h2>Project Overview</h2>
