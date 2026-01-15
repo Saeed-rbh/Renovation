@@ -55,8 +55,8 @@ function App() {
 
   return (
     <div className="app">
-      {!isAdminRoute && <Header />}
       <Suspense fallback={<Loading fullScreen />}>
+        {!isAdminRoute && <Header />}
         <AnimatePresence mode="wait">
           <Routes location={location} key={location.pathname}>
             <Route path="/" element={<HomePage />} />
@@ -83,8 +83,8 @@ function App() {
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </AnimatePresence>
+        {!isAdminRoute && <Footer />}
       </Suspense>
-      {!isAdminRoute && <Footer />}
       <ScrollToTop />
     </div>
   );

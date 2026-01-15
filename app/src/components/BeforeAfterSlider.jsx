@@ -64,7 +64,7 @@ const BeforeAfterSlider = ({ beforeImage, afterImage }) => {
                         clipPath: `polygon(0% 0%, ${sliderPosition}% 0%, ${sliderPosition}% 100%, 0% 100%)`
                     }}
                 >
-                    {beforeImage ? <img src={beforeImage} alt="Before" draggable="false" /> : <div style={{ width: '100%', height: '100%', background: '#333' }}></div>}
+                    {beforeImage ? <img src={beforeImage} alt="Before" draggable="false" decoding="async" /> : <div style={{ width: '100%', height: '100%', background: '#333' }}></div>}
                     <span className="label before-label">BEFORE</span>
                 </div>
 
@@ -75,7 +75,7 @@ const BeforeAfterSlider = ({ beforeImage, afterImage }) => {
                         clipPath: `polygon(${sliderPosition}% 0%, 100% 0%, 100% 100%, ${sliderPosition}% 100%)`
                     }}
                 >
-                    {afterImage ? <img src={afterImage} alt="After" draggable="false" /> : <div style={{ width: '100%', height: '100%', background: '#333' }}></div>}
+                    {afterImage ? <img src={afterImage} alt="After" draggable="false" decoding="async" /> : <div style={{ width: '100%', height: '100%', background: '#333' }}></div>}
                     <span className="label after-label">AFTER</span>
                 </div>
 

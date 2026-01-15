@@ -59,7 +59,7 @@ const Projects = ({ preview = false }) => {
                                     viewport={{ once: true, margin: "-50px" }}
                                     transition={{ duration: 0.6, ease: "easeOut", delay: index * 0.05 }}
                                 >
-                                    <img src={project.mainImage} alt={project.title} className="project-image" loading="lazy" />
+                                    <img src={project.mainImage} alt={project.title} className="project-image" loading="lazy" decoding="async" />
                                     <div className="project-info">
                                         <h3 className="project-title">{project.title}</h3>
                                         <p className="project-category">{project.category}</p>

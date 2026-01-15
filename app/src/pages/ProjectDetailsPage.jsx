@@ -141,7 +141,7 @@ const ProjectDetailsPage = () => {
                                     }}
                                     style={{ cursor: 'pointer' }}
                                 >
-                                    <img src={img} alt={`${project.title} detail ${index + 1}`} />
+                                    <img src={img} alt={`${project.title} detail ${index + 1}`} loading="lazy" decoding="async" />
                                 </div>
                             ))}
                         </div>
