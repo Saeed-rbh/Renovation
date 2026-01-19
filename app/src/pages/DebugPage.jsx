@@ -52,10 +52,11 @@ const DebugPage = () => {
         const templateParams = {
             title: 'Debug Test',
             name: 'Debug User',
-            email: 'test@example.com',
+            email: 'Info@homevconstruction.ca',
             phone: '1234567890',
             message: 'This is a test from the Debug Page.',
             to_name: 'Admin',
+            to_email: 'Info@homevconstruction.ca',
             date: new Date().toLocaleString()
         };
 

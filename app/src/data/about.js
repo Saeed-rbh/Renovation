@@ -17,6 +17,6 @@ export const aboutData = {
     contact: {
         address: "123 Renovation Ave, Toronto, ON M5V 2T6",
         phone: "+1 (647) 961-2051",
-        email: "info@homev.ca"
+        email: "Info@homevconstruction.ca"
     }
 };

@@ -144,6 +144,7 @@ const ContactForm = () => {
                 phone: formData.phone,
                 message: formData.message,
                 to_name: 'Admin',
+                to_email: 'Info@homevconstruction.ca', // Attempt dynamic routing
                 date: new Date().toLocaleString()
             };
             // Timeout Email after 5 seconds

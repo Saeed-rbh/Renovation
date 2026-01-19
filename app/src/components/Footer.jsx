@@ -11,7 +11,7 @@ const Footer = () => {
     const [services, setServices] = useState([]);
     const [contact, setContact] = useState({
         address: "10 Westcreek Dr, Woodbridge, ON L4L 9R5, Canada",
-        email: "info@home-rise.com",
+        email: "Info@homevconstruction.ca",
         phone: "+1 647-961-2051"
     });
 
