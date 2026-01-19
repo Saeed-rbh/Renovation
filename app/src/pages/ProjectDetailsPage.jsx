@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, increment, collection, getDocs } from 'firebase/firestore'; // Added collection, getDocs
 import { db } from '../firebase';
 import { projects } from '../data/projects';
+import { slugify } from '../utils/helpers'; // Added slugify
 import BeforeAfterSlider from '../components/BeforeAfterSlider';
 import PageTransition from '../components/PageTransition';
 import { MapPin, ArrowLeft } from 'lucide-react';
@@ -26,30 +27,57 @@ const ProjectDetailsPage = () => {
 
         const fetchProject = async () => {
             try {
+                // 1. Try fetching by ID (legacy or if ID is used)
                 const docRef = doc(db, "projects", id);
                 const docSnap = await getDoc(docRef);
 
+                let foundProject = null;
+                let foundId = id;
+
                 if (docSnap.exists()) {
-                    const firestoreData = docSnap.data();
+                    foundProject = docSnap.data();
+                } else {
+                    // 2. Fallback: Content is not found by ID. It might be a slug.
+                    // Fetch all and find matching slug
+                    // Note: for large DBs, this should be a query 'where("slug", "==", id)'
+                    const querySnapshot = await getDocs(collection(db, "projects"));
+                    const match = querySnapshot.docs.find(doc => slugify(doc.data().title) === id);
+                    if (match) {
+                        foundProject = match.data();
+                        foundId = match.id;
+                    }
+                }
+
+                if (foundProject) {
+                    // Increment View Count (Session based)
+                    // Note: We use the actual doc ID (foundId) for the update
+                    const viewedKey = `viewed_project_${foundId}`;
+                    if (!sessionStorage.getItem(viewedKey)) {
+                        const realDocRef = doc(db, "projects", foundId);
+                        updateDoc(realDocRef, { views: increment(1) }).catch(e => console.error("View inc failed", e));
+                        sessionStorage.setItem(viewedKey, 'true');
+                    }
+
                     // Fallback to local data if fields are missing in Firestore
-                    const localData = projects.find(p => String(p.id) === id);
+                    const localData = projects.find(p => String(p.id) === foundId);
 
                     const mergedData = {
-                        ...firestoreData,
-                        comparisons: (firestoreData.comparisons && firestoreData.comparisons.length > 0) ? firestoreData.comparisons : (localData?.comparisons || []),
-                        gallery: (firestoreData.gallery && firestoreData.gallery.length > 0) ? firestoreData.gallery : (localData?.gallery || []),
+                        ...foundProject,
+                        comparisons: (foundProject.comparisons && foundProject.comparisons.length > 0) ? foundProject.comparisons : (localData?.comparisons || []),
+                        gallery: (foundProject.gallery && foundProject.gallery.length > 0) ? foundProject.gallery : (localData?.gallery || []),
                         // Ensure titles/desc are available
-                        title: firestoreData.title || localData?.title,
-                        description: firestoreData.description || localData?.description,
-                        mainImage: firestoreData.mainImage || localData?.mainImage,
-                        category: firestoreData.category || localData?.category,
-                        location: firestoreData.location || localData?.location
+                        title: foundProject.title || localData?.title,
+                        description: foundProject.description || localData?.description,
+                        mainImage: foundProject.mainImage || localData?.mainImage,
+                        category: foundProject.category || localData?.category,
+                        location: foundProject.location || localData?.location
                     };
 
-                    setProject({ id: docSnap.id, ...mergedData });
+                    setProject({ id: foundId, ...mergedData });
                 } else {
                     // Try local only if not in DB at all (optional, but good for local dev)
-                    const localData = projects.find(p => String(p.id) === id);
+                    // Also try slug match on local data
+                    const localData = projects.find(p => String(p.id) === id || slugify(p.title) === id);
                     if (localData) {
                         setProject(localData);
                     }

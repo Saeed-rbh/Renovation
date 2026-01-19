@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, increment, collection, getDocs } from 'firebase/firestore'; // Added collection, getDocs
 import { db } from '../firebase';
+import { slugify } from '../utils/helpers'; // Added slugify
 import { ArrowLeft, CheckCircle } from 'lucide-react';
 import PageTransition from '../components/PageTransition';
 import './ServiceDetailsPage.css';
@@ -19,10 +20,35 @@ const ServiceDetailsPage = () => {
 
         const fetchService = async () => {
             try {
+                // 1. Try by ID
                 const docRef = doc(db, "services", id);
                 const docSnap = await getDoc(docRef);
+
+                let foundService = null;
+                let foundId = id;
+
                 if (docSnap.exists()) {
-                    setService({ id: docSnap.id, ...docSnap.data() });
+                    foundService = docSnap.data();
+                } else {
+                    // 2. Fallback: Slug lookup
+                    const querySnapshot = await getDocs(collection(db, "services"));
+                    const match = querySnapshot.docs.find(doc => slugify(doc.data().title) === id);
+                    if (match) {
+                        foundService = match.data();
+                        foundId = match.id;
+                    }
+                }
+
+                if (foundService) {
+                    // Increment View Count (Session based)
+                    const viewedKey = `viewed_service_${foundId}`;
+                    if (!sessionStorage.getItem(viewedKey)) {
+                        // Must update the REAL doc ref, not the one based on slug (id)
+                        const realDocRef = doc(db, "services", foundId);
+                        updateDoc(realDocRef, { views: increment(1) }).catch(e => console.error("View inc failed", e));
+                        sessionStorage.setItem(viewedKey, 'true');
+                    }
+                    setService({ id: foundId, ...foundService });
                 }
             } catch (error) {
                 console.error("Error fetching service:", error);

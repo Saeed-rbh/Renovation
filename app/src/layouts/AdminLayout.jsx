@@ -32,6 +32,10 @@ const AdminLayout = ({ isAuthenticated, onLogout }) => {
                         <Info size={20} />
                         <span>About Us</span>
                     </NavLink>
+                    <NavLink to="/admin/operations" className={({ isActive }) => `admin-nav-item ${isActive ? 'active' : ''}`}>
+                        <Briefcase size={20} />
+                        <span>Operations/Invest</span>
+                    </NavLink>
                     <NavLink to="/admin/inbox" className={({ isActive }) => `admin-nav-item ${isActive ? 'active' : ''}`}>
                         <Inbox size={20} />
                         <span>Inbox</span>

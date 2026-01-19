@@ -1,21 +1,73 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
-import { operations } from '../data/operations';
+import { operations as initialData } from '../data/operations'; // Fallback
+import { doc, getDoc, collection, getDocs } from 'firebase/firestore';
+import { db } from '../firebase';
 import { ArrowLeft, ChevronRight } from 'lucide-react';
 import PageTransition from '../components/PageTransition';
 import './OperationDetailsPage.css';
 import Breadcrumbs from '../components/Breadcrumbs';
+import Loading from '../components/Loading';
 
 const OperationDetailsPage = () => {
     const { id } = useParams();
-    const operation = operations.find(op => op.id === id);
+    const [operation, setOperation] = useState(null);
+    const [allOperations, setAllOperations] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [notFound, setNotFound] = useState(false);
 
-    // Scroll to top on load
     useEffect(() => {
         window.scrollTo(0, 0);
+
+        const fetchData = async () => {
+            setLoading(true);
+            try {
+                // Fetch specific operation
+                const docRef = doc(db, "operations", id);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    setOperation({ ...docSnap.data(), id: docSnap.id });
+                } else {
+                    // Try fallback
+                    const fallback = initialData.find(op => op.id === id);
+                    if (fallback) {
+                        setOperation(fallback);
+                    } else {
+                        setNotFound(true);
+                    }
+                }
+
+                // Fetch all for sidebar
+                const querySnapshot = await getDocs(collection(db, "operations"));
+                let ops = [];
+                querySnapshot.forEach((doc) => {
+                    ops.push({ ...doc.data(), id: doc.id });
+                });
+
+                if (ops.length === 0) ops = initialData; // Fallback
+
+                setAllOperations(ops);
+
+            } catch (error) {
+                console.error("Error fetching operation details:", error);
+                // Fallback on error
+                const fallback = initialData.find(op => op.id === id);
+                if (fallback) setOperation(fallback);
+                setAllOperations(initialData);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
     }, [id]);
 
-    if (!operation) {
+    if (loading) {
+        return <Loading fullScreen />;
+    }
+
+    if (notFound || !operation) {
         return <Navigate to="/" replace />;
     }
 
@@ -37,13 +89,13 @@ const OperationDetailsPage = () => {
                 <div className="container">
                     <div style={{ marginTop: '20px' }}>
                         <Breadcrumbs items={[
-                            { label: 'Operations' }, // Assuming no dedicated operations list page, just static label or home
+                            { label: 'Operations' },
                             { label: operation.title }
                         ]} />
                     </div>
                     <div className="operation-content-wrapper">
                         <div className="operation-main-content">
-                            {operation.content.map((section, index) => (
+                            {operation.content && operation.content.map((section, index) => (
                                 <div key={index} className="content-section glass-panel">
                                     <h2>{section.heading}</h2>
                                     <p>{section.text}</p>
@@ -55,7 +107,7 @@ const OperationDetailsPage = () => {
                             <div className="sidebar-widget glass-panel">
                                 <h3>Other Operations</h3>
                                 <ul className="sidebar-nav">
-                                    {operations.filter(op => op.id !== id).map(op => (
+                                    {allOperations.filter(op => op.id !== id).map(op => (
                                         <li key={op.id}>
                                             <Link to={`/operations/${op.id}`} className="sidebar-link">
                                                 {op.title} <ChevronRight size={16} />

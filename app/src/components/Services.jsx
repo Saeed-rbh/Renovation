@@ -6,6 +6,9 @@ import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
 import './Services.css';
 import SkeletonLoader from './SkeletonLoader';
+import SpotlightCard from './SpotlightCard';
+
+import { slugify } from '../utils/helpers';
 
 const Services = ({ preview = false }) => {
     const [services, setServices] = useState([]);
@@ -29,7 +32,7 @@ const Services = ({ preview = false }) => {
         fetchServices();
     }, []);
 
-    const displayData = services;
+    const displayData = preview ? services.slice(0, 3) : services;
 
     return (
         <section className={`section services ${preview ? 'home-preview' : ''}`} id="services">
@@ -50,7 +53,7 @@ const Services = ({ preview = false }) => {
                         <SkeletonLoader type="card" count={preview ? 3 : 6} />
                     ) : (
                         displayData.map((service, index) => (
-                            <Link to={`/services/${service.id}`} key={service.id} className="service-card-link">
+                            <Link to={`/services/${slugify(service.title)}`} key={service.id} className="service-card-link">
                                 <motion.div
                                     className="service-card"
                                     initial={{ opacity: 0, y: 30 }}
@@ -59,12 +62,14 @@ const Services = ({ preview = false }) => {
                                     viewport={{ once: true, margin: "-50px" }}
                                     transition={{ duration: 0.5, ease: "easeOut", delay: index * 0.1 }}
                                 >
-                                    <div className="service-image-wrapper">
-                                        <img src={service.image} alt={service.title} className="service-image" loading="lazy" decoding="async" />
-                                    </div>
-                                    <div className="service-info">
-                                        <h3 className="service-title">{service.title}</h3>
-                                    </div>
+                                    <SpotlightCard className="h-full">
+                                        <div className="service-image-wrapper">
+                                            <img src={service.image} alt={service.title} className="service-image" loading="lazy" decoding="async" />
+                                        </div>
+                                        <div className="service-info">
+                                            <h3 className="service-title">{service.title}</h3>
+                                        </div>
+                                    </SpotlightCard>
                                 </motion.div>
                             </Link>
                         ))

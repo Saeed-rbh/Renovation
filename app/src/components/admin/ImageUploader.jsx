@@ -1,34 +1,100 @@
 import React, { useRef, useState } from 'react';
 import { Upload, X, Loader2 } from 'lucide-react';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { storage } from '../../firebase';
 
-const ImageUploader = ({ value, onChange, label, height = '200px' }) => {
+const ImageUploader = ({ value, onChange, label, height = '200px', maxSize = 5 * 1024 * 1024 }) => {
     const fileInputRef = useRef(null);
     const [uploading, setUploading] = useState(false);
+    const [progress, setProgress] = useState(0);
 
     const handleFileSelect = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
 
+        // Validation: File Size
+        if (file.size > maxSize) {
+            alert(`File is too large. Maximum size is ${maxSize / (1024 * 1024)}MB.`);
+            if (fileInputRef.current) fileInputRef.current.value = '';
+            return;
+        }
+
+        // Validation: File Type
+        if (!file.type.startsWith('image/')) {
+            alert('Please select a valid image file.');
+            if (fileInputRef.current) fileInputRef.current.value = '';
+            return;
+        }
+
         try {
             setUploading(true);
+            setProgress(0);
+
             // Create a unique filename
             const timestamp = Date.now();
             const storageRef = ref(storage, `uploads/${timestamp}_${file.name}`);
 
-            // Upload to Firebase Storage
-            const snapshot = await uploadBytes(storageRef, file);
+            console.log("Starting upload for:", file.name);
 
-            // Get the persistent URL
-            const downloadURL = await getDownloadURL(snapshot.ref);
+            // Upload to Firebase Storage with resumable upload
+            const uploadTask = uploadBytesResumable(storageRef, file);
 
-            onChange(downloadURL);
+            // Timeout safety mechanism - 60 seconds
+            const timeoutId = setTimeout(() => {
+                if (uploadTask.snapshot.state === 'running') {
+                    console.warn("Upload timed out - cancelling.");
+                    uploadTask.cancel();
+                    setUploading(false);
+                    setProgress(0);
+                    alert("Upload timed out. Please check your internet connection and try again.");
+                }
+            }, 60000);
+
+            uploadTask.on('state_changed',
+                (snapshot) => {
+                    // Track progress
+                    const progressValue = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    console.log(`Upload progress: ${progressValue}% (${snapshot.bytesTransferred}/${snapshot.totalBytes} bytes). State: ${snapshot.state}`);
+                    setProgress(progressValue);
+                },
+                (error) => {
+                    // Handle unsuccessful uploads
+                    clearTimeout(timeoutId);
+                    console.error("Error uploading image:", error);
+                    setUploading(false);
+
+                    if (error.code === 'storage/canceled') {
+                        // Already handled by timeout or manual cancel
+                        console.log("Upload was canceled.");
+                    } else {
+                        alert(`Failed to upload image: ${error.message}`);
+                    }
+
+                    if (fileInputRef.current) fileInputRef.current.value = '';
+                },
+                async () => {
+                    // Handle successful uploads on complete
+                    console.log("Upload complete. Getting download URL...");
+                    clearTimeout(timeoutId);
+                    try {
+                        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                        console.log("Download URL retrieved:", downloadURL);
+                        onChange(downloadURL);
+                    } catch (err) {
+                        console.error("Error getting download URL:", err);
+                        alert("Upload completed but failed to get image URL.");
+                    } finally {
+                        setUploading(false);
+                        setProgress(0);
+                        if (fileInputRef.current) fileInputRef.current.value = '';
+                    }
+                }
+            );
+
         } catch (error) {
-            console.error("Error uploading image:", error);
-            alert("Failed to upload image. Please try again.");
-        } finally {
+            console.error("Error initiating upload:", error);
             setUploading(false);
+            alert("Failed to start upload.");
             if (fileInputRef.current) fileInputRef.current.value = '';
         }
     };
@@ -77,14 +143,18 @@ const ImageUploader = ({ value, onChange, label, height = '200px' }) => {
                 className="image-uploader-dropzone"
             >
                 {uploading ? (
-                    <div style={{ textAlign: 'center', color: 'var(--primary-color)' }}>
+                    <div style={{ textAlign: 'center', color: 'var(--primary-color)', background: 'rgba(0,0,0,0.7)', padding: '20px', borderRadius: '8px', width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                         <Loader2 size={32} className="spin-animation" />
-                        <p style={{ margin: '10px 0 0', fontSize: '0.9rem' }}>Uploading...</p>
+                        <p style={{ margin: '10px 0 5px', fontSize: '0.9rem' }}>Uploading... {Math.round(progress)}%</p>
+                        <div style={{ width: '80%', height: '4px', background: 'rgba(255,255,255,0.2)', borderRadius: '2px', overflow: 'hidden' }}>
+                            <div style={{ width: `${progress}%`, height: '100%', background: 'var(--primary-color)', transition: 'width 0.2s' }} />
+                        </div>
                     </div>
                 ) : !value ? (
                     <div style={{ textAlign: 'center', color: 'var(--text-dim)', pointerEvents: 'none' }}>
                         <Upload size={32} style={{ marginBottom: '10px', opacity: 0.7 }} />
                         <p style={{ margin: 0, fontSize: '0.9rem' }}>Click to Upload Image</p>
+                        <p style={{ margin: '5px 0 0', fontSize: '0.7rem', opacity: 0.5 }}>Max 5MB</p>
                     </div>
                 ) : (
                     <>
@@ -124,6 +194,7 @@ const ImageUploader = ({ value, onChange, label, height = '200px' }) => {
             <style>{`
                 .spin-animation { animation: spin 1s linear infinite; }
                 @keyframes spin { 100% { transform: rotate(360deg); } }
+                .image-uploader-dropzone:hover .uploader-overlay { opacity: 1 !important; }
             `}</style>
         </div>
     );

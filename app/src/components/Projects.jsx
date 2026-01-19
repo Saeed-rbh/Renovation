@@ -6,6 +6,9 @@ import { ArrowRight } from 'lucide-react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
 import SkeletonLoader from './SkeletonLoader';
+import SpotlightCard from './SpotlightCard';
+
+import { slugify } from '../utils/helpers';
 
 const Projects = ({ preview = false }) => {
     const [projects, setProjects] = useState([]);
@@ -29,7 +32,7 @@ const Projects = ({ preview = false }) => {
         fetchProjects();
     }, []);
 
-    const displayProjects = projects;
+    const displayProjects = preview ? projects.slice(0, 3) : projects;
 
     return (
         <section className={`section projects ${preview ? 'home-preview' : ''}`} id="projects">
@@ -50,7 +53,7 @@ const Projects = ({ preview = false }) => {
                         <SkeletonLoader type="card" count={preview ? 3 : 6} />
                     ) : (
                         displayProjects.map((project, index) => (
-                            <Link to={`/projects/${project.id}`} key={project.id} className="project-card-link">
+                            <Link to={`/projects/${slugify(project.title)}`} key={project.id} className="project-card-link">
                                 <motion.div
                                     className="project-card"
                                     initial={{ opacity: 0, y: 30 }}
@@ -59,11 +62,13 @@ const Projects = ({ preview = false }) => {
                                     viewport={{ once: true, margin: "-50px" }}
                                     transition={{ duration: 0.5, ease: "easeOut", delay: index * 0.1 }}
                                 >
-                                    <img src={project.mainImage} alt={project.title} className="project-image" loading="lazy" decoding="async" />
-                                    <div className="project-info">
-                                        <h3 className="project-title">{project.title}</h3>
-                                        <p className="project-category">{project.category}</p>
-                                    </div>
+                                    <SpotlightCard className="h-full">
+                                        <img src={project.mainImage} alt={project.title} className="project-image" loading="lazy" decoding="async" />
+                                        <div className="project-info">
+                                            <h3 className="project-title">{project.title}</h3>
+                                            <p className="project-category">{project.category}</p>
+                                        </div>
+                                    </SpotlightCard>
                                 </motion.div>
                             </Link>
                         ))

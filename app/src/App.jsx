@@ -28,6 +28,7 @@ const AdminServices = React.lazy(() => import('./pages/admin/AdminServices'));
 const AdminInbox = React.lazy(() => import('./pages/admin/AdminInbox'));
 const AdminAbout = React.lazy(() => import('./pages/admin/AdminAbout'));
 const AdminSocials = React.lazy(() => import('./pages/admin/AdminSocials'));
+const AdminOperations = React.lazy(() => import('./pages/admin/AdminOperations'));
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -36,6 +37,37 @@ function App() {
   const isAdminRoute = location.pathname.startsWith('/admin');
 
   useEffect(() => {
+    // Visitor Counter Logic
+    const incrementVisitorCount = async () => {
+      const visited = sessionStorage.getItem('visited_session');
+      if (!visited) {
+        try {
+          // Dynamically import firestore functions to avoid blocking initial render
+          const { doc, updateDoc, increment, setDoc, getDoc } = await import('firebase/firestore');
+          const { db } = await import('./firebase');
+
+          const statsRef = doc(db, "stats", "general");
+          const statsSnap = await getDoc(statsRef);
+
+          if (statsSnap.exists()) {
+            await updateDoc(statsRef, {
+              visits: increment(1)
+            });
+          } else {
+            await setDoc(statsRef, {
+              visits: 1
+            });
+          }
+
+          sessionStorage.setItem('visited_session', 'true');
+        } catch (error) {
+          console.error("Error updating visitor count:", error);
+        }
+      }
+    };
+
+    incrementVisitorCount();
+
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setIsAuthenticated(!!user);
       setLoading(false);
@@ -74,6 +106,7 @@ function App() {
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="projects" element={<AdminProjects />} />
               <Route path="services" element={<AdminServices />} />
+              <Route path="operations" element={<AdminOperations />} />
               <Route path="inbox" element={<AdminInbox />} />
               <Route path="about" element={<AdminAbout />} />
               <Route path="socials" element={<AdminSocials />} />

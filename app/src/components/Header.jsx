@@ -21,7 +21,8 @@ const Header = () => {
             <div className="container header-container">
                 <div className="logo">
                     <Link to="/" className="logo-link">
-                        <img src="/logo.png" alt="HomeV Construction" className="logo-image" decoding="async" />
+
+
                         <div className="secondary-brand">
                             <img src="/header_right.png" alt="Secondary Logo" className="secondary-logo" decoding="async" />
                             <span className="secondary-text">Construction</span>
