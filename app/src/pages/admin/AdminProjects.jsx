@@ -45,10 +45,11 @@ const AdminProjects = () => {
         try {
             const querySnapshot = await getDocs(collection(db, "projects"));
             const projectsData = querySnapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
+                ...doc.data(),
+                id: doc.id
             }));
             setProjects(projectsData);
+            console.log("Projects loaded:", projectsData);
         } catch (error) {
             console.error("Error fetching projects:", error);
         } finally {
@@ -72,13 +73,28 @@ const AdminProjects = () => {
     };
 
     const handleDelete = async (id) => {
+        if (!id) {
+            alert("Error: Invalid project ID.");
+            return;
+        }
+
         if (window.confirm('Are you sure you want to delete this project?')) {
             try {
-                await deleteDoc(doc(db, "projects", id.toString()));
+                // Ensure ID is a string
+                await deleteDoc(doc(db, "projects", String(id)));
                 setProjects(projects.filter(p => p.id !== id));
             } catch (error) {
                 console.error("Error deleting project:", error);
-                alert("Failed to delete project.");
+
+                // Show more specific error to the user
+                let errorMessage = "Failed to delete project.";
+                if (error.code === 'permission-denied') {
+                    errorMessage = "Permission denied: You do not have permission to delete this project.";
+                } else if (error.message) {
+                    errorMessage = `Error: ${error.message}`;
+                }
+
+                alert(errorMessage);
             }
         }
     };
@@ -157,7 +173,10 @@ const AdminProjects = () => {
                                             <td>{project.location}</td>
                                             <td>
                                                 <button onClick={() => handleEdit(project)} className="action-btn">Edit</button>
-                                                <button onClick={() => handleDelete(project.id)} className="action-btn delete">Delete</button>
+                                                <button onClick={() => {
+                                                    console.log("Attempting to delete project:", project);
+                                                    handleDelete(project.id);
+                                                }} className="action-btn delete">Delete</button>
                                             </td>
                                         </tr>
                                     ))}

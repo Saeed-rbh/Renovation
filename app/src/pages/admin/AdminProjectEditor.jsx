@@ -72,16 +72,19 @@ const AdminProjectEditor = ({ project, onSave, onCancel }) => {
         e.preventDefault();
         setIsSaving(true);
         try {
+            // Prepare data for saving (exclude ID)
+            const { id, ...projectData } = formData;
+
             if (project?.id) {
                 // Update existing
                 const docRef = doc(db, "projects", project.id.toString());
-                await setDoc(docRef, formData);
+                await setDoc(docRef, projectData);
             } else {
                 // Create new
                 // We'll let Firestore generate the ID or use a timestamp if we want to sort by it easily without a timestamp field. 
                 // Using addDoc is standard.
                 const collRef = collection(db, "projects");
-                await addDoc(collRef, formData);
+                await addDoc(collRef, projectData);
             }
             onSave(); // Notify parent to refresh
         } catch (error) {
@@ -97,11 +100,39 @@ const AdminProjectEditor = ({ project, onSave, onCancel }) => {
             <div className="admin-header" style={{ marginBottom: '20px' }}>
                 <h2>{project ? 'Edit Project' : 'New Project Beta'}</h2>
                 <div style={{ display: 'flex', gap: '10px' }}>
-                    <button type="button" onClick={onCancel} className="action-btn" style={{ padding: '8px 16px' }}>
+                    <button
+                        type="button"
+                        onClick={onCancel}
+                        className="action-btn"
+                        style={{ padding: '8px 16px' }}
+                        disabled={isSaving}
+                    >
                         Cancel
                     </button>
-                    <button type="button" onClick={handleSubmit} className="btn btn-primary" style={{ padding: '8px 16px', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                        <Save size={18} /> Save Changes
+                    <button
+                        type="button"
+                        onClick={handleSubmit}
+                        className="btn btn-primary"
+                        style={{
+                            padding: '8px 16px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '5px',
+                            opacity: isSaving ? 0.7 : 1,
+                            cursor: isSaving ? 'not-allowed' : 'pointer'
+                        }}
+                        disabled={isSaving}
+                    >
+                        {isSaving ? (
+                            <>
+                                <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                Saving...
+                            </>
+                        ) : (
+                            <>
+                                <Save size={18} /> Save Changes
+                            </>
+                        )}
                     </button>
                 </div>
             </div>

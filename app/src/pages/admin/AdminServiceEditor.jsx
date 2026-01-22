@@ -45,14 +45,17 @@ const AdminServiceEditor = ({ service, onSave, onCancel }) => {
         e.preventDefault();
         setIsSaving(true);
         try {
+            // Prepare data for saving (exclude ID)
+            const { id, ...serviceData } = formData;
+
             if (service?.id) {
                 // Update existing
                 const docRef = doc(db, "services", service.id.toString());
-                await setDoc(docRef, formData);
+                await setDoc(docRef, serviceData);
             } else {
                 // Create new
                 const collRef = collection(db, "services");
-                await addDoc(collRef, formData);
+                await addDoc(collRef, serviceData);
             }
             onSave();
         } catch (error) {
@@ -68,11 +71,39 @@ const AdminServiceEditor = ({ service, onSave, onCancel }) => {
             <div className="admin-header" style={{ marginBottom: '20px' }}>
                 <h2>{service ? 'Edit Service' : 'New Service'}</h2>
                 <div style={{ display: 'flex', gap: '10px' }}>
-                    <button type="button" onClick={onCancel} className="action-btn" style={{ padding: '8px 16px' }}>
+                    <button
+                        type="button"
+                        onClick={onCancel}
+                        className="action-btn"
+                        style={{ padding: '8px 16px' }}
+                        disabled={isSaving}
+                    >
                         Cancel
                     </button>
-                    <button type="button" onClick={handleSubmit} className="btn btn-primary" style={{ padding: '8px 16px', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                        <Save size={18} /> Save Changes
+                    <button
+                        type="button"
+                        onClick={handleSubmit}
+                        className="btn btn-primary"
+                        style={{
+                            padding: '8px 16px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '5px',
+                            opacity: isSaving ? 0.7 : 1,
+                            cursor: isSaving ? 'not-allowed' : 'pointer'
+                        }}
+                        disabled={isSaving}
+                    >
+                        {isSaving ? (
+                            <>
+                                <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                Saving...
+                            </>
+                        ) : (
+                            <>
+                                <Save size={18} /> Save Changes
+                            </>
+                        )}
                     </button>
                 </div>
             </div>

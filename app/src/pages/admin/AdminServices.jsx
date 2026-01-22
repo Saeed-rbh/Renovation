@@ -15,8 +15,8 @@ const AdminServices = () => {
         try {
             const querySnapshot = await getDocs(collection(db, "services"));
             const servicesData = querySnapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
+                ...doc.data(),
+                id: doc.id
             }));
             setServices(servicesData);
         } catch (error) {
@@ -42,13 +42,27 @@ const AdminServices = () => {
     };
 
     const handleDelete = async (id) => {
+        if (!id) {
+            alert("Error: Invalid service ID.");
+            return;
+        }
+
         if (window.confirm('Are you sure you want to delete this service?')) {
             try {
-                await deleteDoc(doc(db, "services", id.toString()));
+                await deleteDoc(doc(db, "services", String(id)));
                 setServices(services.filter(s => s.id !== id));
             } catch (error) {
                 console.error("Error deleting service:", error);
-                alert("Failed to delete service.");
+
+                // Show more specific error to the user
+                let errorMessage = "Failed to delete service.";
+                if (error.code === 'permission-denied') {
+                    errorMessage = "Permission denied: You do not have permission to delete this service.";
+                } else if (error.message) {
+                    errorMessage = `Error: ${error.message}`;
+                }
+
+                alert(errorMessage);
             }
         }
     };
