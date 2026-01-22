@@ -19,6 +19,7 @@ const AdminServices = () => {
                 id: doc.id
             }));
             setServices(servicesData);
+            console.log("Services loaded:", servicesData);
         } catch (error) {
             console.error("Error fetching services:", error);
         } finally {
@@ -138,7 +139,10 @@ const AdminServices = () => {
                                             </td>
                                             <td>
                                                 <button onClick={() => handleEdit(service)} className="action-btn">Edit</button>
-                                                <button onClick={() => handleDelete(service.id)} className="action-btn delete">Delete</button>
+                                                <button onClick={() => {
+                                                    console.log("Attempting to delete service:", service);
+                                                    handleDelete(service.id);
+                                                }} className="action-btn delete">Delete</button>
                                             </td>
                                         </tr>
                                     ))}
