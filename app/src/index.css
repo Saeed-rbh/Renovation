@@ -1,24 +1,24 @@
 :root {
-  /* Dark Glassmorphism Palette - HomeV Branding (Logo-Based) */
-  --bg-dark: #0c1929;
-  /* Deep Navy Blue */
-  --bg-darker: #071018;
-  /* Darker Navy */
+  /* Light Cream Palette - HomeV Group Branding (Logo-Based) */
+  --bg-dark: #FBF6EC;
+  /* Warm Cream */
+  --bg-darker: #F3E9D7;
+  /* Deeper Warm Beige */
 
   --primary-color: #472312;
-  /* Rose Gold/Copper */
-  --secondary-color: #1a2d44;
-  /* Navy Mid-tone */
+  /* Deep Brown Ink */
+  --secondary-color: #8A6A4E;
+  /* Warm Tan */
 
-  --text-light: #F8FAFC;
-  --text-dim: #94A3B8;
+  --text-light: #2A1F1A;
+  --text-dim: #7A6A5C;
 
-  --glass-bg: rgba(12, 25, 41, 0.7);
-  /* Navy glass */
+  --glass-bg: rgba(255, 251, 240, 0.65);
+  /* Warm-white glass */
   --glass-border: rgba(71, 35, 18, 0.15);
-  /* Rose gold hint border */
-  --glass-highlight: rgba(255, 255, 255, 0.05);
-  --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+  /* Brown hint border */
+  --glass-highlight: rgba(0, 0, 0, 0.03);
+  --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.12);
 
   --font-family: 'Inter', system-ui, -apple-system, sans-serif;
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -130,7 +130,7 @@ img {
 
 .btn-primary {
   background: linear-gradient(90deg, rgba(71, 35, 18, 0.16), rgba(71, 35, 18, 0.08));
-  color: #fff;
+  color: var(--text-light);
   box-shadow: 0 4px 15px rgba(71, 35, 18, 0.1);
   border: 2px solid rgba(71, 35, 18, 0.3);
 }
@@ -148,7 +148,7 @@ img {
 }
 
 .btn-outline:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(71, 35, 18, 0.08);
   border-color: var(--text-light);
   transform: translateY(-2px);
 }

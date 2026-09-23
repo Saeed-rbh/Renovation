@@ -16,8 +16,8 @@
 .bg-layer-base {
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at 50% 50%, #1a2d44 0%, #0c1929 100%);
-    opacity: 0.8;
+    background: radial-gradient(circle at 50% 50%, #F7EFDD 0%, #FBF6EC 100%);
+    opacity: 0.6;
 }
 
 /* Moving Orbs */
@@ -40,8 +40,8 @@
 .bg-orb-2 {
     width: 500px;
     height: 500px;
-    background: rgba(255, 255, 255, 0.05);
-    /* White/Blue */
+    background: rgba(138, 106, 78, 0.12);
+    /* Warm Tan */
     bottom: -10%;
     right: -10%;
 }
@@ -52,8 +52,8 @@
     inset: -50%;
     /* Larger than screen to allow movement */
     background-image:
-        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        linear-gradient(rgba(71, 35, 18, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(71, 35, 18, 0.05) 1px, transparent 1px);
     background-size: 50px 50px;
     mask-image: radial-gradient(circle at center, black, transparent 80%);
     -webkit-mask-image: radial-gradient(circle at center, black, transparent 80%);

@@ -1,4 +1,20 @@
 /* Admin CSS */
+/* The internal admin dashboard keeps its original dark palette regardless of
+   the public site's light re-theme — its layout (dark cards, translucent
+   black overlays) was built for the dark tokens and isn't part of this
+   request, which is about the public-facing website background. */
+.admin-layout,
+.admin-login-container {
+    --bg-dark: #0c1929;
+    --bg-darker: #071018;
+    --secondary-color: #1a2d44;
+    --text-light: #F8FAFC;
+    --text-dim: #94A3B8;
+    --glass-bg: rgba(12, 25, 41, 0.7);
+    --glass-highlight: rgba(255, 255, 255, 0.05);
+    --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+}
+
 .admin-layout {
     display: flex;
     min-height: 100vh;
