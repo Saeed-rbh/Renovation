@@ -24,16 +24,6 @@
     gap: 20px;
 }
 
-/* Icon Animation */
-.loader-icon {
-    width: 60px;
-    height: 60px;
-    object-fit: contain;
-    animation: icon-pulse 2s ease-in-out infinite;
-    filter: drop-shadow(0 0 10px rgba(71, 35, 18, 0.25));
-    margin-left: 5px;
-}
-
 @keyframes icon-pulse {
     0% {
         transform: scale(1);
@@ -41,7 +31,7 @@
     }
 
     50% {
-        transform: scale(1.1);
+        transform: scale(1.05);
         opacity: 1;
     }
 
@@ -56,14 +46,15 @@
     text-align: center;
 }
 
-/* Text Image */
-.loader-text-img {
-    height: 36px;
+/* Full "Homev" logo lockup (icon + wordmark in one image, so it always
+   reads as a complete word regardless of how it's laid out) */
+.loader-logo-img {
+    height: 46px;
     width: auto;
     object-fit: contain;
-    margin-bottom: 8px;
-    margin-left: 15px;
-    filter: drop-shadow(0 0 5px rgba(71, 35, 18, 0.12));
+    margin: 0 auto 12px;
+    animation: icon-pulse 2s ease-in-out infinite;
+    filter: drop-shadow(0 0 6px rgba(71, 35, 18, 0.15));
     display: block;
 }
 
