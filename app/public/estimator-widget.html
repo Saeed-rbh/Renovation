@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Homev Estimator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FBF6EC;
+    --surface:#FFFFFF;
+    --surface-sunken:#F3E9D7;
+    --text:#2A1F1A;
+    --text-muted:#7A6A5C;
+    --border:#E4D9C4;
+    --accent:#472312;
+    --accent-soft:#EFE3D6;
+    --cta:#8A6A4E;
+    --cta-contrast:#FFF8EF;
+    --good:#3E7A4B;
+    --shadow: 0 1px 2px rgba(34,31,26,0.06), 0 8px 24px -12px rgba(34,31,26,0.18);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#17181A;
+      --surface:#1F211F;
+      --surface-sunken:#171917;
+      --text:#EDE9DD;
+      --text-muted:#9B9689;
+      --border:#34362F;
+      --accent:#6C97D6;
+      --accent-soft:#233145;
+      --cta:#E08A4C;
+      --cta-contrast:#211203;
+      --good:#7FBF8E;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 28px -14px rgba(0,0,0,0.6);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#17181A;
+    --surface:#1F211F;
+    --surface-sunken:#171917;
+    --text:#EDE9DD;
+    --text-muted:#9B9689;
+    --border:#34362F;
+    --accent:#6C97D6;
+    --accent-soft:#233145;
+    --cta:#E08A4C;
+    --cta-contrast:#211203;
+    --good:#7FBF8E;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 28px -14px rgba(0,0,0,0.6);
+    color-scheme: dark;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:"IBM Plex Sans", system-ui, sans-serif;
+    padding-inline:16px;
+    padding-block:32px 56px;
+    display:flex;
+    justify-content:center;
+  }
+  .app{ width:100%; max-width:640px; }
+  .masthead{ margin-bottom:22px; }
+  .brand{
+    display:flex; align-items:center; gap:9px;
+    font-size:12.5px; font-weight:600; letter-spacing:.09em; text-transform:uppercase;
+    color:var(--accent); margin-bottom:10px;
+  }
+  .brand .mark{
+    width:20px;height:20px;border-radius:5px;background:var(--accent);
+    display:inline-flex;align-items:center;justify-content:center;
+    color:var(--surface); font-family:"IBM Plex Mono",monospace; font-size:11px; font-weight:600;
+  }
+  h1{
+    font-family:"Fraunces", Georgia, serif;
+    font-weight:600;
+    font-size:clamp(26px,5vw,34px);
+    line-height:1.12;
+    letter-spacing:-0.01em;
+    margin:0 0 8px;
+    text-wrap:balance;
+  }
+  .sub{ color:var(--text-muted); font-size:15px; line-height:1.5; margin:0; max-width:46ch; }
+
+  .steps{
+    display:flex; gap:6px; margin:26px 0 20px; list-style:none; padding:0;
+  }
+  .steps li{
+    flex:1; height:4px; border-radius:3px; background:var(--border); position:relative; overflow:hidden;
+  }
+  .steps li.done, .steps li.active{ background:var(--accent); }
+
+  .card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:14px;
+    box-shadow:var(--shadow);
+    padding:22px;
+  }
+  @media (max-width:460px){ .card{ padding:18px; border-radius:12px; } }
+
+  .panel-label{
+    font-size:12px; font-weight:600; letter-spacing:.07em; text-transform:uppercase;
+    color:var(--text-muted); margin:0 0 14px;
+  }
+
+  .scope-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:10px;
+  }
+  @media (max-width:420px){ .scope-grid{ grid-template-columns:1fr; } }
+  .scope-btn{
+    display:flex; flex-direction:column; align-items:flex-start; gap:6px;
+    text-align:left;
+    background:var(--surface-sunken);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:16px 14px;
+    cursor:pointer;
+    font-family:inherit;
+    color:var(--text);
+    transition:border-color .15s ease, transform .1s ease;
+  }
+  .scope-btn:hover{ border-color:var(--accent); }
+  .scope-btn:active{ transform:scale(0.99); }
+  .scope-btn .ic{ font-size:22px; }
+  .scope-btn .name{ font-weight:600; font-size:15px; }
+  .scope-btn .desc{ font-size:12.5px; color:var(--text-muted); line-height:1.35; }
+
+  .field{ margin-bottom:16px; }
+  .field label{ display:block; font-size:13.5px; font-weight:600; margin-bottom:6px; }
+  .hint{ font-size:12px; color:var(--text-muted); margin-top:5px; line-height:1.4; }
+  input[type=number], input[type=text], input[type=email], input[type=tel], select{
+    width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border);
+    background:var(--bg); color:var(--text); font-size:15px; font-family:inherit;
+  }
+  input:focus, select:focus, button:focus-visible, a.btn:focus-visible{
+    outline:2px solid var(--accent); outline-offset:1px;
+  }
+  .row2{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  @media (max-width:420px){ .row2{ grid-template-columns:1fr; } }
+  .check{ display:flex; align-items:flex-start; gap:9px; padding:10px 0; border-top:1px solid var(--border); }
+  .check:first-of-type{ border-top:none; }
+  .check input{ margin-top:3px; width:16px; height:16px; accent-color:var(--accent); flex:none; }
+  .check .txt{ font-size:14px; }
+  .check .txt .price{ color:var(--text-muted); font-size:12.5px; display:block; }
+
+  .btnbar{ display:flex; gap:10px; margin-top:20px; }
+  button, a.btn{
+    font-family:inherit; font-size:14.5px; font-weight:600; border-radius:9px;
+    padding:11px 18px; cursor:pointer; border:1px solid transparent; text-decoration:none;
+    display:inline-flex; align-items:center; justify-content:center; gap:6px;
+  }
+  .btn-primary{ background:var(--accent); color:var(--surface); flex:1; }
+  .btn-primary:hover{ opacity:.92; }
+  .btn-ghost{ background:transparent; color:var(--text); border-color:var(--border); }
+  .btn-cta{ background:var(--cta); color:var(--cta-contrast); flex:1; }
+  .btn-cta:hover{ opacity:.92; }
+  button:disabled{ opacity:.5; cursor:not-allowed; }
+
+  .lines{ display:flex; flex-direction:column; }
+  .line{
+    display:flex; justify-content:space-between; gap:14px; padding:10px 0;
+    border-bottom:1px dashed var(--border); font-size:14px;
+  }
+  .line .desc{ color:var(--text-muted); font-size:12px; margin-top:2px; }
+  .line .amt{ font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .line.subtotal{ border-bottom:1px solid var(--border); font-weight:600; }
+  .totalblock{
+    margin-top:14px; padding:16px; border-radius:10px; background:var(--accent-soft);
+    display:flex; flex-direction:column; gap:4px;
+  }
+  .totalblock .lbl{ font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; color:var(--accent); }
+  .totalblock .num{
+    font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums;
+    font-size:clamp(24px,6vw,30px); font-weight:600; color:var(--text);
+  }
+  .totalblock .note{ font-size:12px; color:var(--text-muted); }
+
+  .disclaimer{ font-size:11.5px; color:var(--text-muted); line-height:1.5; margin-top:16px; }
+
+  .leadform{ margin-top:22px; padding-top:20px; border-top:1px solid var(--border); }
+  .leadform h2{ font-family:"Fraunces",serif; font-weight:600; font-size:18px; margin:0 0 4px; }
+  .leadform .sub{ font-size:13px; margin-bottom:14px; }
+
+  .thankyou{ text-align:center; padding:12px 0 4px; }
+  .thankyou .ic{ font-size:34px; }
+  .thankyou h2{ font-family:"Fraunces",serif; font-size:22px; margin:14px 0 6px; }
+  .thankyou p{ color:var(--text-muted); font-size:14px; max-width:36ch; margin:0 auto; line-height:1.5; }
+
+  footer{ text-align:center; margin-top:22px; font-size:12px; color:var(--text-muted); }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="masthead">
+    <div class="brand"><span class="mark">H</span> HOMEV CONSTRUCTION</div>
+    <h1 id="pageTitle">What are we pricing out?</h1>
+    <p class="sub" id="pageSub">Pick a project type and answer a few quick questions — you'll get a ballpark cost range in under a minute.</p>
+  </div>
+
+  <ul class="steps" id="steps">
+    <li class="active" data-step="1"></li>
+    <li data-step="2"></li>
+    <li data-step="3"></li>
+  </ul>
+
+  <div class="card" id="cardStep1">
+    <p class="panel-label">Step 1 — Project type</p>
+    <div class="scope-grid" id="scopeGrid"></div>
+  </div>
+
+  <div class="card" id="cardStep2" hidden>
+    <p class="panel-label" id="step2Label">Step 2 — Details</p>
+    <form id="detailForm"></form>
+    <div class="btnbar">
+      <button type="button" class="btn-ghost" id="backTo1">Back</button>
+      <button type="submit" form="detailForm" class="btn-primary">See my estimate</button>
+    </div>
+  </div>
+
+  <div class="card" id="cardStep3" hidden>
+    <p class="panel-label">Step 3 — Your ballpark estimate</p>
+    <div class="lines" id="lineItems"></div>
+    <div class="line subtotal" id="subtotalLine"></div>
+    <div class="line" id="overheadLine"></div>
+
+    <div class="totalblock">
+      <span class="lbl">Estimated project range</span>
+      <span class="num" id="totalRange">—</span>
+      <span class="note">Based on typical regional pricing — your final quote follows an in-home visit.</span>
+    </div>
+
+    <p class="disclaimer">This is a preliminary, self-serve estimate for planning purposes only — it assumes standard site conditions and typical mid-range pricing. It is not a formal quote. Homev Construction confirms final pricing after an in-home consultation and detailed scope review.</p>
+
+    <div class="leadform">
+      <h2>Want this in writing?</h2>
+      <p class="sub">Send us your details and we'll follow up with a firm quote, usually within one business day.</p>
+      <div class="row2">
+        <div class="field"><label for="leadName">Name</label><input type="text" id="leadName" placeholder="Jordan Ellis"></div>
+        <div class="field"><label for="leadPhone">Phone</label><input type="tel" id="leadPhone" placeholder="(416) 555-0134"></div>
+      </div>
+      <div class="field"><label for="leadEmail">Email</label><input type="email" id="leadEmail" placeholder="jordan@email.com"></div>
+      <div class="field"><label for="leadAddress">Project address or city (optional)</label><input type="text" id="leadAddress" placeholder="Toronto, ON"></div>
+      <div class="btnbar">
+        <button type="button" class="btn-ghost" id="backTo2">Back</button>
+        <a href="#" class="btn btn-cta" id="requestQuoteBtn">Request formal quote</a>
+      </div>
+      <p class="hint" id="leadError" style="display:none;color:var(--cta);">Add at least your name and an email or phone number so we can reach you.</p>
+    </div>
+  </div>
+
+  <div class="card" id="cardStep4" hidden>
+    <div class="thankyou">
+      <div class="ic">🛠️</div>
+      <h2>Thanks — request sent.</h2>
+      <p id="thankyouSub">We've opened an email to Homev Construction with your estimate. Hit send in your mail app and we'll be in touch soon.</p>
+      <div class="btnbar" style="justify-content:center;margin-top:18px;">
+        <button type="button" class="btn-ghost" id="startOver">Start a new estimate</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>Homev Construction · info@homevconstruction.ca · Estimates in CAD, for planning purposes only</footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------------------------------------------------------------
+  // All pricing lives here. Ask Claude to update these to your real
+  // supplier/labor rates any time, or use "Adjust the rates used" on
+  // the results screen (saved in this browser only).
+  // ---------------------------------------------------------------
+  var DEFAULT_RATES = {
+    flooring: {
+      materials: {
+        laminate:   { label:"Laminate",                 material:3.50, labor:2.50 },
+        vinyl:      { label:"Vinyl / LVP",               material:4.25, labor:2.25 },
+        engineered: { label:"Engineered hardwood",       material:7.50, labor:3.50 },
+        hardwood:   { label:"Solid hardwood",            material:10.50, labor:4.50 },
+        tile:       { label:"Ceramic / porcelain tile",  material:6.00, labor:5.50 }
+      },
+      removal: 1.25,
+      prep: 1.00
+    },
+    painting: {
+      tiers: {
+        standard: { label:"Standard paint", rate:1.75 },
+        premium:  { label:"Premium paint",  rate:2.25 }
+      },
+      ceilingAdd: 0.35,
+      trimDoors: 450
+    },
+    kitchen: {
+      cabinets: {
+        stock:      { label:"Stock cabinets",       rate:150 },
+        semicustom: { label:"Semi-custom cabinets", rate:320 },
+        custom:     { label:"Custom cabinets",      rate:550 }
+      },
+      counters: {
+        laminate: { label:"Laminate counters", rate:35 },
+        granite:  { label:"Granite counters",  rate:75 },
+        quartz:   { label:"Quartz counters",   rate:85 }
+      },
+      baseLabor:  45,
+      appliances: 4500,
+      backsplash: 18
+    },
+    bathroom: {
+      fixtures: {
+        basic:    { label:"Basic fixture package",     flat:2200 },
+        midrange: { label:"Mid-range fixture package", flat:4500 },
+        highend:  { label:"High-end fixture package",  flat:8500 }
+      },
+      baseLabor: 55,
+      tile: 22,
+      plumbingMove: 2800
+    },
+    stairs: {
+      work: {
+        retread:  { label:"Retread & riser replacement (carpet to wood)", perStep:180 },
+        refinish: { label:"Refinish existing wood stairs",                perStep:65 },
+        rebuild:  { label:"Full structural rebuild",                     perStep:450 }
+      },
+      railing: 95
+    },
+    basement: {
+      tiers: {
+        basic:    { label:"Basic finish",     perSqft:35 },
+        midrange: { label:"Mid-range finish", perSqft:55 },
+        highend:  { label:"High-end finish",  perSqft:85 }
+      },
+      bathroomAddition: 12000,
+      egressWindow: 4500,
+      waterproofing: 3.50
+    },
+    overheadPercent: 18,
+    rangeSpread: 10
+  };
+
+  var SCOPES = [
+    { key:"flooring", ic:"🧱", name:"Flooring", desc:"Laminate, vinyl, hardwood or tile" },
+    { key:"painting",  ic:"🎨", name:"Painting", desc:"Interior walls, ceilings & trim" },
+    { key:"kitchen",   ic:"🍳", name:"Kitchen reno", desc:"Cabinets, counters & finishes" },
+    { key:"bathroom",  ic:"🚿", name:"Bathroom reno", desc:"Fixtures, tile & plumbing" },
+    { key:"stairs",    ic:"🪜", name:"Stairs", desc:"Retread, refinish or rebuild" },
+    { key:"basement",  ic:"🏠", name:"Basement finish", desc:"Framing to move-in ready" }
+  ];
+
+  // Rates are fixed for every visitor — ask Claude to update DEFAULT_RATES
+  // above and republish when Homev's real numbers change.
+  var rates = deepClone(DEFAULT_RATES);
+  function deepClone(o){ return JSON.parse(JSON.stringify(o)); }
+  function fmt(n){
+    return "$" + Math.round(n).toLocaleString("en-CA");
+  }
+  function num(v, fallback){
+    var n = parseFloat(v);
+    return isFinite(n) && n >= 0 ? n : (fallback || 0);
+  }
+
+  var state = { scope:null, values:{} };
+
+  // ---------------- Step 1: scope grid ----------------
+  var scopeGrid = document.getElementById("scopeGrid");
+  SCOPES.forEach(function(s){
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "scope-btn";
+    b.innerHTML = '<span class="ic">'+s.ic+'</span><span class="name">'+s.name+'</span><span class="desc">'+s.desc+'</span>';
+    b.addEventListener("click", function(){ selectScope(s.key); });
+    scopeGrid.appendChild(b);
+  });
+
+  function selectScope(key){
+    state.scope = key;
+    state.values = {};
+    document.getElementById("step2Label").textContent = "Step 2 — " + SCOPES.find(function(s){return s.key===key;}).name + " details";
+    renderDetailForm(key);
+    goToStep(2);
+  }
+
+  // ---------------- Step 2: dynamic fields ----------------
+  var FORMS = {
+    flooring: function(){
+      return field("Total floor area (sq ft)",
+          numInput("f_sqft", 220), "A typical bedroom is 150–200 sq ft; a living room 250–350 sq ft.")
+        + field("Material", select("f_material", rateOptions(rates.flooring.materials)))
+        + check("f_removal", "Remove & haul away existing flooring", "+ " + fmt(rates.flooring.removal) + "/sq ft")
+        + check("f_prep", "Subfloor repair / leveling needed", "+ " + fmt(rates.flooring.prep) + "/sq ft");
+    },
+    painting: function(){
+      return field("Wall area to paint (sq ft)",
+          numInput("p_sqft", 400), "Rule of thumb: floor area × 2.5 for an average room height.")
+        + field("Surfaces", select("p_surfaces", [
+            ["walls","Walls only"],
+            ["wallsCeiling","Walls + ceiling"],
+            ["wallsCeilingTrim","Walls + ceiling + trim & doors"]
+          ]))
+        + field("Coats", select("p_coats", [["1","1 coat"],["2","2 coats"]]))
+        + field("Paint quality", select("p_tier", rateOptions(rates.painting.tiers)));
+    },
+    kitchen: function(){
+      return field("Kitchen area (sq ft)", numInput("k_sqft", 160))
+        + field("Cabinetry (linear ft)", numInput("k_cablinft", 22), "Rough guide: about 0.6 linear ft of cabinets per sq ft of kitchen.")
+        + field("Cabinet tier", select("k_cabtier", rateOptions(rates.kitchen.cabinets)))
+        + field("Countertop area (sq ft)", numInput("k_countersqft", 40), "Rough guide: cabinet linear ft × 2.")
+        + field("Countertop material", select("k_countermat", rateOptions(rates.kitchen.counters)))
+        + check("k_appliances", "New appliance package (fridge, range, dishwasher, hood)", "+ " + fmt(rates.kitchen.appliances) + " flat")
+        + check("k_backsplash", "Backsplash", "+ " + fmt(rates.kitchen.backsplash) + "/sq ft")
+        + '<div class="field" id="k_backsplashSqftWrap" hidden>' + field("Backsplash area (sq ft)", numInput("k_backsplashsqft", 30)) + '</div>';
+    },
+    bathroom: function(){
+      return field("Bathroom area (sq ft)", numInput("b_sqft", 45))
+        + field("Fixture tier", select("b_fixtures", rateOptions(rates.bathroom.fixtures)))
+        + check("b_tile", "New tile (floor + shower/tub surround)", "+ " + fmt(rates.bathroom.tile) + "/sq ft")
+        + '<div class="field" id="b_tileSqftWrap" hidden>' + field("Tile area (sq ft)", numInput("b_tilesqft", 90), "Usually 2–2.5× the floor area once shower walls are included.") + '</div>'
+        + check("b_plumbing", "Relocate plumbing (move toilet/tub/shower)", "+ " + fmt(rates.bathroom.plumbingMove) + " flat");
+    },
+    stairs: function(){
+      return field("Number of steps", numInput("s_steps", 14), "Most straight staircases run 13–15 steps between floors.")
+        + field("Type of work", select("s_worktype", rateOptions(rates.stairs.work)))
+        + check("s_railing", "Replace railing & spindles", "+ " + fmt(rates.stairs.railing) + "/linear ft")
+        + '<div class="field" id="s_railingLenWrap" hidden>' + field("Railing length (linear ft)", numInput("s_railinglen", 16)) + '</div>';
+    },
+    basement: function(){
+      return field("Basement area (sq ft)", numInput("bs_sqft", 800), "A typical basement runs 700–1,000 sq ft.")
+        + field("Finish level", select("bs_tier", rateOptions(rates.basement.tiers)))
+        + check("bs_bathroom", "Add a bathroom", "+ " + fmt(rates.basement.bathroomAddition) + " flat")
+        + check("bs_egress", "Add an egress window (for a bedroom)", "+ " + fmt(rates.basement.egressWindow) + " flat")
+        + check("bs_waterproofing", "Waterproofing / vapor barrier prep", "+ " + fmt(rates.basement.waterproofing) + "/sq ft");
+    }
+  };
+
+  function field(label, inputHtml, hint){
+    return '<div class="field"><label>'+label+'</label>'+inputHtml+(hint?'<div class="hint">'+hint+'</div>':'')+'</div>';
+  }
+  function numInput(id, value){
+    return '<input type="number" min="0" step="1" id="'+id+'" value="'+value+'">';
+  }
+  function select(id, opts){
+    return '<select id="'+id+'">' + opts.map(function(o){ return '<option value="'+o[0]+'">'+o[1]+'</option>'; }).join("") + '</select>';
+  }
+  function rateOptions(obj){
+    return Object.keys(obj).map(function(k){ return [k, obj[k].label]; });
+  }
+  function check(id, label, priceNote){
+    return '<label class="check"><input type="checkbox" id="'+id+'"><span class="txt">'+label+'<span class="price">'+priceNote+'</span></span></label>';
+  }
+
+  var detailForm = document.getElementById("detailForm");
+  function renderDetailForm(scopeKey){
+    detailForm.innerHTML = FORMS[scopeKey]();
+    if (scopeKey === "kitchen"){
+      document.getElementById("k_backsplash").addEventListener("change", function(e){
+        document.getElementById("k_backsplashSqftWrap").hidden = !e.target.checked;
+      });
+    }
+    if (scopeKey === "bathroom"){
+      document.getElementById("b_tile").addEventListener("change", function(e){
+        document.getElementById("b_tileSqftWrap").hidden = !e.target.checked;
+      });
+    }
+    if (scopeKey === "stairs"){
+      document.getElementById("s_railing").addEventListener("change", function(e){
+        document.getElementById("s_railingLenWrap").hidden = !e.target.checked;
+      });
+    }
+  }
+
+  detailForm.addEventListener("submit", function(e){
+    e.preventDefault();
+    collectValues();
+    renderEstimate();
+    goToStep(3);
+  });
+  document.getElementById("backTo1").addEventListener("click", function(){ goToStep(1); });
+  document.getElementById("backTo2").addEventListener("click", function(){ goToStep(2); });
+
+  function val(id){ var el = document.getElementById(id); return el ? el.value : ""; }
+  function checked(id){ var el = document.getElementById(id); return !!(el && el.checked); }
+
+  function collectValues(){
+    var s = state.scope, v = {};
+    if (s === "flooring"){
+      v = { sqft:num(val("f_sqft")), material:val("f_material"), removal:checked("f_removal"), prep:checked("f_prep") };
+    } else if (s === "painting"){
+      v = { sqft:num(val("p_sqft")), surfaces:val("p_surfaces"), coats:num(val("p_coats"),1), tier:val("p_tier") };
+    } else if (s === "kitchen"){
+      v = { sqft:num(val("k_sqft")), cabLinFt:num(val("k_cablinft")), cabTier:val("k_cabtier"),
+            counterSqft:num(val("k_countersqft")), counterMat:val("k_countermat"),
+            appliances:checked("k_appliances"), backsplash:checked("k_backsplash"),
+            backsplashSqft:num(val("k_backsplashsqft")) };
+    } else if (s === "bathroom"){
+      v = { sqft:num(val("b_sqft")), fixtures:val("b_fixtures"), tile:checked("b_tile"),
+            tileSqft:num(val("b_tilesqft")), plumbing:checked("b_plumbing") };
+    } else if (s === "stairs"){
+      v = { steps:num(val("s_steps")), workType:val("s_worktype"), railing:checked("s_railing"),
+            railingLen:num(val("s_railinglen")) };
+    } else if (s === "basement"){
+      v = { sqft:num(val("bs_sqft")), tier:val("bs_tier"), bathroom:checked("bs_bathroom"),
+            egress:checked("bs_egress"), waterproofing:checked("bs_waterproofing") };
+    }
+    state.values = v;
+  }
+
+  // ---------------- calculation ----------------
+  function computeLineItems(){
+    var s = state.scope, v = state.values, items = [];
+    if (s === "flooring"){
+      var m = rates.flooring.materials[v.material];
+      items.push({ label:m.label + " material", note:v.sqft+" sq ft × "+fmt(m.material)+"/sq ft", amount:v.sqft*m.material });
+      items.push({ label:"Installation labor", note:v.sqft+" sq ft × "+fmt(m.labor)+"/sq ft", amount:v.sqft*m.labor });
+      if (v.removal) items.push({ label:"Remove & haul away old flooring", note:v.sqft+" sq ft × "+fmt(rates.flooring.removal)+"/sq ft", amount:v.sqft*rates.flooring.removal });
+      if (v.prep) items.push({ label:"Subfloor repair / leveling", note:v.sqft+" sq ft × "+fmt(rates.flooring.prep)+"/sq ft", amount:v.sqft*rates.flooring.prep });
+    } else if (s === "painting"){
+      var t = rates.painting.tiers[v.tier];
+      var eff = v.sqft * (v.surfaces !== "walls" ? (1 + rates.painting.ceilingAdd) : 1);
+      items.push({ label:t.label + " — " + v.coats + " coat(s)", note:Math.round(eff)+" sq ft equiv. × "+fmt(t.rate)+"/sq ft × "+v.coats, amount:eff*t.rate*v.coats });
+      if (v.surfaces === "wallsCeilingTrim") items.push({ label:"Trim & door painting", note:"flat allowance", amount:rates.painting.trimDoors });
+    } else if (s === "kitchen"){
+      var cab = rates.kitchen.cabinets[v.cabTier], ct = rates.kitchen.counters[v.counterMat];
+      items.push({ label:cab.label, note:v.cabLinFt+" linear ft × "+fmt(cab.rate)+"/ft", amount:v.cabLinFt*cab.rate });
+      items.push({ label:ct.label, note:v.counterSqft+" sq ft × "+fmt(ct.rate)+"/sq ft", amount:v.counterSqft*ct.rate });
+      items.push({ label:"Demo, electrical, plumbing rough-in & install labor", note:v.sqft+" sq ft × "+fmt(rates.kitchen.baseLabor)+"/sq ft", amount:v.sqft*rates.kitchen.baseLabor });
+      if (v.appliances) items.push({ label:"Appliance package", note:"flat allowance", amount:rates.kitchen.appliances });
+      if (v.backsplash) items.push({ label:"Backsplash", note:v.backsplashSqft+" sq ft × "+fmt(rates.kitchen.backsplash)+"/sq ft", amount:v.backsplashSqft*rates.kitchen.backsplash });
+    } else if (s === "bathroom"){
+      var fx = rates.bathroom.fixtures[v.fixtures];
+      items.push({ label:fx.label, note:"flat allowance", amount:fx.flat });
+      items.push({ label:"Demo, plumbing & install labor", note:v.sqft+" sq ft × "+fmt(rates.bathroom.baseLabor)+"/sq ft", amount:v.sqft*rates.bathroom.baseLabor });
+      if (v.tile) items.push({ label:"Tile (floor + shower surround)", note:v.tileSqft+" sq ft × "+fmt(rates.bathroom.tile)+"/sq ft", amount:v.tileSqft*rates.bathroom.tile });
+      if (v.plumbing) items.push({ label:"Plumbing relocation", note:"flat allowance", amount:rates.bathroom.plumbingMove });
+    } else if (s === "stairs"){
+      var w = rates.stairs.work[v.workType];
+      items.push({ label:w.label, note:v.steps+" steps × "+fmt(w.perStep)+"/step", amount:v.steps*w.perStep });
+      if (v.railing) items.push({ label:"Railing & spindle replacement", note:v.railingLen+" linear ft × "+fmt(rates.stairs.railing)+"/ft", amount:v.railingLen*rates.stairs.railing });
+    } else if (s === "basement"){
+      var bt = rates.basement.tiers[v.tier];
+      items.push({ label:bt.label, note:v.sqft+" sq ft × "+fmt(bt.perSqft)+"/sq ft", amount:v.sqft*bt.perSqft });
+      if (v.bathroom) items.push({ label:"Bathroom addition (rough-in, fixtures, waterproofing)", note:"flat allowance", amount:rates.basement.bathroomAddition });
+      if (v.egress) items.push({ label:"Egress window", note:"flat allowance", amount:rates.basement.egressWindow });
+      if (v.waterproofing) items.push({ label:"Waterproofing / vapor barrier prep", note:v.sqft+" sq ft × "+fmt(rates.basement.waterproofing)+"/sq ft", amount:v.sqft*rates.basement.waterproofing });
+    }
+    return items;
+  }
+
+  var lastResult = null;
+
+  function renderEstimate(){
+    var items = computeLineItems();
+    var subtotal = items.reduce(function(a,i){ return a+i.amount; }, 0);
+    var overhead = subtotal * (rates.overheadPercent/100);
+    var total = subtotal + overhead;
+    var low = total * (1 - rates.rangeSpread/100);
+    var high = total * (1 + rates.rangeSpread/100);
+    lastResult = { items:items, subtotal:subtotal, overhead:overhead, total:total, low:low, high:high };
+
+    document.getElementById("lineItems").innerHTML = items.map(function(i){
+      return '<div class="line"><div><div>'+i.label+'</div><div class="desc">'+i.note+'</div></div><div class="amt">'+fmt(i.amount)+'</div></div>';
+    }).join("");
+    document.getElementById("subtotalLine").innerHTML = '<span>Subtotal</span><span class="amt">'+fmt(subtotal)+'</span>';
+    document.getElementById("overheadLine").innerHTML = '<span>Overhead &amp; profit ('+rates.overheadPercent+'%)</span><span class="amt">'+fmt(overhead)+'</span>';
+    document.getElementById("totalRange").textContent = fmt(low) + " – " + fmt(high);
+  }
+
+  // ---------------- lead capture ----------------
+  document.getElementById("requestQuoteBtn").addEventListener("click", function(e){
+    e.preventDefault();
+    var name = val("leadName").trim(), email = val("leadEmail").trim(), phone = val("leadPhone").trim(), address = val("leadAddress").trim();
+    var errEl = document.getElementById("leadError");
+    if (!name || (!email && !phone)){
+      errEl.style.display = "block";
+      return;
+    }
+    errEl.style.display = "none";
+
+    var scopeName = SCOPES.find(function(s){ return s.key === state.scope; }).name;
+    var lines = lastResult.items.map(function(i){ return "- " + i.label + " (" + i.note + "): " + fmt(i.amount); }).join("\n");
+    var body = "New estimate request from the Homev website calculator\n\n"
+      + "Project type: " + scopeName + "\n"
+      + "Estimated range: " + fmt(lastResult.low) + " - " + fmt(lastResult.high) + " CAD\n\n"
+      + "Breakdown:\n" + lines + "\n\n"
+      + "Subtotal: " + fmt(lastResult.subtotal) + "\n"
+      + "Overhead & profit: " + fmt(lastResult.overhead) + "\n\n"
+      + "Client details:\n"
+      + "Name: " + name + "\n"
+      + "Email: " + (email || "-") + "\n"
+      + "Phone: " + (phone || "-") + "\n"
+      + "Project address/city: " + (address || "-");
+
+    var mailto = "mailto:info@homevconstruction.ca"
+      + "?subject=" + encodeURIComponent("Estimate request — " + scopeName + " — " + name)
+      + "&body=" + encodeURIComponent(body);
+
+    window.location.href = mailto;
+    goToStep(4);
+  });
+
+  document.getElementById("startOver").addEventListener("click", function(){
+    state = { scope:null, values:{} };
+    document.getElementById("leadName").value = "";
+    document.getElementById("leadEmail").value = "";
+    document.getElementById("leadPhone").value = "";
+    document.getElementById("leadAddress").value = "";
+    goToStep(1);
+  });
+
+  // ---------------- step navigation ----------------
+  var titles = {
+    1: ["What are we pricing out?", "Pick a project type and answer a few quick questions — you'll get a ballpark cost range in under a minute."],
+    2: ["A few details", "The more accurate these numbers, the closer your estimate will be."],
+    3: ["Your ballpark estimate", "Here's how it breaks down."],
+    4: ["Request sent", ""]
+  };
+  function goToStep(n){
+    [1,2,3,4].forEach(function(i){ document.getElementById("cardStep"+i).hidden = (i !== n); });
+    document.querySelectorAll("#steps li").forEach(function(li){
+      var s = parseInt(li.dataset.step, 10);
+      li.classList.toggle("active", s === n);
+      li.classList.toggle("done", s < n);
+    });
+    document.getElementById("steps").style.display = n === 4 ? "none" : "flex";
+    if (titles[n]){
+      document.getElementById("pageTitle").textContent = titles[n][0];
+      document.getElementById("pageSub").textContent = titles[n][1];
+      document.getElementById("pageSub").style.display = titles[n][1] ? "block" : "none";
+    }
+    window.scrollTo({ top:0, behavior:"smooth" });
+  }
+})();
+</script>
+</body>
+</html>

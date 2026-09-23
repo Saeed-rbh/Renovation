@@ -18,6 +18,7 @@ const ServicesPage = React.lazy(() => import('./pages/ServicesPage'));
 const ServiceDetailsPage = React.lazy(() => import('./pages/ServiceDetailsPage'));
 const OperationDetailsPage = React.lazy(() => import('./pages/OperationDetailsPage'));
 const AboutPage = React.lazy(() => import('./pages/AboutPage'));
+const EstimatorPage = React.lazy(() => import('./pages/EstimatorPage'));
 
 // Admin Imports (Lazy Loaded)
 const AdminLayout = React.lazy(() => import('./layouts/AdminLayout'));
@@ -98,6 +99,7 @@ function App() {
             <Route path="/services/:id" element={<ServiceDetailsPage />} />
             <Route path="/operations/:id" element={<OperationDetailsPage />} />
             <Route path="/about" element={<AboutPage />} />
+            <Route path="/estimator" element={<EstimatorPage />} />
 
             {/* Admin Routes */}
             <Route path="/admin/login" element={<AdminLogin />} />
