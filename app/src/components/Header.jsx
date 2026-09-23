@@ -23,10 +23,7 @@ const Header = () => {
                     <Link to="/" className="logo-link">
 
 
-                        <div className="secondary-brand">
-                            <img src="/header_right.png" alt="Secondary Logo" className="secondary-logo" decoding="async" />
-                            <span className="secondary-text">Construction</span>
-                        </div>
+                        <img src="/homev-logo.png" alt="Homev Construction" className="secondary-logo" decoding="async" />
                     </Link>
                 </div>
 

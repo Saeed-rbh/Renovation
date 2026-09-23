@@ -6,7 +6,7 @@ const Loading = ({ fullScreen = false, text = "Building your experience..." }) =
         <div className={`loading-container ${fullScreen ? 'fullscreen' : ''}`}>
             <div className="loader-content">
                 <div className="loading-text">
-                    <img src="/header_right.png" alt="Homev" className="loader-logo-img" />
+                    <img src="/homev-logo.png" alt="Homev" className="loader-logo-img" />
                     <p>{text}</p>
                 </div>
             </div>

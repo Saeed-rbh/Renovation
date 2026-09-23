@@ -49,7 +49,7 @@
 /* Full "Homev" logo lockup (icon + wordmark in one image, so it always
    reads as a complete word regardless of how it's laid out) */
 .loader-logo-img {
-    height: 46px;
+    height: 70px;
     width: auto;
     object-fit: contain;
     margin: 0 auto 12px;

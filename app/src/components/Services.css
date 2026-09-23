@@ -103,7 +103,7 @@
 .service-title {
     font-size: 1.25rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--chocolate);
     text-align: center;
     margin: 0;
 }

@@ -10,7 +10,15 @@
     margin-bottom: 40px;
 }
 
+/* Override the homepage hero's white gradient text with the logo chocolate */
+.about-hero .hero-title {
+    background: none;
+    -webkit-text-fill-color: var(--chocolate);
+    color: var(--chocolate);
+}
+
 .about-hero .hero-subtitle {
+    color: var(--chocolate);
     opacity: 0.8;
     max-width: 600px;
     margin: 10px auto 0;
@@ -28,22 +36,24 @@
 }
 
 /* Story Section */
+/* "Who We Are": chocolate block with cream text, matching the logo */
 .about-story {
     padding: 50px;
     text-align: center;
+    background: var(--chocolate);
 }
 
 .story-content h2 {
     margin-bottom: 25px;
     font-size: 2rem;
-    color: var(--primary-color);
+    color: var(--cream);
 }
 
 .story-content p {
     font-size: 1.1rem;
     line-height: 1.8;
     margin-bottom: 20px;
-    color: var(--text-light);
+    color: var(--cream);
     max-width: 700px;
     margin-left: auto;
     margin-right: auto;
