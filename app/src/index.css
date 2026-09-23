@@ -5,7 +5,7 @@
   --bg-darker: #071018;
   /* Darker Navy */
 
-  --primary-color: #c9a077;
+  --primary-color: #472312;
   /* Rose Gold/Copper */
   --secondary-color: #1a2d44;
   /* Navy Mid-tone */
@@ -15,7 +15,7 @@
 
   --glass-bg: rgba(12, 25, 41, 0.7);
   /* Navy glass */
-  --glass-border: rgba(201, 160, 119, 0.15);
+  --glass-border: rgba(71, 35, 18, 0.15);
   /* Rose gold hint border */
   --glass-highlight: rgba(255, 255, 255, 0.05);
   --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
@@ -50,13 +50,13 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(201, 160, 119, 0.3);
+  background: rgba(71, 35, 18, 0.3);
   border-radius: 5px;
   border: 2px solid var(--bg-darker);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(201, 160, 119, 0.6);
+  background: rgba(71, 35, 18, 0.6);
 }
 
 a {
@@ -129,15 +129,15 @@ img {
 }
 
 .btn-primary {
-  background: linear-gradient(90deg, rgba(201, 160, 119, 0.16), rgba(201, 160, 119, 0.08));
+  background: linear-gradient(90deg, rgba(71, 35, 18, 0.16), rgba(71, 35, 18, 0.08));
   color: #fff;
-  box-shadow: 0 4px 15px rgba(201, 160, 119, 0.1);
-  border: 2px solid rgba(201, 160, 119, 0.3);
+  box-shadow: 0 4px 15px rgba(71, 35, 18, 0.1);
+  border: 2px solid rgba(71, 35, 18, 0.3);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(201, 160, 119, 0.2);
+  box-shadow: 0 8px 25px rgba(71, 35, 18, 0.2);
 }
 
 .btn-outline {
