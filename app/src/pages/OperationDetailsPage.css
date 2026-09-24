@@ -12,6 +12,14 @@
     margin-bottom: 50px;
 }
 
+/* Cream text on the chocolate-tinted hero photo */
+.operation-hero .back-link,
+.operation-hero .back-link:hover,
+.operation-hero .operation-hero-subtitle,
+.operation-hero .operation-hero-title {
+    color: var(--cream);
+}
+
 .operation-hero-title {
     font-size: 3.5rem;
     color: var(--text-light);

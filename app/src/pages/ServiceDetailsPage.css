@@ -12,6 +12,13 @@
     margin-bottom: 40px;
 }
 
+/* Cream text on the chocolate-tinted hero photo */
+.service-hero .back-link,
+.service-hero .back-link:hover,
+.service-hero .service-hero-title {
+    color: var(--cream);
+}
+
 .service-hero-title {
     font-size: 3.5rem;
     color: var(--text-light);

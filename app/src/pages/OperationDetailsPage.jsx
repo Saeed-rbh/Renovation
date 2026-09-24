@@ -75,7 +75,7 @@ const OperationDetailsPage = () => {
         <PageTransition>
             <div className="operation-details-page">
                 <div className="operation-hero" style={{
-                    backgroundImage: `linear-gradient(rgba(10,10,10,0.6), rgba(10,10,10,0.9)), url(${operation.image})`
+                    backgroundImage: `linear-gradient(rgba(65,31,15,0.55), rgba(65,31,15,0.8)), url(${operation.image})`
                 }}>
                     <div className="container">
                         <Link to="/" className="back-link">

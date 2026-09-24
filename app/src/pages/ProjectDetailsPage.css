@@ -12,6 +12,21 @@
     margin-bottom: 40px;
 }
 
+/* Cream text on the chocolate-tinted hero photo */
+.project-hero .project-category-badge {
+    color: var(--cream);
+    border-color: var(--cream);
+    background-color: rgba(249, 244, 236, 0.12);
+}
+
+.project-hero .back-link,
+.project-hero .back-link:hover,
+.project-hero .project-location,
+.project-hero .project-location .location-icon,
+.project-hero .project-hero-title {
+    color: var(--cream);
+}
+
 .back-link {
     display: inline-flex;
     align-items: center;

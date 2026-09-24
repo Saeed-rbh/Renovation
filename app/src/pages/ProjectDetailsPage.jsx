@@ -101,8 +101,8 @@ const ProjectDetailsPage = () => {
         <PageTransition>
             <SEO title={project.title} description={project.description ? project.description.substring(0, 150) + "..." : "Project details."} />
             <div className="project-details-page">
-                <div className="project-hero" style={{ // Optional: use main image as faint background or just dark header
-                    backgroundImage: `radial-gradient(circle at center, rgba(10,10,10,0.8), rgba(10,10,10,0.95)), url(${project.mainImage})`
+                <div className="project-hero" style={{ // Main image under a chocolate tint so it matches the brand
+                    backgroundImage: `linear-gradient(rgba(65,31,15,0.55), rgba(65,31,15,0.8)), url(${project.mainImage})`
                 }}>
                     <div className="container">
                         <div className="project-top-bar">
