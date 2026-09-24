@@ -1,8 +1,22 @@
+import { useEffect } from 'react';
 import SEO from '../components/SEO';
 import PageTransition from '../components/PageTransition';
+import { sendEstimateRequest } from '../utils/inquiry';
 import './EstimatorPage.css';
 
 const EstimatorPage = () => {
+    // The estimator runs in an iframe; it hands quote requests up to us so they
+    // are emailed and saved to the admin inbox like the About page form.
+    useEffect(() => {
+        const handleMessage = async (event) => {
+            if (event.origin !== window.location.origin || event.data?.type !== 'homev-estimate-request') return;
+            const result = await sendEstimateRequest(event.data.payload);
+            event.source?.postMessage({ type: 'homev-estimate-result', ...result }, event.origin);
+        };
+        window.addEventListener('message', handleMessage);
+        return () => window.removeEventListener('message', handleMessage);
+    }, []);
+
     return (
         <PageTransition>
             <SEO

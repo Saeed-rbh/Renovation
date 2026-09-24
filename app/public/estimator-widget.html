@@ -597,12 +597,51 @@
       + "Phone: " + (phone || "-") + "\n"
       + "Project address/city: " + (address || "-");
 
-    var mailto = "mailto:info@homevconstruction.ca"
-      + "?subject=" + encodeURIComponent("Estimate request — " + scopeName + " — " + name)
-      + "&body=" + encodeURIComponent(body);
+    var subject = "Estimate request — " + scopeName + " — " + name;
+    var btn = this;
+    if (btn.dataset.busy) return;
 
-    window.location.href = mailto;
-    goToStep(4);
+    // Opening the visitor's mail app is only a fallback: it silently fails for
+    // anyone without a configured mail client, and nothing reaches us until
+    // they hit send.
+    function viaMailApp(){
+      window.location.href = "mailto:info@homevconstruction.ca"
+        + "?subject=" + encodeURIComponent(subject)
+        + "&body=" + encodeURIComponent(body);
+      showThanks("We've opened an email to Homev Construction with your estimate. Hit send in your mail app and we'll be in touch soon.");
+    }
+    function showThanks(msg){
+      delete btn.dataset.busy;
+      btn.textContent = "Request formal quote";
+      document.getElementById("thankyouSub").textContent = msg;
+      goToStep(4);
+    }
+
+    // Embedded on the site: the host page emails it to us and saves it to the
+    // admin inbox, then posts the outcome back.
+    if (window.parent === window){ viaMailApp(); return; }
+    btn.dataset.busy = "1";
+    btn.textContent = "Sending…";
+    var settled = false;
+    function onReply(ev){
+      if (ev.origin !== window.location.origin || !ev.data || ev.data.type !== "homev-estimate-result") return;
+      settled = true;
+      window.removeEventListener("message", onReply);
+      if (!ev.data.ok){ viaMailApp(); return; }
+      showThanks(ev.data.customerCopy
+        ? "We've received your estimate and emailed a copy to " + email + ". Our team will follow up with a firm quote, usually within one business day."
+        : "We've received your estimate. Our team will follow up with a firm quote, usually within one business day.");
+    }
+    window.addEventListener("message", onReply);
+    window.parent.postMessage({
+      type: "homev-estimate-request",
+      payload: { name: name, email: email, phone: phone, subject: subject, message: body }
+    }, window.location.origin);
+    setTimeout(function(){
+      if (settled) return;
+      window.removeEventListener("message", onReply);
+      viaMailApp();
+    }, 15000);
   });
 
   document.getElementById("startOver").addEventListener("click", function(){

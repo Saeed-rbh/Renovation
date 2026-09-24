@@ -7,11 +7,7 @@ import { aboutData as defaultAboutData } from '../data/about';
 import { doc, getDoc, addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 import emailjs from '@emailjs/browser';
-
-// EmailJS Configuration
-const SERVICE_ID = 'service_2diktkb';
-const PUBLIC_KEY = 'wLOX4avHYtos4KMZi';
-const TEMPLATE_ID = 'template_32nvlrb';
+import { SERVICE_ID, PUBLIC_KEY, TEMPLATE_ID } from '../utils/inquiry';
 
 const AboutPage = () => {
     const [aboutInfo, setAboutInfo] = useState(defaultAboutData);
