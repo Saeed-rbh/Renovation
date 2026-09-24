@@ -43,7 +43,7 @@ const Operations = () => {
             <section className="operations-section">
                 <div className="operations-grid">
                     {[1, 2, 3].map(i => (
-                        <div key={i} className="op-item" style={{ background: '#1a1a1a' }}></div>
+                        <div key={i} className="op-item" style={{ background: 'var(--bg-darker)' }}></div>
                     ))}
                 </div>
             </section>
