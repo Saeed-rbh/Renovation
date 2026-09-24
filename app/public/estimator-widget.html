@@ -230,7 +230,6 @@
     <p class="panel-label">Step 3 — Your ballpark estimate</p>
     <div class="lines" id="lineItems"></div>
     <div class="line subtotal" id="subtotalLine"></div>
-    <div class="line" id="overheadLine"></div>
 
     <div class="totalblock">
       <span class="lbl">Estimated project range</span>
@@ -276,9 +275,9 @@
   "use strict";
 
   // ---------------------------------------------------------------
-  // All pricing lives here. Ask Claude to update these to your real
-  // supplier/labor rates any time, or use "Adjust the rates used" on
-  // the results screen (saved in this browser only).
+  // Fallback pricing only. The live rates are edited in the admin panel
+  // (Admin → Estimator Rates) and handed to this widget by the host page;
+  // keep these in sync with app/src/data/estimatorRates.js.
   // ---------------------------------------------------------------
   var DEFAULT_RATES = {
     flooring: {
@@ -356,12 +355,42 @@
     { key:"basement",  ic:"🏠", name:"Basement finish", desc:"Framing to move-in ready" }
   ];
 
-  // Rates are fixed for every visitor — ask Claude to update DEFAULT_RATES
-  // above and republish when Homev's real numbers change.
-  var rates = deepClone(DEFAULT_RATES);
+  // `rates` is what visitors see: every price already includes overhead &
+  // profit, so it never shows up as its own line.
+  var rates;
   function deepClone(o){ return JSON.parse(JSON.stringify(o)); }
+
+  // Take only known keys with valid numbers from saved rates, so a bad or
+  // partial save can't break the calculator.
+  function mergeRates(defaults, saved){
+    var out = {};
+    Object.keys(defaults).forEach(function(k){
+      var d = defaults[k], v = saved ? saved[k] : undefined;
+      if (d && typeof d === "object") out[k] = mergeRates(d, v && typeof v === "object" ? v : null);
+      else if (typeof d === "number") out[k] = (typeof v === "number" && isFinite(v) && v >= 0) ? v : d;
+      else out[k] = d;
+    });
+    return out;
+  }
+  var NOT_PRICES = { overheadPercent:1, rangeSpread:1, ceilingAdd:1 };
+  function withMarkup(base){
+    var m = 1 + base.overheadPercent / 100;
+    (function walk(o){
+      Object.keys(o).forEach(function(k){
+        if (o[k] && typeof o[k] === "object") walk(o[k]);
+        else if (typeof o[k] === "number" && !NOT_PRICES[k]) o[k] = o[k] * m;
+      });
+    })(base = deepClone(base));
+    return base;
+  }
+  rates = withMarkup(DEFAULT_RATES);
+
   function fmt(n){
     return "$" + Math.round(n).toLocaleString("en-CA");
+  }
+  // Per-unit rates keep their cents so "qty × rate" visibly adds up.
+  function fmtRate(n){
+    return Math.round(n) === Math.round(n * 100) / 100 ? fmt(n) : "$" + n.toFixed(2);
   }
   function num(v, fallback){
     var n = parseFloat(v);
@@ -394,8 +423,8 @@
       return field("Total floor area (sq ft)",
           numInput("f_sqft", 220), "A typical bedroom is 150–200 sq ft; a living room 250–350 sq ft.")
         + field("Material", select("f_material", rateOptions(rates.flooring.materials)))
-        + check("f_removal", "Remove & haul away existing flooring", "+ " + fmt(rates.flooring.removal) + "/sq ft")
-        + check("f_prep", "Subfloor repair / leveling needed", "+ " + fmt(rates.flooring.prep) + "/sq ft");
+        + check("f_removal", "Remove & haul away existing flooring", "+ " + fmtRate(rates.flooring.removal) + "/sq ft")
+        + check("f_prep", "Subfloor repair / leveling needed", "+ " + fmtRate(rates.flooring.prep) + "/sq ft");
     },
     painting: function(){
       return field("Wall area to paint (sq ft)",
@@ -415,20 +444,20 @@
         + field("Countertop area (sq ft)", numInput("k_countersqft", 40), "Rough guide: cabinet linear ft × 2.")
         + field("Countertop material", select("k_countermat", rateOptions(rates.kitchen.counters)))
         + check("k_appliances", "New appliance package (fridge, range, dishwasher, hood)", "+ " + fmt(rates.kitchen.appliances) + " flat")
-        + check("k_backsplash", "Backsplash", "+ " + fmt(rates.kitchen.backsplash) + "/sq ft")
+        + check("k_backsplash", "Backsplash", "+ " + fmtRate(rates.kitchen.backsplash) + "/sq ft")
         + '<div class="field" id="k_backsplashSqftWrap" hidden>' + field("Backsplash area (sq ft)", numInput("k_backsplashsqft", 30)) + '</div>';
     },
     bathroom: function(){
       return field("Bathroom area (sq ft)", numInput("b_sqft", 45))
         + field("Fixture tier", select("b_fixtures", rateOptions(rates.bathroom.fixtures)))
-        + check("b_tile", "New tile (floor + shower/tub surround)", "+ " + fmt(rates.bathroom.tile) + "/sq ft")
+        + check("b_tile", "New tile (floor + shower/tub surround)", "+ " + fmtRate(rates.bathroom.tile) + "/sq ft")
         + '<div class="field" id="b_tileSqftWrap" hidden>' + field("Tile area (sq ft)", numInput("b_tilesqft", 90), "Usually 2–2.5× the floor area once shower walls are included.") + '</div>'
         + check("b_plumbing", "Relocate plumbing (move toilet/tub/shower)", "+ " + fmt(rates.bathroom.plumbingMove) + " flat");
     },
     stairs: function(){
       return field("Number of steps", numInput("s_steps", 14), "Most straight staircases run 13–15 steps between floors.")
         + field("Type of work", select("s_worktype", rateOptions(rates.stairs.work)))
-        + check("s_railing", "Replace railing & spindles", "+ " + fmt(rates.stairs.railing) + "/linear ft")
+        + check("s_railing", "Replace railing & spindles", "+ " + fmtRate(rates.stairs.railing) + "/linear ft")
         + '<div class="field" id="s_railingLenWrap" hidden>' + field("Railing length (linear ft)", numInput("s_railinglen", 16)) + '</div>';
     },
     basement: function(){
@@ -436,7 +465,7 @@
         + field("Finish level", select("bs_tier", rateOptions(rates.basement.tiers)))
         + check("bs_bathroom", "Add a bathroom", "+ " + fmt(rates.basement.bathroomAddition) + " flat")
         + check("bs_egress", "Add an egress window (for a bedroom)", "+ " + fmt(rates.basement.egressWindow) + " flat")
-        + check("bs_waterproofing", "Waterproofing / vapor barrier prep", "+ " + fmt(rates.basement.waterproofing) + "/sq ft");
+        + check("bs_waterproofing", "Waterproofing / vapor barrier prep", "+ " + fmtRate(rates.basement.waterproofing) + "/sq ft");
     }
   };
 
@@ -517,38 +546,38 @@
     var s = state.scope, v = state.values, items = [];
     if (s === "flooring"){
       var m = rates.flooring.materials[v.material];
-      items.push({ label:m.label + " material", note:v.sqft+" sq ft × "+fmt(m.material)+"/sq ft", amount:v.sqft*m.material });
-      items.push({ label:"Installation labor", note:v.sqft+" sq ft × "+fmt(m.labor)+"/sq ft", amount:v.sqft*m.labor });
-      if (v.removal) items.push({ label:"Remove & haul away old flooring", note:v.sqft+" sq ft × "+fmt(rates.flooring.removal)+"/sq ft", amount:v.sqft*rates.flooring.removal });
-      if (v.prep) items.push({ label:"Subfloor repair / leveling", note:v.sqft+" sq ft × "+fmt(rates.flooring.prep)+"/sq ft", amount:v.sqft*rates.flooring.prep });
+      items.push({ label:m.label + " material", note:v.sqft+" sq ft × "+fmtRate(m.material)+"/sq ft", amount:v.sqft*m.material });
+      items.push({ label:"Installation labor", note:v.sqft+" sq ft × "+fmtRate(m.labor)+"/sq ft", amount:v.sqft*m.labor });
+      if (v.removal) items.push({ label:"Remove & haul away old flooring", note:v.sqft+" sq ft × "+fmtRate(rates.flooring.removal)+"/sq ft", amount:v.sqft*rates.flooring.removal });
+      if (v.prep) items.push({ label:"Subfloor repair / leveling", note:v.sqft+" sq ft × "+fmtRate(rates.flooring.prep)+"/sq ft", amount:v.sqft*rates.flooring.prep });
     } else if (s === "painting"){
       var t = rates.painting.tiers[v.tier];
       var eff = v.sqft * (v.surfaces !== "walls" ? (1 + rates.painting.ceilingAdd) : 1);
-      items.push({ label:t.label + " — " + v.coats + " coat(s)", note:Math.round(eff)+" sq ft equiv. × "+fmt(t.rate)+"/sq ft × "+v.coats, amount:eff*t.rate*v.coats });
+      items.push({ label:t.label + " — " + v.coats + " coat(s)", note:Math.round(eff)+" sq ft equiv. × "+fmtRate(t.rate)+"/sq ft × "+v.coats, amount:eff*t.rate*v.coats });
       if (v.surfaces === "wallsCeilingTrim") items.push({ label:"Trim & door painting", note:"flat allowance", amount:rates.painting.trimDoors });
     } else if (s === "kitchen"){
       var cab = rates.kitchen.cabinets[v.cabTier], ct = rates.kitchen.counters[v.counterMat];
-      items.push({ label:cab.label, note:v.cabLinFt+" linear ft × "+fmt(cab.rate)+"/ft", amount:v.cabLinFt*cab.rate });
-      items.push({ label:ct.label, note:v.counterSqft+" sq ft × "+fmt(ct.rate)+"/sq ft", amount:v.counterSqft*ct.rate });
-      items.push({ label:"Demo, electrical, plumbing rough-in & install labor", note:v.sqft+" sq ft × "+fmt(rates.kitchen.baseLabor)+"/sq ft", amount:v.sqft*rates.kitchen.baseLabor });
+      items.push({ label:cab.label, note:v.cabLinFt+" linear ft × "+fmtRate(cab.rate)+"/ft", amount:v.cabLinFt*cab.rate });
+      items.push({ label:ct.label, note:v.counterSqft+" sq ft × "+fmtRate(ct.rate)+"/sq ft", amount:v.counterSqft*ct.rate });
+      items.push({ label:"Demo, electrical, plumbing rough-in & install labor", note:v.sqft+" sq ft × "+fmtRate(rates.kitchen.baseLabor)+"/sq ft", amount:v.sqft*rates.kitchen.baseLabor });
       if (v.appliances) items.push({ label:"Appliance package", note:"flat allowance", amount:rates.kitchen.appliances });
-      if (v.backsplash) items.push({ label:"Backsplash", note:v.backsplashSqft+" sq ft × "+fmt(rates.kitchen.backsplash)+"/sq ft", amount:v.backsplashSqft*rates.kitchen.backsplash });
+      if (v.backsplash) items.push({ label:"Backsplash", note:v.backsplashSqft+" sq ft × "+fmtRate(rates.kitchen.backsplash)+"/sq ft", amount:v.backsplashSqft*rates.kitchen.backsplash });
     } else if (s === "bathroom"){
       var fx = rates.bathroom.fixtures[v.fixtures];
       items.push({ label:fx.label, note:"flat allowance", amount:fx.flat });
-      items.push({ label:"Demo, plumbing & install labor", note:v.sqft+" sq ft × "+fmt(rates.bathroom.baseLabor)+"/sq ft", amount:v.sqft*rates.bathroom.baseLabor });
-      if (v.tile) items.push({ label:"Tile (floor + shower surround)", note:v.tileSqft+" sq ft × "+fmt(rates.bathroom.tile)+"/sq ft", amount:v.tileSqft*rates.bathroom.tile });
+      items.push({ label:"Demo, plumbing & install labor", note:v.sqft+" sq ft × "+fmtRate(rates.bathroom.baseLabor)+"/sq ft", amount:v.sqft*rates.bathroom.baseLabor });
+      if (v.tile) items.push({ label:"Tile (floor + shower surround)", note:v.tileSqft+" sq ft × "+fmtRate(rates.bathroom.tile)+"/sq ft", amount:v.tileSqft*rates.bathroom.tile });
       if (v.plumbing) items.push({ label:"Plumbing relocation", note:"flat allowance", amount:rates.bathroom.plumbingMove });
     } else if (s === "stairs"){
       var w = rates.stairs.work[v.workType];
-      items.push({ label:w.label, note:v.steps+" steps × "+fmt(w.perStep)+"/step", amount:v.steps*w.perStep });
-      if (v.railing) items.push({ label:"Railing & spindle replacement", note:v.railingLen+" linear ft × "+fmt(rates.stairs.railing)+"/ft", amount:v.railingLen*rates.stairs.railing });
+      items.push({ label:w.label, note:v.steps+" steps × "+fmtRate(w.perStep)+"/step", amount:v.steps*w.perStep });
+      if (v.railing) items.push({ label:"Railing & spindle replacement", note:v.railingLen+" linear ft × "+fmtRate(rates.stairs.railing)+"/ft", amount:v.railingLen*rates.stairs.railing });
     } else if (s === "basement"){
       var bt = rates.basement.tiers[v.tier];
-      items.push({ label:bt.label, note:v.sqft+" sq ft × "+fmt(bt.perSqft)+"/sq ft", amount:v.sqft*bt.perSqft });
+      items.push({ label:bt.label, note:v.sqft+" sq ft × "+fmtRate(bt.perSqft)+"/sq ft", amount:v.sqft*bt.perSqft });
       if (v.bathroom) items.push({ label:"Bathroom addition (rough-in, fixtures, waterproofing)", note:"flat allowance", amount:rates.basement.bathroomAddition });
       if (v.egress) items.push({ label:"Egress window", note:"flat allowance", amount:rates.basement.egressWindow });
-      if (v.waterproofing) items.push({ label:"Waterproofing / vapor barrier prep", note:v.sqft+" sq ft × "+fmt(rates.basement.waterproofing)+"/sq ft", amount:v.sqft*rates.basement.waterproofing });
+      if (v.waterproofing) items.push({ label:"Waterproofing / vapor barrier prep", note:v.sqft+" sq ft × "+fmtRate(rates.basement.waterproofing)+"/sq ft", amount:v.sqft*rates.basement.waterproofing });
     }
     return items;
   }
@@ -557,18 +586,15 @@
 
   function renderEstimate(){
     var items = computeLineItems();
-    var subtotal = items.reduce(function(a,i){ return a+i.amount; }, 0);
-    var overhead = subtotal * (rates.overheadPercent/100);
-    var total = subtotal + overhead;
+    var total = items.reduce(function(a,i){ return a+i.amount; }, 0);
     var low = total * (1 - rates.rangeSpread/100);
     var high = total * (1 + rates.rangeSpread/100);
-    lastResult = { items:items, subtotal:subtotal, overhead:overhead, total:total, low:low, high:high };
+    lastResult = { items:items, total:total, low:low, high:high };
 
     document.getElementById("lineItems").innerHTML = items.map(function(i){
       return '<div class="line"><div><div>'+i.label+'</div><div class="desc">'+i.note+'</div></div><div class="amt">'+fmt(i.amount)+'</div></div>';
     }).join("");
-    document.getElementById("subtotalLine").innerHTML = '<span>Subtotal</span><span class="amt">'+fmt(subtotal)+'</span>';
-    document.getElementById("overheadLine").innerHTML = '<span>Overhead &amp; profit ('+rates.overheadPercent+'%)</span><span class="amt">'+fmt(overhead)+'</span>';
+    document.getElementById("subtotalLine").innerHTML = '<span>Estimated total</span><span class="amt">'+fmt(total)+'</span>';
     document.getElementById("totalRange").textContent = fmt(low) + " – " + fmt(high);
   }
 
@@ -589,8 +615,7 @@
       + "Project type: " + scopeName + "\n"
       + "Estimated range: " + fmt(lastResult.low) + " - " + fmt(lastResult.high) + " CAD\n\n"
       + "Breakdown:\n" + lines + "\n\n"
-      + "Subtotal: " + fmt(lastResult.subtotal) + "\n"
-      + "Overhead & profit: " + fmt(lastResult.overhead) + "\n\n"
+      + "Estimated total: " + fmt(lastResult.total) + "\n\n"
       + "Client details:\n"
       + "Name: " + name + "\n"
       + "Email: " + (email || "-") + "\n"
@@ -652,6 +677,16 @@
     document.getElementById("leadAddress").value = "";
     goToStep(1);
   });
+
+  // ---------------- live rates from the admin panel ----------------
+  window.addEventListener("message", function(ev){
+    if (ev.origin !== window.location.origin || !ev.data || ev.data.type !== "homev-estimator-rates") return;
+    rates = withMarkup(mergeRates(DEFAULT_RATES, ev.data.rates));
+    // Redraw anything already on screen with the new prices.
+    if (!document.getElementById("cardStep2").hidden && state.scope) renderDetailForm(state.scope);
+    if (!document.getElementById("cardStep3").hidden) renderEstimate();
+  });
+  if (window.parent !== window) window.parent.postMessage({ type: "homev-estimator-ready" }, window.location.origin);
 
   // ---------------- step navigation ----------------
   var titles = {

@@ -30,6 +30,7 @@ const AdminInbox = React.lazy(() => import('./pages/admin/AdminInbox'));
 const AdminAbout = React.lazy(() => import('./pages/admin/AdminAbout'));
 const AdminSocials = React.lazy(() => import('./pages/admin/AdminSocials'));
 const AdminOperations = React.lazy(() => import('./pages/admin/AdminOperations'));
+const AdminEstimator = React.lazy(() => import('./pages/admin/AdminEstimator'));
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -112,6 +113,7 @@ function App() {
               <Route path="inbox" element={<AdminInbox />} />
               <Route path="about" element={<AdminAbout />} />
               <Route path="socials" element={<AdminSocials />} />
+              <Route path="estimator" element={<AdminEstimator />} />
             </Route>
 
             {/* Catch-all redirect to Home */}
