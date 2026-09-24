@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { Phone, Mail, MapPin, Linkedin, Instagram, Facebook, Twitter, Youtube, Globe } from 'lucide-react';
 import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
+import { slugify } from '../utils/helpers';
+import { ADDRESS, EMAIL, PHONE_DISPLAY, BRAND_NAME } from '../data/business';
 import './Footer.css';
 import Loading from './Loading';
 
@@ -10,9 +12,9 @@ const Footer = () => {
     const [socials, setSocials] = useState([]);
     const [services, setServices] = useState([]);
     const [contact, setContact] = useState({
-        address: "10 Westcreek Dr, Woodbridge, ON L4L 9R5, Canada",
-        email: "Info@homevconstruction.ca",
-        phone: "+1 647-961-2051"
+        address: ADDRESS,
+        email: EMAIL,
+        phone: PHONE_DISPLAY
     });
 
     useEffect(() => {
@@ -79,7 +81,7 @@ const Footer = () => {
                             {services.length > 0 ? (
                                 services.map(service => (
                                     <li key={service.id}>
-                                        <Link to={`/services/${service.id}`}>{service.title}</Link>
+                                        <Link to={`/services/${slugify(service.title)}`}>{service.title}</Link>
                                     </li>
                                 ))
                             ) : (
@@ -109,7 +111,7 @@ const Footer = () => {
                 </div>
 
                 <div className="footer-bottom text-center">
-                    <p>&copy; {new Date().getFullYear()} HomeV Construction & Renovation. All Rights Reserved.</p>
+                    <p>&copy; {new Date().getFullYear()} {BRAND_NAME}. All Rights Reserved.</p>
                 </div>
             </div>
         </footer>

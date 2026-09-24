@@ -8,6 +8,8 @@ import PageTransition from '../components/PageTransition';
 import './ServiceDetailsPage.css';
 import Loading from '../components/Loading';
 import Breadcrumbs from '../components/Breadcrumbs';
+import SEO from '../components/SEO';
+import { isPrerender } from '../data/business';
 
 const ServiceDetailsPage = () => {
     const { id } = useParams();
@@ -42,7 +44,7 @@ const ServiceDetailsPage = () => {
                 if (foundService) {
                     // Increment View Count (Session based)
                     const viewedKey = `viewed_service_${foundId}`;
-                    if (!sessionStorage.getItem(viewedKey)) {
+                    if (!isPrerender && !sessionStorage.getItem(viewedKey)) {
                         // Must update the REAL doc ref, not the one based on slug (id)
                         const realDocRef = doc(db, "services", foundId);
                         updateDoc(realDocRef, { views: increment(1) }).catch(e => console.error("View inc failed", e));
@@ -67,6 +69,12 @@ const ServiceDetailsPage = () => {
 
     return (
         <PageTransition>
+            <SEO
+                title={`${service.title} Services in Burlington & the GTA`}
+                description={service.description ? `${service.description.substring(0, 155).trim()}${service.description.length > 155 ? '…' : ''}` : `${service.title} by Homev Construction, serving Burlington, Halton and the GTA.`}
+                path={`/services/${slugify(service.title)}`}
+                image={service.image}
+            />
             <div className="service-details-page">
                 <div className="service-hero" style={{
                     backgroundImage: `linear-gradient(rgba(65,31,15,0.55), rgba(65,31,15,0.8)), url(${service.image})`

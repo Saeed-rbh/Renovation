@@ -29,7 +29,7 @@ const AboutPage = () => {
 
     return (
         <PageTransition>
-            <SEO title="About Us" description={aboutInfo.hero.subtitle || "Learn about our story, commitment to quality, and professional team."} />
+            <SEO title="About Us | Burlington Renovation Contractor" description="Meet Homev Construction, a Burlington-based renovation and construction team serving Halton and the GTA. Contact us for a free quote." />
             <div className="about-page">
                 {/* Hero Section */}
                 <section className="about-hero">

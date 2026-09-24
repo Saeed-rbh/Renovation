@@ -5,7 +5,7 @@ import PageTransition from '../components/PageTransition';
 const ServicesPage = () => {
     return (
         <PageTransition>
-            <SEO title="Our Services" description="Comprehensive renovation services including kitchen, bathroom, basement, and full home remodeling." />
+            <SEO title="Renovation Services in Burlington & the GTA" description="Kitchen, bathroom and basement renovations, flooring, painting, stairs, structural work and full home remodels from Homev Construction in Burlington, serving Halton and the GTA." />
             <div className="page-container">
                 <Services />
             </div>

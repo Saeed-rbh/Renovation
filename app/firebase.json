@@ -8,8 +8,24 @@
         ],
         "rewrites": [
             {
-                "source": "**",
-                "destination": "/index.html"
+                "source": "/admin",
+                "destination": "/app-shell.html"
+            },
+            {
+                "source": "/admin/**",
+                "destination": "/app-shell.html"
+            },
+            {
+                "source": "/projects/**",
+                "destination": "/app-shell.html"
+            },
+            {
+                "source": "/services/**",
+                "destination": "/app-shell.html"
+            },
+            {
+                "source": "/operations/**",
+                "destination": "/app-shell.html"
             }
         ],
         "headers": [
@@ -22,6 +38,8 @@
                     }
                 ]
             }
-        ]
+        ],
+        "cleanUrls": true,
+        "trailingSlash": false
     }
 }

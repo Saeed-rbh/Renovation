@@ -7,7 +7,47 @@
   <link rel="icon" type="image/png" sizes="512x512" href="/homev-mark.png" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HomeV Construction & Renovation</title>
+  <meta name="theme-color" content="#FBF6EC" />
+  <!-- Defaults for crawlers and link previews; each page overrides these
+       (react-helmet-async) and the build prerenders the result. -->
+  <title>Homev Construction | Renovation &amp; Construction Contractor in Burlington &amp; the GTA</title>
+  <meta name="description" content="Homev Construction is a Burlington renovation and construction company serving Halton and the GTA: kitchens, bathrooms, basements, flooring, structural work and full home renovations." />
+  <meta property="og:site_name" content="Homev Construction" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://homevconstruction.ca/og-image.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin />
+  <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
+  <!-- Keep in sync with src/data/business.js -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "GeneralContractor",
+    "@id": "https://homevconstruction.ca/#business",
+    "name": "Homev Construction",
+    "url": "https://homevconstruction.ca",
+    "logo": "https://homevconstruction.ca/homev-mark.png",
+    "image": "https://homevconstruction.ca/og-image.jpg",
+    "description": "Renovation and construction company in Burlington, Ontario, serving Halton and the Greater Toronto Area.",
+    "telephone": "+1-437-799-5005",
+    "email": "info@homevconstruction.ca",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "602 Appleby Line",
+      "addressLocality": "Burlington",
+      "addressRegion": "ON",
+      "postalCode": "L7L 2Y3",
+      "addressCountry": "CA"
+    },
+    "areaServed": [
+      { "@type": "City", "name": "Burlington" },
+      { "@type": "AdministrativeArea", "name": "Halton Region" },
+      { "@type": "AdministrativeArea", "name": "Greater Toronto Area" }
+    ]
+  }
+  </script>
 </head>
 
 <body>

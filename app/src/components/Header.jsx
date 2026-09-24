@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { Menu, X, Phone, Mail } from 'lucide-react';
+import { PHONE_TEL } from '../data/business';
 import './Header.css';
 
 const Header = () => {
@@ -34,12 +35,12 @@ const Header = () => {
                     <Link to="/about" className={`nav-link ${location.pathname === '/about' ? 'active' : ''}`} onClick={() => setIsMenuOpen(false)}>About Us</Link>
                     <Link to="/estimator" className={`nav-link ${location.pathname === '/estimator' ? 'active' : ''}`} onClick={() => setIsMenuOpen(false)}>Get an Estimate</Link>
                     <div className="mobile-contact">
-                        <a href="tel:+11234567890"><Phone size={18} /> Call Us</a>
+                        <a href={`tel:${PHONE_TEL}`}><Phone size={18} /> Call Us</a>
                     </div>
                 </nav>
 
                 <div className="header-actions">
-                    <a href="tel:+16479612051" className="action-icon desktop-only"><Phone size={20} /></a>
+                    <a href={`tel:${PHONE_TEL}`} className="action-icon desktop-only" aria-label="Call Homev Construction"><Phone size={20} /></a>
                     <button className="menu-toggle" onClick={() => setIsMenuOpen(!isMenuOpen)}>
                         {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
                     </button>

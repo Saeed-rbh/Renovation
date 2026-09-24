@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Upload, X, Loader2 } from 'lucide-react';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import { storage } from '../../firebase';
+import { storage } from '../../firebaseAdmin';
 
 const ImageUploader = ({ value, onChange, label, height = '200px', maxSize = 5 * 1024 * 1024 }) => {
     const fileInputRef = useRef(null);

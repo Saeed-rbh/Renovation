@@ -11,6 +11,7 @@ import './ProjectDetailsPage.css';
 import Loading from '../components/Loading';
 import Lightbox from '../components/Lightbox';
 import SEO from '../components/SEO';
+import { isPrerender } from '../data/business';
 import { AnimatePresence } from 'framer-motion';
 import Breadcrumbs from '../components/Breadcrumbs';
 
@@ -52,7 +53,7 @@ const ProjectDetailsPage = () => {
                     // Increment View Count (Session based)
                     // Note: We use the actual doc ID (foundId) for the update
                     const viewedKey = `viewed_project_${foundId}`;
-                    if (!sessionStorage.getItem(viewedKey)) {
+                    if (!isPrerender && !sessionStorage.getItem(viewedKey)) {
                         const realDocRef = doc(db, "projects", foundId);
                         updateDoc(realDocRef, { views: increment(1) }).catch(e => console.error("View inc failed", e));
                         sessionStorage.setItem(viewedKey, 'true');
@@ -99,7 +100,12 @@ const ProjectDetailsPage = () => {
 
     return (
         <PageTransition>
-            <SEO title={project.title} description={project.description ? project.description.substring(0, 150) + "..." : "Project details."} />
+            <SEO
+                title={`${project.title}${project.location ? `, ${project.location}` : ''} – ${project.category || 'Renovation'} Project`}
+                description={project.description ? `${project.description.substring(0, 155).trim()}…` : `${project.category || 'Renovation'} project by Homev Construction${project.location ? ` in ${project.location}` : ''}.`}
+                path={`/projects/${slugify(project.title)}`}
+                image={project.mainImage}
+            />
             <div className="project-details-page">
                 <div className="project-hero" style={{ // Main image under a chocolate tint so it matches the brand
                     backgroundImage: `linear-gradient(rgba(65,31,15,0.55), rgba(65,31,15,0.8)), url(${project.mainImage})`

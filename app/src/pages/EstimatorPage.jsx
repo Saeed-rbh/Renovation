@@ -51,8 +51,8 @@ const EstimatorPage = () => {
     return (
         <PageTransition>
             <SEO
-                title="Instant Estimate"
-                description="Get a fast, ballpark cost range for your renovation or construction project."
+                title="Free Instant Renovation Cost Estimate"
+                description="Get a free ballpark price for flooring, painting, kitchen, bathroom, stairs or basement renovation in under a minute, then request a firm quote from Homev Construction."
             />
             <div className="page-container">
                 <div className="container">
@@ -68,7 +68,7 @@ const EstimatorPage = () => {
                     <div className="estimator-frame-wrapper glass-panel">
                         <iframe
                             ref={frameRef}
-                            src="/estimator-widget.html"
+                            src="/estimator-widget"
                             title="Homev Instant Estimator"
                             className="estimator-frame"
                             loading="lazy"

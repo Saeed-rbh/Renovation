@@ -2,8 +2,7 @@ import React, { useState, useEffect, Suspense } from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 
 import { AnimatePresence } from 'framer-motion';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { auth } from './firebase';
+import { isPrerender } from './data/business';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Loading from './components/Loading';
@@ -19,6 +18,7 @@ const ServiceDetailsPage = React.lazy(() => import('./pages/ServiceDetailsPage')
 const OperationDetailsPage = React.lazy(() => import('./pages/OperationDetailsPage'));
 const AboutPage = React.lazy(() => import('./pages/AboutPage'));
 const EstimatorPage = React.lazy(() => import('./pages/EstimatorPage'));
+const NotFoundPage = React.lazy(() => import('./pages/NotFoundPage'));
 
 // Admin Imports (Lazy Loaded)
 const AdminLayout = React.lazy(() => import('./layouts/AdminLayout'));
@@ -34,7 +34,7 @@ const AdminEstimator = React.lazy(() => import('./pages/admin/AdminEstimator'));
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [authChecked, setAuthChecked] = useState(false);
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
 
@@ -42,7 +42,7 @@ function App() {
     // Visitor Counter Logic
     const incrementVisitorCount = async () => {
       const visited = sessionStorage.getItem('visited_session');
-      if (!visited) {
+      if (!visited && !isPrerender) {
         try {
           // Dynamically import firestore functions to avoid blocking initial render
           const { doc, updateDoc, increment, setDoc, getDoc } = await import('firebase/firestore');
@@ -69,23 +69,37 @@ function App() {
     };
 
     incrementVisitorCount();
-
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setIsAuthenticated(!!user);
-      setLoading(false);
-    });
-    return () => unsubscribe();
   }, []);
+
+  // Only the admin panel needs login state, so public pages render right
+  // away and never download Firebase Auth.
+  useEffect(() => {
+    if (!isAdminRoute) return;
+    let unsubscribe;
+    let cancelled = false;
+    Promise.all([import('firebase/auth'), import('./firebaseAdmin')]).then(([{ onAuthStateChanged }, { auth }]) => {
+      if (cancelled) return;
+      unsubscribe = onAuthStateChanged(auth, (user) => {
+        setIsAuthenticated(!!user);
+        setAuthChecked(true);
+      });
+    });
+    return () => {
+      cancelled = true;
+      unsubscribe?.();
+    };
+  }, [isAdminRoute]);
 
   const handleLogout = async () => {
     try {
+      const [{ signOut }, { auth }] = await Promise.all([import('firebase/auth'), import('./firebaseAdmin')]);
       await signOut(auth);
     } catch (error) {
       console.error("Error signing out: ", error);
     }
   };
 
-  if (loading) return <Loading fullScreen />;
+  if (isAdminRoute && !authChecked) return <Loading fullScreen />;
 
   return (
     <div className="app">
@@ -116,8 +130,7 @@ function App() {
               <Route path="estimator" element={<AdminEstimator />} />
             </Route>
 
-            {/* Catch-all redirect to Home */}
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </AnimatePresence>
         {!isAdminRoute && <Footer />}

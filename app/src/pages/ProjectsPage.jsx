@@ -5,7 +5,7 @@ import PageTransition from '../components/PageTransition';
 const ProjectsPage = () => {
     return (
         <PageTransition>
-            <SEO title="Our Projects" description="Explore our portfolio of renovation and construction projects across Toronto." />
+            <SEO title="Renovation Projects & Portfolio" description="Before-and-after renovation and construction projects by Homev Construction across Burlington, Halton and the GTA." />
             <div className="page-container">
                 <Projects />
             </div>

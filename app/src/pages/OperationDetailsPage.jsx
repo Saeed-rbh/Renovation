@@ -8,6 +8,7 @@ import PageTransition from '../components/PageTransition';
 import './OperationDetailsPage.css';
 import Breadcrumbs from '../components/Breadcrumbs';
 import Loading from '../components/Loading';
+import SEO from '../components/SEO';
 
 const OperationDetailsPage = () => {
     const { id } = useParams();
@@ -73,6 +74,12 @@ const OperationDetailsPage = () => {
 
     return (
         <PageTransition>
+            <SEO
+                title={`${operation.title} | Construction, Renovation & Investment`}
+                description={operation.description ? `${operation.description.substring(0, 155).trim()}${operation.description.length > 155 ? '…' : ''}` : undefined}
+                path={`/operations/${operation.id}`}
+                image={operation.image}
+            />
             <div className="operation-details-page">
                 <div className="operation-hero" style={{
                     backgroundImage: `linear-gradient(rgba(65,31,15,0.55), rgba(65,31,15,0.8)), url(${operation.image})`
