@@ -275,9 +275,10 @@
   "use strict";
 
   // ---------------------------------------------------------------
-  // Fallback pricing only. The live rates are edited in the admin panel
-  // (Admin → Estimator Rates) and handed to this widget by the host page;
-  // keep these in sync with app/src/data/estimatorRates.js.
+  // Fallback pricing only. The live rates, including any options and
+  // add-ons added in the admin panel (Admin → Estimator Rates), are handed
+  // to this widget by the host page; keep these in sync with
+  // app/src/data/estimatorRates.js.
   // ---------------------------------------------------------------
   var DEFAULT_RATES = {
     flooring: {
@@ -360,19 +361,7 @@
   var rates;
   function deepClone(o){ return JSON.parse(JSON.stringify(o)); }
 
-  // Take only known keys with valid numbers from saved rates, so a bad or
-  // partial save can't break the calculator.
-  function mergeRates(defaults, saved){
-    var out = {};
-    Object.keys(defaults).forEach(function(k){
-      var d = defaults[k], v = saved ? saved[k] : undefined;
-      if (d && typeof d === "object") out[k] = mergeRates(d, v && typeof v === "object" ? v : null);
-      else if (typeof d === "number") out[k] = (typeof v === "number" && isFinite(v) && v >= 0) ? v : d;
-      else out[k] = d;
-    });
-    return out;
-  }
-  var NOT_PRICES = { overheadPercent:1, rangeSpread:1, ceilingAdd:1 };
+  var NOT_PRICES = { overheadPercent:1, rangeSpread:1, ceilingAdd:1, order:1 };
   function withMarkup(base){
     var m = 1 + base.overheadPercent / 100;
     (function walk(o){
@@ -385,6 +374,10 @@
   }
   rates = withMarkup(DEFAULT_RATES);
 
+  // Option and add-on names come from the admin panel, so escape them.
+  function esc(t){
+    return String(t).replace(/[&<>"']/g, function(c){ return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]; });
+  }
   function fmt(n){
     return "$" + Math.round(n).toLocaleString("en-CA");
   }
@@ -476,7 +469,7 @@
     return '<input type="number" min="0" step="1" id="'+id+'" value="'+value+'">';
   }
   function select(id, opts){
-    return '<select id="'+id+'">' + opts.map(function(o){ return '<option value="'+o[0]+'">'+o[1]+'</option>'; }).join("") + '</select>';
+    return '<select id="'+id+'">' + opts.map(function(o){ return '<option value="'+esc(o[0])+'">'+esc(o[1])+'</option>'; }).join("") + '</select>';
   }
   function rateOptions(obj){
     return Object.keys(obj).map(function(k){ return [k, obj[k].label]; });
@@ -485,9 +478,27 @@
     return '<label class="check"><input type="checkbox" id="'+id+'"><span class="txt">'+label+'<span class="price">'+priceNote+'</span></span></label>';
   }
 
+  // Custom add-ons from the admin panel, shown under every project type's
+  // built-in options. Per-unit ones ask for a quantity once ticked.
+  function addons(scopeKey){ return rates[scopeKey].addons || []; }
+  function addonsHtml(scopeKey){
+    return addons(scopeKey).map(function(a, i){
+      var id = "ad_" + i;
+      if (a.unit !== "qty") return check(id, esc(a.label), "+ " + fmt(a.price) + " flat");
+      return check(id, esc(a.label), "+ " + fmtRate(a.price) + "/" + esc(a.qtyLabel))
+        + '<div class="field" id="'+id+'_wrap" hidden>' + field(esc(a.label) + " (" + esc(a.qtyLabel) + ")", numInput(id+"_qty", 1)) + '</div>';
+    }).join("");
+  }
+
   var detailForm = document.getElementById("detailForm");
   function renderDetailForm(scopeKey){
-    detailForm.innerHTML = FORMS[scopeKey]();
+    detailForm.innerHTML = FORMS[scopeKey]() + addonsHtml(scopeKey);
+    addons(scopeKey).forEach(function(a, i){
+      if (a.unit !== "qty") return;
+      document.getElementById("ad_"+i).addEventListener("change", function(e){
+        document.getElementById("ad_"+i+"_wrap").hidden = !e.target.checked;
+      });
+    });
     if (scopeKey === "kitchen"){
       document.getElementById("k_backsplash").addEventListener("change", function(e){
         document.getElementById("k_backsplashSqftWrap").hidden = !e.target.checked;
@@ -538,6 +549,8 @@
       v = { sqft:num(val("bs_sqft")), tier:val("bs_tier"), bathroom:checked("bs_bathroom"),
             egress:checked("bs_egress"), waterproofing:checked("bs_waterproofing") };
     }
+    v.addons = addons(s).map(function(a, i){ return { i:i, on:checked("ad_"+i), qty:num(val("ad_"+i+"_qty")) }; })
+      .filter(function(x){ return x.on; });
     state.values = v;
   }
 
@@ -579,6 +592,12 @@
       if (v.egress) items.push({ label:"Egress window", note:"flat allowance", amount:rates.basement.egressWindow });
       if (v.waterproofing) items.push({ label:"Waterproofing / vapor barrier prep", note:v.sqft+" sq ft × "+fmtRate(rates.basement.waterproofing)+"/sq ft", amount:v.sqft*rates.basement.waterproofing });
     }
+    (v.addons || []).forEach(function(x){
+      var a = addons(s)[x.i];
+      if (!a) return;
+      if (a.unit === "qty") items.push({ label:a.label, note:x.qty+" "+a.qtyLabel+" × "+fmtRate(a.price)+"/"+a.qtyLabel, amount:x.qty*a.price });
+      else items.push({ label:a.label, note:"flat allowance", amount:a.price });
+    });
     return items;
   }
 
@@ -592,7 +611,7 @@
     lastResult = { items:items, total:total, low:low, high:high };
 
     document.getElementById("lineItems").innerHTML = items.map(function(i){
-      return '<div class="line"><div><div>'+i.label+'</div><div class="desc">'+i.note+'</div></div><div class="amt">'+fmt(i.amount)+'</div></div>';
+      return '<div class="line"><div><div>'+esc(i.label)+'</div><div class="desc">'+esc(i.note)+'</div></div><div class="amt">'+fmt(i.amount)+'</div></div>';
     }).join("");
     document.getElementById("subtotalLine").innerHTML = '<span>Estimated total</span><span class="amt">'+fmt(total)+'</span>';
     document.getElementById("totalRange").textContent = fmt(low) + " – " + fmt(high);
@@ -681,7 +700,9 @@
   // ---------------- live rates from the admin panel ----------------
   window.addEventListener("message", function(ev){
     if (ev.origin !== window.location.origin || !ev.data || ev.data.type !== "homev-estimator-rates") return;
-    rates = withMarkup(mergeRates(DEFAULT_RATES, ev.data.rates));
+    // Already merged with defaults and validated by the host page.
+    if (!ev.data.rates || !ev.data.rates.kitchen) return;
+    rates = withMarkup(ev.data.rates);
     // Redraw anything already on screen with the new prices.
     if (!document.getElementById("cardStep2").hidden && state.scope) renderDetailForm(state.scope);
     if (!document.getElementById("cardStep3").hidden) renderEstimate();

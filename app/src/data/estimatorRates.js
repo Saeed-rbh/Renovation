@@ -33,7 +33,8 @@ export const DEFAULT_ESTIMATOR_RATES = {
             }
         },
         removal: 1.25,
-        prep: 1
+        prep: 1,
+        addons: []
     },
     painting: {
         tiers: {
@@ -47,7 +48,8 @@ export const DEFAULT_ESTIMATOR_RATES = {
             }
         },
         ceilingAdd: 0.35,
-        trimDoors: 450
+        trimDoors: 450,
+        addons: []
     },
     kitchen: {
         cabinets: {
@@ -80,7 +82,8 @@ export const DEFAULT_ESTIMATOR_RATES = {
         },
         baseLabor: 45,
         appliances: 4500,
-        backsplash: 18
+        backsplash: 18,
+        addons: []
     },
     bathroom: {
         fixtures: {
@@ -99,7 +102,8 @@ export const DEFAULT_ESTIMATOR_RATES = {
         },
         baseLabor: 55,
         tile: 22,
-        plumbingMove: 2800
+        plumbingMove: 2800,
+        addons: []
     },
     stairs: {
         work: {
@@ -116,7 +120,8 @@ export const DEFAULT_ESTIMATOR_RATES = {
                 perStep: 450
             }
         },
-        railing: 95
+        railing: 95,
+        addons: []
     },
     basement: {
         tiers: {
@@ -135,21 +140,67 @@ export const DEFAULT_ESTIMATOR_RATES = {
         },
         bathroomAddition: 12000,
         egressWindow: 4500,
-        waterproofing: 3.5
+        waterproofing: 3.5,
+        addons: []
     },
     overheadPercent: 18,
     rangeSpread: 10
 };
 
-// Keep only known keys with valid numbers from saved rates, falling back to
-// defaults, so a partial or stale save can't break the calculator.
+// Dropdown groups the admin can add/remove choices in, and the price
+// fields each choice has.
+export const OPTION_GROUPS = {
+    flooring: { materials: ['material', 'labor'] },
+    painting: { tiers: ['rate'] },
+    kitchen: { cabinets: ['rate'], counters: ['rate'] },
+    bathroom: { fixtures: ['flat'] },
+    stairs: { work: ['perStep'] },
+    basement: { tiers: ['perSqft'] }
+};
+
+const validNumber = (v) => typeof v === 'number' && Number.isFinite(v) && v >= 0;
+const pick = (v, fallback) => (validNumber(v) ? v : fallback);
+const text = (v) => (typeof v === 'string' ? v.trim() : '');
+
+// Saved choices replace the defaults entirely (so deletions stick), sorted
+// by the order they were saved in. Falls back to defaults if none are valid.
+const mergeOptions = (defaults, saved, fields) => {
+    if (!saved || typeof saved !== 'object') return defaults;
+    const entries = Object.entries(saved)
+        .filter(([, opt]) => opt && text(opt.label))
+        .map(([key, opt], i) => [key, {
+            label: text(opt.label),
+            ...Object.fromEntries(fields.map(f => [f, pick(opt[f], defaults[key]?.[f] ?? 0)])),
+            order: pick(opt.order, i)
+        }])
+        .sort((a, b) => a[1].order - b[1].order);
+    return entries.length ? Object.fromEntries(entries) : defaults;
+};
+
+// Custom checkbox add-ons: a flat price, or a price per unit the customer
+// enters a quantity for.
+const mergeAddons = (saved) => (Array.isArray(saved) ? saved : [])
+    .filter(a => a && text(a.label) && validNumber(a.price))
+    .map((a, i) => ({
+        id: text(a.id) || `addon_${i}`,
+        label: text(a.label),
+        unit: a.unit === 'qty' ? 'qty' : 'flat',
+        qtyLabel: text(a.qtyLabel) || 'units',
+        price: a.price
+    }));
+
+// Build the full rate set from saved data, falling back to defaults for
+// anything missing or invalid, so a partial or stale save can't break the
+// calculator.
 export const mergeRates = (defaults, saved) => Object.fromEntries(
     Object.entries(defaults).map(([key, value]) => {
-        const incoming = saved?.[key];
-        if (value && typeof value === 'object') return [key, mergeRates(value, incoming)];
-        if (typeof value === 'number') {
-            return [key, typeof incoming === 'number' && Number.isFinite(incoming) && incoming >= 0 ? incoming : value];
-        }
-        return [key, value];
+        if (typeof value === 'number') return [key, pick(saved?.[key], value)];
+        const groups = OPTION_GROUPS[key] || {};
+        const s = saved?.[key];
+        return [key, Object.fromEntries(Object.entries(value).map(([k, d]) => {
+            if (groups[k]) return [k, mergeOptions(d, s?.[k], groups[k])];
+            if (k === 'addons') return [k, mergeAddons(s?.addons)];
+            return [k, pick(s?.[k], d)];
+        }))];
     })
 );
