@@ -196,7 +196,7 @@ const AdminOperations = () => {
 
                                     <div style={{ display: 'grid', gap: '15px' }}>
                                         {op.content && op.content.map((item, cIndex) => (
-                                            <div key={cIndex} style={{ background: 'rgba(255,255,255,0.03)', padding: '15px', borderRadius: '8px', position: 'relative' }}>
+                                            <div key={cIndex} style={{ background: 'rgba(71,35,18,0.03)', padding: '15px', borderRadius: '8px', position: 'relative' }}>
                                                 <button
                                                     onClick={() => handleRemoveContent(index, cIndex)}
                                                     className="action-btn delete"

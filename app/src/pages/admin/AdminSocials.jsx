@@ -85,14 +85,14 @@ const AdminSocials = () => {
                             style={{
                                 width: '100%',
                                 padding: '12px',
-                                background: 'rgba(255,255,255,0.05)',
+                                background: 'rgba(71,35,18,0.05)',
                                 border: '1px solid var(--glass-border)',
-                                color: 'white',
+                                color: 'var(--text-light)',
                                 borderRadius: '8px'
                             }}
                         >
                             {platforms.map(p => (
-                                <option key={p.name} value={p.name} style={{ background: '#333' }}>{p.name}</option>
+                                <option key={p.name} value={p.name}>{p.name}</option>
                             ))}
                         </select>
                     </div>
@@ -107,9 +107,9 @@ const AdminSocials = () => {
                             style={{
                                 width: '100%',
                                 padding: '12px',
-                                background: 'rgba(255,255,255,0.05)',
+                                background: 'rgba(71,35,18,0.05)',
                                 border: '1px solid var(--glass-border)',
-                                color: 'white',
+                                color: 'var(--text-light)',
                                 borderRadius: '8px'
                             }}
                             required
@@ -133,7 +133,7 @@ const AdminSocials = () => {
                                         alignItems: 'center',
                                         justifyContent: 'space-between',
                                         padding: '15px',
-                                        background: 'rgba(255,255,255,0.03)',
+                                        background: 'rgba(71,35,18,0.03)',
                                         borderRadius: '8px',
                                         border: '1px solid var(--glass-border)'
                                     }}>

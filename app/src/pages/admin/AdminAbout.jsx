@@ -145,7 +145,7 @@ const AdminAbout = () => {
                     <h3 style={{ marginBottom: '20px', color: 'var(--primary-color)' }}>Statistics</h3>
                     <div className="stats-edit-grid" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '20px' }}>
                         {formData.stats.map((stat, index) => (
-                            <div key={index} style={{ background: 'rgba(0,0,0,0.2)', padding: '15px', borderRadius: '8px', display: 'flex', gap: '20px' }}>
+                            <div key={index} style={{ background: 'rgba(71,35,18,0.05)', padding: '15px', borderRadius: '8px', display: 'flex', gap: '20px' }}>
                                 <div className="form-group" style={{ flex: 1 }}>
                                     <label>Value</label>
                                     <input

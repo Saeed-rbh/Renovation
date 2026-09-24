@@ -123,7 +123,7 @@ const AdminServices = () => {
                                     {services.map(service => (
                                         <tr key={service.id}>
                                             <td>
-                                                <div style={{ width: '40px', height: '40px', borderRadius: '4px', overflow: 'hidden', background: 'rgba(255,255,255,0.05)' }}>
+                                                <div style={{ width: '40px', height: '40px', borderRadius: '4px', overflow: 'hidden', background: 'rgba(71,35,18,0.05)' }}>
                                                     {service.image && (
                                                         <img
                                                             src={service.image}

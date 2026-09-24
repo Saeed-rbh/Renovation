@@ -187,7 +187,7 @@ const AdminProjectEditor = ({ project, onSave, onCancel }) => {
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
                         {formData.comparisons?.map((comp, index) => (
-                            <div key={index} style={{ background: 'rgba(255,255,255,0.03)', padding: '15px', borderRadius: '8px', border: '1px solid var(--glass-border)' }}>
+                            <div key={index} style={{ background: 'rgba(71,35,18,0.03)', padding: '15px', borderRadius: '8px', border: '1px solid var(--glass-border)' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
                                     <h4 style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-dim)' }}>Slider #{index + 1}</h4>
                                     <button type="button" onClick={() => handleRemoveComparison(index)} className="action-btn delete" title="Remove Slider">

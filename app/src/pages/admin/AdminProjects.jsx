@@ -158,7 +158,7 @@ const AdminProjects = () => {
                                     {projects.map(project => (
                                         <tr key={project.id}>
                                             <td>
-                                                <div style={{ width: '50px', height: '50px', borderRadius: '8px', overflow: 'hidden', background: 'rgba(255,255,255,0.05)' }}>
+                                                <div style={{ width: '50px', height: '50px', borderRadius: '8px', overflow: 'hidden', background: 'rgba(71,35,18,0.05)' }}>
                                                     {project.mainImage && (
                                                         <img
                                                             src={project.mainImage}
