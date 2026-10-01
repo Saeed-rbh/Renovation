@@ -267,3 +267,12 @@
         justify-content: center;
     }
 }
+.form-privacy-note {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+}
+
+.form-privacy-note a {
+    color: var(--chocolate);
+    text-decoration: underline;
+}

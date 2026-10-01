@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Phone, Mail, MapPin, Linkedin, Instagram, Facebook, Twitter, Youtube, Globe } from 'lucide-react';
+import { Phone, Mail, MapPin, Linkedin, Instagram, Facebook, Twitter, Youtube, Globe, Star } from 'lucide-react';
 import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { slugify } from '../utils/helpers';
-import { ADDRESS, EMAIL, PHONE_DISPLAY, BRAND_NAME } from '../data/business';
+import { ADDRESS, EMAIL, PHONE_DISPLAY, BRAND_NAME, GOOGLE_PROFILE_URL } from '../data/business';
 import './Footer.css';
 import Loading from './Loading';
 
@@ -106,12 +106,15 @@ const Footer = () => {
                                 <span style={{ color: 'var(--text-dim)' }}>No social links yet.</span>
                             )}
                         </div>
+                        <a href={GOOGLE_PROFILE_URL} target="_blank" rel="noreferrer" className="footer-review-btn">
+                            <Star size={16} /> Review us on Google
+                        </a>
 
                     </div>
                 </div>
 
                 <div className="footer-bottom text-center">
-                    <p>&copy; {new Date().getFullYear()} {BRAND_NAME}. All Rights Reserved.</p>
+                    <p>&copy; {new Date().getFullYear()} {BRAND_NAME}. All Rights Reserved. · <Link to="/privacy">Privacy Policy</Link></p>
                 </div>
             </div>
         </footer>

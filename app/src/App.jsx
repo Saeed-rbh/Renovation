@@ -3,6 +3,7 @@ import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 
 import { AnimatePresence } from 'framer-motion';
 import { isPrerender } from './data/business';
+import { initAnalytics, trackPageView, trackEvent } from './utils/analytics';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Loading from './components/Loading';
@@ -19,6 +20,7 @@ const OperationDetailsPage = React.lazy(() => import('./pages/OperationDetailsPa
 const AboutPage = React.lazy(() => import('./pages/AboutPage'));
 const EstimatorPage = React.lazy(() => import('./pages/EstimatorPage'));
 const NotFoundPage = React.lazy(() => import('./pages/NotFoundPage'));
+const PrivacyPage = React.lazy(() => import('./pages/PrivacyPage'));
 
 // Admin Imports (Lazy Loaded)
 const AdminLayout = React.lazy(() => import('./layouts/AdminLayout'));
@@ -71,6 +73,26 @@ function App() {
     incrementVisitorCount();
   }, []);
 
+  // Analytics: one page view per route change (after the page has set its
+  // title), plus phone/email link clicks anywhere on the public site.
+  useEffect(() => {
+    if (isAdminRoute) return;
+    initAnalytics();
+    const timer = setTimeout(() => trackPageView(location.pathname), 300);
+    return () => clearTimeout(timer);
+  }, [location.pathname, isAdminRoute]);
+
+  useEffect(() => {
+    const handleClick = (event) => {
+      const link = event.target.closest?.('a[href^="tel:"], a[href^="mailto:"]');
+      if (!link || window.location.pathname.startsWith('/admin')) return;
+      const isPhone = link.getAttribute('href').startsWith('tel:');
+      trackEvent(isPhone ? 'click_to_call' : 'click_email', { link_location: window.location.pathname });
+    };
+    document.addEventListener('click', handleClick);
+    return () => document.removeEventListener('click', handleClick);
+  }, []);
+
   // Only the admin panel needs login state, so public pages render right
   // away and never download Firebase Auth.
   useEffect(() => {
@@ -115,6 +137,7 @@ function App() {
             <Route path="/operations/:id" element={<OperationDetailsPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/estimator" element={<EstimatorPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
 
             {/* Admin Routes */}
             <Route path="/admin/login" element={<AdminLogin />} />

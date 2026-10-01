@@ -8,6 +8,8 @@ import { doc, getDoc, addDoc, collection, serverTimestamp } from 'firebase/fires
 import { db } from '../firebase';
 import emailjs from '@emailjs/browser';
 import { SERVICE_ID, PUBLIC_KEY, TEMPLATE_ID } from '../utils/inquiry';
+import { trackLead } from '../utils/analytics';
+import { Link } from 'react-router-dom';
 
 const AboutPage = () => {
     const [aboutInfo, setAboutInfo] = useState(defaultAboutData);
@@ -174,6 +176,7 @@ const ContactForm = () => {
         // If EITHER succeeded, we tell the user it worked (fail-soft)
         if (dbSuccess || emailSuccess) {
             setStatus('success');
+            trackLead('contact_form');
             setFormData({ name: '', email: '', phone: '', message: '' });
             setTimeout(() => setStatus(''), 5000);
 
@@ -233,6 +236,10 @@ const ContactForm = () => {
             >
                 {status === 'submitting' ? 'Sending...' : <>Send Message <Send size={18} /></>}
             </button>
+
+            <p className="form-privacy-note">
+                We only use your details to respond to your enquiry. See our <Link to="/privacy">Privacy Policy</Link>.
+            </p>
 
             {status === 'success' && <p className="status-msg success">Message sent successfully! We'll be in touch.</p>}
             {status === 'error' && <p className="status-msg error">Failed to send message. Please try again.</p>}

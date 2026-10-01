@@ -252,6 +252,7 @@
         <button type="button" class="btn-ghost" id="backTo2">Back</button>
         <a href="#" class="btn btn-cta" id="requestQuoteBtn">Request formal quote</a>
       </div>
+      <p class="hint">We only use your details to prepare your quote. See our <a href="/privacy" target="_top">Privacy Policy</a>.</p>
       <p class="hint" id="leadError" style="display:none;color:var(--cta);">Add at least your name and an email or phone number so we can reach you.</p>
     </div>
   </div>
@@ -679,7 +680,7 @@
     window.addEventListener("message", onReply);
     window.parent.postMessage({
       type: "homev-estimate-request",
-      payload: { name: name, email: email, phone: phone, subject: subject, message: body }
+      payload: { name: name, email: email, phone: phone, subject: subject, message: body, projectType: scopeName }
     }, window.location.origin);
     setTimeout(function(){
       if (settled) return;

@@ -4,6 +4,7 @@ import { db } from '../firebase';
 import SEO from '../components/SEO';
 import PageTransition from '../components/PageTransition';
 import { sendEstimateRequest } from '../utils/inquiry';
+import { trackLead } from '../utils/analytics';
 import { DEFAULT_ESTIMATOR_RATES, mergeRates } from '../data/estimatorRates';
 import './EstimatorPage.css';
 
@@ -42,6 +43,7 @@ const EstimatorPage = () => {
         const handleMessage = async (event) => {
             if (event.origin !== window.location.origin || event.data?.type !== 'homev-estimate-request') return;
             const result = await sendEstimateRequest(event.data.payload);
+            if (result.ok) trackLead('estimator', { project_type: event.data.payload.projectType });
             event.source?.postMessage({ type: 'homev-estimate-result', ...result }, event.origin);
         };
         window.addEventListener('message', handleMessage);

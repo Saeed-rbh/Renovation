@@ -12,3 +12,11 @@ export const DEFAULT_SHARE_IMAGE = `${SITE_URL}/og-image.jpg`;
 
 // Set by the build-time prerenderer so its page visits don't count as views.
 export const isPrerender = typeof window !== 'undefined' && window.__PRERENDER__ === true;
+
+// Google Business Profile (Maps listing; customers can leave reviews there).
+export const GOOGLE_PROFILE_URL = 'https://www.google.com/maps?cid=2438750922107722111';
+
+// Google Analytics 4 property linked to the Firebase project. Add a Google
+// Ads conversion ID (AW-…) here once the Ads account exists.
+export const GA_MEASUREMENT_ID = 'G-3WD0ZKX7ME';
+export const GOOGLE_ADS_ID = '';
