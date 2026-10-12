@@ -16,7 +16,7 @@ export const aboutData = {
     ],
     contact: {
         address: "602 Appleby Line, Burlington, ON L7L 2Y3",
-        phone: "+1 (437) 799-5005",
+        phone: "+1 (365) 351-4030",
         email: "info@homevconstruction.ca"
     }
 };
