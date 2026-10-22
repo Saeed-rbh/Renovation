@@ -21,7 +21,7 @@ import puppeteer from 'puppeteer';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const DIST = join(ROOT, 'dist');
 const SITE_URL = 'https://homevconstruction.ca';
-const CORE_ROUTES = ['/', '/projects', '/services', '/about', '/estimator'];
+const CORE_ROUTES = ['/', '/projects', '/services', '/about', '/estimator', '/guides'];
 const NOT_FOUND_PROBE = '/__prerender-not-found__';
 const SKIP = /^\/(admin|assets)(\/|$)|\.[a-z0-9]+$/i;
 

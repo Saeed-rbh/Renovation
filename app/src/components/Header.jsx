@@ -32,6 +32,7 @@ const Header = () => {
                     <Link to="/" className={`nav-link ${location.pathname === '/' ? 'active' : ''}`} onClick={() => setIsMenuOpen(false)}>Home</Link>
                     <Link to="/projects" className={`nav-link ${location.pathname === '/projects' ? 'active' : ''}`} onClick={() => setIsMenuOpen(false)}>Projects</Link>
                     <Link to="/services" className={`nav-link ${location.pathname === '/services' ? 'active' : ''}`} onClick={() => setIsMenuOpen(false)}>Our Service</Link>
+                    <Link to="/guides" className={`nav-link ${location.pathname.startsWith('/guides') ? 'active' : ''}`} onClick={() => setIsMenuOpen(false)}>Guides</Link>
                     <Link to="/about" className={`nav-link ${location.pathname === '/about' ? 'active' : ''}`} onClick={() => setIsMenuOpen(false)}>About Us</Link>
                     <Link to="/estimator" className={`nav-link ${location.pathname === '/estimator' ? 'active' : ''}`} onClick={() => setIsMenuOpen(false)}>Get an Estimate</Link>
                     <div className="mobile-contact">

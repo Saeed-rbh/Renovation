@@ -114,7 +114,7 @@ const Footer = () => {
                 </div>
 
                 <div className="footer-bottom text-center">
-                    <p>&copy; {new Date().getFullYear()} {BRAND_NAME}. All Rights Reserved. · <Link to="/privacy">Privacy Policy</Link></p>
+                    <p>&copy; {new Date().getFullYear()} {BRAND_NAME}. All Rights Reserved. · <Link to="/guides">Renovation Guides</Link> · <Link to="/privacy">Privacy Policy</Link></p>
                 </div>
             </div>
         </footer>

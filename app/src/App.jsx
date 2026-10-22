@@ -21,6 +21,8 @@ const AboutPage = React.lazy(() => import('./pages/AboutPage'));
 const EstimatorPage = React.lazy(() => import('./pages/EstimatorPage'));
 const NotFoundPage = React.lazy(() => import('./pages/NotFoundPage'));
 const PrivacyPage = React.lazy(() => import('./pages/PrivacyPage'));
+const GuidesPage = React.lazy(() => import('./pages/GuidesPage'));
+const GuideArticlePage = React.lazy(() => import('./pages/GuideArticlePage'));
 
 // Admin Imports (Lazy Loaded)
 const AdminLayout = React.lazy(() => import('./layouts/AdminLayout'));
@@ -138,6 +140,8 @@ function App() {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/estimator" element={<EstimatorPage />} />
             <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/guides" element={<GuidesPage />} />
+            <Route path="/guides/:slug" element={<GuideArticlePage />} />
 
             {/* Admin Routes */}
             <Route path="/admin/login" element={<AdminLogin />} />
