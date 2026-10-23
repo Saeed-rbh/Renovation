@@ -5,7 +5,7 @@ services:
     plan: 0.5c-512mb
     region: oregon
     branch: codex/render-migration
-    buildCommand: npm ci --prefix server --omit=dev && npm ci --prefix app --legacy-peer-deps --ignore-scripts && npm run build:spa --prefix app && node scripts/prepare-spa.mjs
+    buildCommand: npm ci --prefix server --omit=dev && npm ci --prefix app --include=dev --legacy-peer-deps --ignore-scripts && npm run build:spa --prefix app && node scripts/prepare-spa.mjs
     startCommand: node server/index.js
     healthCheckPath: /api/health
     disk:
