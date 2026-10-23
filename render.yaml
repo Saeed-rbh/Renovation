@@ -5,6 +5,9 @@ services:
     plan: 0.5c-512mb
     region: oregon
     branch: codex/render-migration
+    domains:
+      - homevconstruction.ca
+      - www.homevconstruction.ca
     buildCommand: npm ci --prefix server --omit=dev && npm ci --prefix app --include=dev --legacy-peer-deps --ignore-scripts && npm run build --prefix app
     startCommand: node server/index.js
     healthCheckPath: /api/health
