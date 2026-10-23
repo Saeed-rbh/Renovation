@@ -201,7 +201,7 @@ export function createApp({ pool, dataDir, publicOrigins, production = true, dis
     res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
     res.sendFile(path.join(dataDir, 'objects', file.sha256));
   });
-  app.use(express.static(distDir, { extensions: ['html'], index: false }));
+  app.use(express.static(distDir, { extensions: ['html'], index: 'index.html' }));
   app.get('/{*route}', (req, res) => {
     if (req.path.startsWith('/api/') || req.path.startsWith('/media/')) return res.sendStatus(404);
     res.setHeader('Cache-Control', 'no-cache');
