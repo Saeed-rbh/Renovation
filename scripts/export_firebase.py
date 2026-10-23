@@ -6,6 +6,7 @@ Retains Firestore's native typed values and exact storage object generations.
 """
 import base64
 import collections
+from concurrent.futures import ThreadPoolExecutor
 import datetime
 import hashlib
 import json
@@ -26,7 +27,10 @@ def main():
     os.umask(0o077)
     stamp = datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%SZ')
     destination = Path(sys.argv[1] if len(sys.argv) > 1 else f'renovation-backup-{stamp}')
-    destination.mkdir(exist_ok=False)
+    resuming = destination.exists()
+    if (destination / 'checksums.json').exists():
+        raise RuntimeError('This backup is complete; create a new snapshot instead of replacing it')
+    destination.mkdir(exist_ok=True)
     token = subprocess.check_output(['gcloud', 'auth', 'print-access-token'], text=True).strip()
 
     def request(url, body=None, raw=False):
@@ -79,34 +83,58 @@ def main():
             if not page:
                 break
 
-    databases = request(f'https://firestore.googleapis.com/v1/projects/{PROJECT}/databases')
-    save('firestore-databases.json', databases)
-    for database in databases.get('databases', []):
-        walk(database['name'] + '/documents')
-    save('firestore.json', {'readTime': read_time, 'documents': documents,
-                            'collections': collections_seen})
+    if resuming:
+        snapshot = json.loads((destination / 'firestore.json').read_text())
+        documents = snapshot['documents']
+        collections_seen = snapshot['collections']
+        read_time = snapshot['readTime']
+    else:
+        databases = request(f'https://firestore.googleapis.com/v1/projects/{PROJECT}/databases')
+        save('firestore-databases.json', databases)
+        for database in databases.get('databases', []):
+            walk(database['name'] + '/documents')
+        save('firestore.json', {'readTime': read_time, 'documents': documents,
+                                'collections': collections_seen})
     print(f'Firestore: {len(documents)} documents, {len(collections_seen)} collections', flush=True)
 
-    users, page = [], ''
-    while True:
-        params = urllib.parse.urlencode({'maxResults': 1000, 'nextPageToken': page})
-        batch = request(f'https://identitytoolkit.googleapis.com/v1/projects/{PROJECT}/accounts:batchGet?{params}')
-        users.extend(batch.get('users', []))
-        page = batch.get('nextPageToken', '')
-        if not page:
-            break
-    save('auth-users.json', {'users': users})
-    config = request(f'https://identitytoolkit.googleapis.com/admin/v2/projects/{PROJECT}/config')
-    save('auth-config.json', config)
+    if resuming:
+        users = json.loads((destination / 'auth-users.json').read_text())['users']
+        config = json.loads((destination / 'auth-config.json').read_text())
+    else:
+        users, page = [], ''
+        while True:
+            params = urllib.parse.urlencode({'maxResults': 1000, 'nextPageToken': page})
+            batch = request(f'https://identitytoolkit.googleapis.com/v1/projects/{PROJECT}/accounts:batchGet?{params}')
+            users.extend(batch.get('users', []))
+            page = batch.get('nextPageToken', '')
+            if not page:
+                break
+        save('auth-users.json', {'users': users})
+        config = request(f'https://identitytoolkit.googleapis.com/admin/v2/projects/{PROJECT}/config')
+        save('auth-config.json', config)
     hash_config = config.get('signIn', {}).get('hashConfig') or config.get('signIn', {}).get('email', {}).get('hashConfig')
     print(f'Authentication: {len(users)} users; hash configuration present: {bool(hash_config)}', flush=True)
 
     save('storage-bucket.json', request(f'https://storage.googleapis.com/storage/v1/b/{BUCKET}'))
-    objects, page = [], ''
+    inventory, page = [], ''
     while True:
         query = urllib.parse.urlencode({'maxResults': 1000, 'pageToken': page})
         batch = request(f'https://storage.googleapis.com/storage/v1/b/{BUCKET}/o?{query}')
-        for obj in batch.get('items', []):
+        inventory.extend(batch.get('items', []))
+        page = batch.get('nextPageToken', '')
+        if not page:
+            break
+    existing = {}
+    (destination / 'objects').mkdir(exist_ok=True)
+    for file in (destination / 'objects').iterdir():
+        blob = file.read_bytes()
+        if hashlib.sha256(blob).hexdigest() != file.name:
+            raise RuntimeError('A partial backup file failed checksum verification')
+        existing[(base64.b64encode(hashlib.md5(blob).digest()).decode(), len(blob))] = file.name
+
+    def copy_object(obj):
+        digest = existing.get((obj.get('md5Hash'), int(obj['size'])))
+        if not digest:
             name = urllib.parse.quote(obj['name'], safe='')
             generation = obj['generation']
             blob = request(f'https://storage.googleapis.com/storage/v1/b/{BUCKET}/o/{name}?alt=media&generation={generation}', raw=True)
@@ -115,13 +143,15 @@ def main():
             if obj.get('md5Hash') and base64.b64encode(hashlib.md5(blob).digest()).decode() != obj['md5Hash']:
                 raise RuntimeError('Storage object checksum mismatch')
             digest = hashlib.sha256(blob).hexdigest()
-            path = destination / 'objects' / digest
-            path.parent.mkdir(exist_ok=True)
-            path.write_bytes(blob)
-            objects.append({'metadata': obj, 'file': f'objects/{digest}', 'sha256': digest})
-        page = batch.get('nextPageToken', '')
-        if not page:
-            break
+            (destination / 'objects' / digest).write_bytes(blob)
+        return {'metadata': obj, 'file': f'objects/{digest}', 'sha256': digest}
+
+    objects = []
+    with ThreadPoolExecutor(max_workers=8) as executor:
+        for result in executor.map(copy_object, inventory):
+            objects.append(result)
+            if len(objects) % 25 == 0:
+                print(f'Storage verified: {len(objects)}/{len(inventory)}', flush=True)
     save('storage.json', {'bucket': BUCKET, 'objects': objects})
     print(f'Storage: {len(objects)} files, {sum(int(o["metadata"]["size"]) for o in objects)} bytes; checksums verified', flush=True)
 
