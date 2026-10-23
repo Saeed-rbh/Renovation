@@ -126,7 +126,8 @@ def main():
             break
     existing = {}
     (destination / 'objects').mkdir(exist_ok=True)
-    for file in (destination / 'objects').iterdir():
+    cache = Path(sys.argv[2]) / 'objects' if len(sys.argv) > 2 else destination / 'objects'
+    for file in cache.iterdir():
         blob = file.read_bytes()
         if hashlib.sha256(blob).hexdigest() != file.name:
             raise RuntimeError('A partial backup file failed checksum verification')
@@ -134,6 +135,12 @@ def main():
 
     def copy_object(obj):
         digest = existing.get((obj.get('md5Hash'), int(obj['size'])))
+        if digest and cache != destination / 'objects':
+            target = destination / 'objects' / digest
+            try:
+                os.link(cache / digest, target)
+            except FileExistsError:
+                pass
         if not digest:
             name = urllib.parse.quote(obj['name'], safe='')
             generation = obj['generation']
