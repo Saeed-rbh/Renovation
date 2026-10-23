@@ -21,7 +21,7 @@ services:
       - key: DATA_DIR
         value: /var/data
       - key: PUBLIC_ORIGINS
-        value: https://renovation-construction.onrender.com,https://homevconstruction.ca,https://www.homevconstruction.ca
+        value: https://renovation-construction-eyjv.onrender.com,https://homevconstruction.ca,https://www.homevconstruction.ca
       - key: DATABASE_URL
         fromDatabase:
           name: renovation-construction-db
