@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../firebase';
+import { doc, getDoc } from '../backend';
+import { db } from '../backend';
 import SEO from '../components/SEO';
 import PageTransition from '../components/PageTransition';
 import { sendEstimateRequest } from '../utils/inquiry';

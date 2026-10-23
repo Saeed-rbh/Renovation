@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../firebaseAdmin';
+import { signInWithEmailAndPassword } from '../../backend';
+import { auth } from '../../backend';
 import { Lock, User } from 'lucide-react';
 import './Admin.css';
 

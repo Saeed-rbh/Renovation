@@ -49,8 +49,8 @@ function App() {
       if (!visited && !isPrerender) {
         try {
           // Dynamically import firestore functions to avoid blocking initial render
-          const { doc, updateDoc, increment, setDoc, getDoc } = await import('firebase/firestore');
-          const { db } = await import('./firebase');
+          const { doc, updateDoc, increment, setDoc, getDoc } = await import('./backend');
+          const { db } = await import('./backend');
 
           const statsRef = doc(db, "stats", "general");
           const statsSnap = await getDoc(statsRef);
@@ -101,7 +101,7 @@ function App() {
     if (!isAdminRoute) return;
     let unsubscribe;
     let cancelled = false;
-    Promise.all([import('firebase/auth'), import('./firebaseAdmin')]).then(([{ onAuthStateChanged }, { auth }]) => {
+    Promise.all([import('./backend'), import('./backend')]).then(([{ onAuthStateChanged }, { auth }]) => {
       if (cancelled) return;
       unsubscribe = onAuthStateChanged(auth, (user) => {
         setIsAuthenticated(!!user);
@@ -116,7 +116,7 @@ function App() {
 
   const handleLogout = async () => {
     try {
-      const [{ signOut }, { auth }] = await Promise.all([import('firebase/auth'), import('./firebaseAdmin')]);
+      const [{ signOut }, { auth }] = await Promise.all([import('./backend'), import('./backend')]);
       await signOut(auth);
     } catch (error) {
       console.error("Error signing out: ", error);

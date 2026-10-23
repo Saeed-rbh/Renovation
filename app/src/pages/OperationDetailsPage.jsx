@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
 import { operations as initialData } from '../data/operations'; // Fallback
-import { doc, getDoc, collection, getDocs } from 'firebase/firestore';
-import { db } from '../firebase';
+import { doc, getDoc, collection, getDocs } from '../backend';
+import { db } from '../backend';
 import { ArrowLeft, ChevronRight } from 'lucide-react';
 import PageTransition from '../components/PageTransition';
 import './OperationDetailsPage.css';

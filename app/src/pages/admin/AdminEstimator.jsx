@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Save, Calculator, Plus, Trash2 } from 'lucide-react';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { db } from '../../firebase';
+import { doc, getDoc, setDoc } from '../../backend';
+import { db } from '../../backend';
 import { DEFAULT_ESTIMATOR_RATES, mergeRates } from '../../data/estimatorRates';
 import Loading from '../../components/Loading';
 

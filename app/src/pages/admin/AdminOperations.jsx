@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Save, Plus, Trash2, ArrowLeft, ChevronDown, ChevronUp } from 'lucide-react';
-import { collection, getDocs, doc, setDoc } from 'firebase/firestore';
-import { db } from '../../firebase';
+import { collection, getDocs, doc, setDoc } from '../../backend';
+import { db } from '../../backend';
 import { operations as initialData } from '../../data/operations'; // Import initial data for seeding
 import ImageUploader from '../../components/admin/ImageUploader';
 import { Link } from 'react-router-dom';

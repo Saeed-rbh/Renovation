@@ -11,7 +11,6 @@ export default defineConfig({
         // update doesn't make returning visitors re-download them.
         manualChunks: {
           react: ['react', 'react-dom', 'react-router-dom', 'react-helmet-async'],
-          firestore: ['firebase/app', 'firebase/firestore'],
           motion: ['framer-motion']
         }
       }

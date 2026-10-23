@@ -1,6 +1,6 @@
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { addDoc, collection, serverTimestamp } from '../backend';
 import emailjs from '@emailjs/browser';
-import { db } from '../firebase';
+import { db } from '../backend';
 
 // EmailJS Configuration
 export const SERVICE_ID = 'service_2diktkb';

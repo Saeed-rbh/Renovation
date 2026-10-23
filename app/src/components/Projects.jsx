@@ -3,8 +3,8 @@ import { motion } from 'framer-motion';
 import './Projects.css';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
-import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../firebase';
+import { collection, getDocs } from '../backend';
+import { db } from '../backend';
 import SkeletonLoader from './SkeletonLoader';
 import SpotlightCard from './SpotlightCard';
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore';
-import { db } from '../../firebase';
+import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc } from '../../backend';
+import { db } from '../../backend';
 import { Trash2, Plus, Save, Facebook, Linkedin, Instagram, Twitter, Youtube, Globe } from 'lucide-react';
 import Loading from '../../components/Loading';
 

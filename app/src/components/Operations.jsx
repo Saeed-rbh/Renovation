@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../firebase';
+import { collection, getDocs } from '../backend';
+import { db } from '../backend';
 import { operations as initialData } from '../data/operations'; // Fallback
 import './Operations.css';
 

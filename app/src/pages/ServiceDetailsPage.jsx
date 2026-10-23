@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
-import { doc, getDoc, updateDoc, increment, collection, getDocs } from 'firebase/firestore'; // Added collection, getDocs
-import { db } from '../firebase';
+import { doc, getDoc, updateDoc, increment, collection, getDocs } from '../backend'; // Added collection, getDocs
+import { db } from '../backend';
 import { slugify } from '../utils/helpers'; // Added slugify
 import { ArrowLeft, CheckCircle } from 'lucide-react';
 import PageTransition from '../components/PageTransition';

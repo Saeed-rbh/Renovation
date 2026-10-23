@@ -1,0 +1,8 @@
+node_modules/
+backups/
+*.backup
+*.tar.gz
+.env
+.env.*
+!.env.example
+server/data/

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Phone, Mail, MapPin, Linkedin, Instagram, Facebook, Twitter, Youtube, Globe, Star } from 'lucide-react';
-import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
-import { db } from '../firebase';
+import { collection, getDocs, doc, getDoc } from '../backend';
+import { db } from '../backend';
 import { slugify } from '../utils/helpers';
 import { ADDRESS, EMAIL, PHONE_DISPLAY, BRAND_NAME, GOOGLE_PROFILE_URL } from '../data/business';
 import './Footer.css';

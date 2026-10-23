@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
 import Loading from '../../components/Loading';
-import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
-import { db } from '../../firebase';
+import { collection, getDocs, deleteDoc, doc } from '../../backend';
+import { db } from '../../backend';
 import AdminProjectEditor from './AdminProjectEditor';
 
 class ErrorBoundary extends React.Component {

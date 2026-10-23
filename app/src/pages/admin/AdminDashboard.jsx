@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FolderKanban, Briefcase, Inbox, Users } from 'lucide-react';
 import { projects } from '../../data/projects';
 import { services } from '../../data/services';
-import { db } from '../../firebase';
+import { db } from '../../backend';
 
 const AdminDashboard = () => {
     const [visitorCount, setVisitorCount] = useState(0);
@@ -15,8 +15,8 @@ const AdminDashboard = () => {
         const fetchStats = async () => {
             try {
                 // Dynamically import to ensure db is initialized
-                const { doc, onSnapshot, collection, query, where, getDocs, orderBy, limit } = await import('firebase/firestore');
-                const { db } = await import('../../firebase');
+                const { doc, onSnapshot, collection, query, where, getDocs, orderBy, limit } = await import('../../backend');
+                const { db } = await import('../../backend');
 
                 // 1. Visitor Count (Realtime)
                 const unsubVisitor = onSnapshot(doc(db, "stats", "general"), (doc) => {

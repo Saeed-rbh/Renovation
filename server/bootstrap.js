@@ -1,0 +1,17 @@
+import { readFile } from 'node:fs/promises';
+import { digest, importBackup } from './import-backup.js';
+
+export async function bootstrap(pool, dataDir, filename) {
+  if (!filename) return;
+  const payload = JSON.parse(await readFile(filename, 'utf8'));
+  if (payload.format !== 1) throw new Error('Unexpected bootstrap format');
+  const manifest = JSON.parse(payload.sourceFiles['checksums.json']);
+  if (digest(JSON.stringify(manifest)) !== payload.id) throw new Error('Bootstrap manifest checksum mismatch');
+  for (const [name, checksum] of Object.entries(manifest)) {
+    if (!name.startsWith('objects/') && digest(payload.sourceFiles[name] || '') !== checksum) throw new Error('Bootstrap file checksum mismatch');
+  }
+  const parse = name => JSON.parse(payload.sourceFiles[name + '.json']);
+  const result = await importBackup(pool, { id: payload.id, manifest, firestore: parse('firestore'),
+    users: parse('auth-users'), configuration: parse('auth-config'), storage: parse('storage'), summary: parse('summary') }, dataDir, { download: true });
+  console.log('Verified migration:', JSON.stringify(result));
+}

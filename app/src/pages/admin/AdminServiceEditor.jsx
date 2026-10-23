@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Save, X, Plus, Trash2 } from 'lucide-react';
-import { doc, setDoc, collection, addDoc } from 'firebase/firestore';
-import { db } from '../../firebase';
+import { doc, setDoc, collection, addDoc } from '../../backend';
+import { db } from '../../backend';
 import ImageUploader from '../../components/admin/ImageUploader';
 
 const AdminServiceEditor = ({ service, onSave, onCancel }) => {

@@ -1,0 +1,35 @@
+services:
+  - type: web
+    name: renovation-construction
+    runtime: node
+    plan: 0.5c-512mb
+    region: oregon
+    branch: codex/render-migration
+    buildCommand: npm ci --prefix server --omit=dev && npm ci --prefix app --legacy-peer-deps --ignore-scripts && npm run build:spa --prefix app && node scripts/prepare-spa.mjs
+    startCommand: node server/index.js
+    healthCheckPath: /api/health
+    disk:
+      name: renovation-images
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: NODE_ENV
+        value: production
+      - key: DATA_DIR
+        value: /var/data
+      - key: PUBLIC_ORIGINS
+        value: https://renovation-construction.onrender.com,https://homevconstruction.ca,https://www.homevconstruction.ca
+      - key: DATABASE_URL
+        fromDatabase:
+          name: renovation-construction-db
+          property: connectionString
+databases:
+  - name: renovation-construction-db
+    plan: 0.1c-256mb
+    region: oregon
+    postgresMajorVersion: "18"
+    databaseName: renovation
+    diskSizeGB: 1
+    ipAllowList: []
