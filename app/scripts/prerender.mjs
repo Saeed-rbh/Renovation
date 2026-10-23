@@ -1,5 +1,5 @@
 // Build-time prerender: loads every public page of the built site in
-// headless Chrome, waits for its Firestore content, and saves the finished
+// headless Chrome, waits for its database content, and saves the finished
 // HTML so search engines and link previews (Facebook, WhatsApp, LinkedIn)
 // get real content instead of an empty <div id="root">. Also writes
 // sitemap.xml from the pages it found.
@@ -48,7 +48,7 @@ const renderPage = async (browser, origin, route) => {
     });
     try {
         await page.goto(origin + route, { waitUntil: 'networkidle2', timeout: 60000 });
-        // Firestore keeps a connection open, so also wait for the page to
+        // Also wait for the page to
         // settle: no loading screens or skeletons left.
         await page.waitForFunction(
             () => !document.querySelector('.loading-container, .skeleton, [class*="skeleton-"]')
@@ -100,7 +100,12 @@ const main = async () => {
     // Keep the untouched SPA shell before index.html is overwritten.
     await copyFile(join(DIST, 'index.html'), join(DIST, 'app-shell.html'));
 
-    const server = await preview({ root: ROOT, preview: { port: 4179, strictPort: false, open: false }, logLevel: 'warn' });
+    const target = process.env.PRERENDER_API_URL;
+    if (!target) throw new Error('PRERENDER_API_URL must point to the verified Render backend');
+    const server = await preview({ root: ROOT, preview: {
+        port: 4179, strictPort: false, open: false,
+        proxy: { '/api': { target, changeOrigin: true }, '/media': { target, changeOrigin: true } }
+    }, logLevel: 'warn' });
     const origin = server.resolvedUrls.local[0].replace(/\/$/, '');
     const browser = await launchBrowser();
 
