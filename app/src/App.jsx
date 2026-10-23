@@ -9,6 +9,7 @@ import Footer from './components/Footer';
 import Loading from './components/Loading';
 import ScrollToTop from './components/ScrollToTop';
 import ErrorBoundary from './components/ErrorBoundary';
+import { db, doc, updateDoc, increment, setDoc, getDoc, onAuthStateChanged, auth, signOut } from './backend';
 
 // Pages (Lazy Loaded)
 const HomePage = React.lazy(() => import('./pages/HomePage'));
@@ -48,10 +49,6 @@ function App() {
       const visited = sessionStorage.getItem('visited_session');
       if (!visited && !isPrerender) {
         try {
-          // Dynamically import firestore functions to avoid blocking initial render
-          const { doc, updateDoc, increment, setDoc, getDoc } = await import('./backend');
-          const { db } = await import('./backend');
-
           const statsRef = doc(db, "stats", "general");
           const statsSnap = await getDoc(statsRef);
 
@@ -95,28 +92,18 @@ function App() {
     return () => document.removeEventListener('click', handleClick);
   }, []);
 
-  // Only the admin panel needs login state, so public pages render right
-  // away and never download Firebase Auth.
+  // Public routes do not need an admin session check.
   useEffect(() => {
     if (!isAdminRoute) return;
-    let unsubscribe;
-    let cancelled = false;
-    Promise.all([import('./backend'), import('./backend')]).then(([{ onAuthStateChanged }, { auth }]) => {
-      if (cancelled) return;
-      unsubscribe = onAuthStateChanged(auth, (user) => {
-        setIsAuthenticated(!!user);
-        setAuthChecked(true);
-      });
+    setAuthChecked(false);
+    return onAuthStateChanged(auth, (user) => {
+      setIsAuthenticated(!!user);
+      setAuthChecked(true);
     });
-    return () => {
-      cancelled = true;
-      unsubscribe?.();
-    };
   }, [isAdminRoute]);
 
   const handleLogout = async () => {
     try {
-      const [{ signOut }, { auth }] = await Promise.all([import('./backend'), import('./backend')]);
       await signOut(auth);
     } catch (error) {
       console.error("Error signing out: ", error);

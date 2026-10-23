@@ -65,11 +65,36 @@ test('restore is exact and non-destructive; admin data, uploads and writes requi
     const inbox = await (await send('/api/documents/messages', 'GET', undefined, cookie)).json();
     assert.equal(inbox.documents.length, 2);
     assert.equal(inbox.documents.find(doc => doc.data.name === 'Prospect').data.read, false);
+    const upload = new FormData();
+    upload.append('file', new Blob([png], { type: 'image/png' }), 'photo.png');
+    const uploaded = await fetch(origin + '/api/files', { method: 'POST', headers: { Cookie: cookie, Origin: 'http://localhost' }, body: upload });
+    assert.equal(uploaded.status, 200);
+    const media = await fetch(origin + (await uploaded.json()).url);
+    assert.equal(media.headers.get('content-type'), 'image/png');
+    assert.deepEqual(Buffer.from(await media.arrayBuffer()), png);
     assert.equal((await send('/api/documents/projects/original-id', 'DELETE', undefined, cookie)).status, 200);
     assert.equal((await (await send('/api/documents/projects')).json()).documents.length, 0);
     assert.equal((await pool.query("SELECT count(*)::int AS n FROM documents WHERE path='projects/original-id' AND deleted_at IS NOT NULL")).rows[0].n, 1);
     await send('/api/auth/logout', 'POST', {}, cookie);
     assert.equal((await send('/api/documents/messages', 'GET', undefined, cookie)).status, 401);
+  } finally {
+    await new Promise(resolve => server.close(resolve));
+    await database.close();
+  }
+});
+
+test('an empty target rejects traffic until its verified import completes', async () => {
+  const database = new PGlite();
+  const pool = { query: (sql, args) => args ? database.query(sql, args) : database.exec(sql).then(results => results.at(-1)) };
+  await initialize(pool);
+  const app = createApp({ pool, dataDir: os.tmpdir(), publicOrigins: ['http://localhost'], production: false });
+  const server = app.listen(0, '127.0.0.1');
+  await once(server, 'listening');
+  const origin = 'http://127.0.0.1:' + server.address().port;
+  try {
+    assert.equal((await fetch(origin + '/api/health')).status, 503);
+    assert.equal((await fetch(origin + '/api/documents/messages', { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: 'http://localhost' }, body: JSON.stringify({ data: { name: 'Visitor' } }) })).status, 503);
+    assert.equal((await pool.query('SELECT count(*)::int AS n FROM documents')).rows[0].n, 0);
   } finally {
     await new Promise(resolve => server.close(resolve));
     await database.close();
