@@ -31,7 +31,7 @@ const AboutPage = () => {
 
     return (
         <PageTransition>
-            <SEO title="About Us | Burlington Renovation Contractor" description="Meet Homev Construction, a Burlington-based renovation and construction team serving Halton and the GTA. Contact us for a free quote." />
+            <SEO title="About Us | Toronto & GTA Renovation Contractor" description="Meet Homev Construction, a renovation and construction team serving Toronto and the GTA. Contact us for a free quote." />
             <div className="about-page">
                 {/* Hero Section */}
                 <section className="about-hero">

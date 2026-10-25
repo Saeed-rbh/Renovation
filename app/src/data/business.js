@@ -7,7 +7,7 @@ export const PHONE_DISPLAY = '+1 (365) 351-4030';
 export const PHONE_TEL = '+13653514030';
 export const EMAIL = 'info@homevconstruction.ca';
 export const ADDRESS = '602 Appleby Line, Burlington, ON L7L 2Y3';
-export const DEFAULT_DESCRIPTION = 'Homev Construction is a Burlington renovation and construction company serving Halton and the GTA: kitchens, bathrooms, basements, flooring, structural work and full home renovations.';
+export const DEFAULT_DESCRIPTION = 'Homev Construction is a renovation and construction company serving Toronto and the GTA: kitchens, bathrooms, basements, flooring, structural work and full home renovations.';
 export const DEFAULT_SHARE_IMAGE = `${SITE_URL}/og-image.jpg`;
 
 // Set by the build-time prerenderer so its page visits don't count as views.

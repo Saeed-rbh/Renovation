@@ -70,8 +70,8 @@ const ServiceDetailsPage = () => {
     return (
         <PageTransition>
             <SEO
-                title={`${service.title} Services in Burlington & the GTA`}
-                description={service.description ? `${service.description.substring(0, 155).trim()}${service.description.length > 155 ? '…' : ''}` : `${service.title} by Homev Construction, serving Burlington, Halton and the GTA.`}
+                title={`${service.title} Services in Toronto & the GTA`}
+                description={service.description ? `${service.description.substring(0, 155).trim()}${service.description.length > 155 ? '…' : ''}` : `${service.title} by Homev Construction, serving Toronto and the GTA.`}
                 path={`/services/${slugify(service.title)}`}
                 image={service.image}
             />

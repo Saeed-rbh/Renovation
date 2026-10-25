@@ -8,7 +8,7 @@ import PageTransition from '../components/PageTransition';
 const HomePage = () => {
     return (
         <PageTransition>
-            <SEO fullTitle="Homev Construction | Renovation & Construction Contractor in Burlington & the GTA" />
+            <SEO fullTitle="Homev Construction | Renovation & Construction Contractor in Toronto & the GTA" />
             <Hero />
             <Services preview={true} />
             <Operations />
