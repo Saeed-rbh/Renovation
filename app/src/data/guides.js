@@ -121,8 +121,8 @@ export const guides = [
         category: 'Legal Basements',
         published: '2026-10-27',
         readMinutes: 7,
-        image: '/guides/fire-separation-insulation.jpg',
-        imageAlt: 'Stone wool insulation between steel studs next to a fire-rated drywall panel',
+        image: '/guides/basement-apartment-fire-separation-hallway.jpg',
+        imageAlt: 'Bright basement suite hallway with white doors fitted with door closers',
         relatedService: { label: 'Basement Finishing', path: '/services/basement-finishing' },
         body: [
             { type: 'p', text: 'When a house has two units, a fire in one of them should not spread quickly into the other. That is the whole idea behind fire separation. It buys time: time for smoke alarms to wake people up, for everyone to get out, and for firefighters to arrive. In a basement apartment, fire separation is usually the biggest single part of making the suite legal, and it is one of the first things Toronto Building and Toronto Fire Services look at. This guide explains what it is, where it goes, and how it is built.' },
@@ -148,7 +148,7 @@ export const guides = [
                 'Exposed structure, such as steel beams and columns, which may need to be covered so they keep the rating.',
             ] },
             { type: 'h2', text: 'How a fire-rated ceiling or wall is usually built' },
-            { type: 'figure', src: '/guides/fire-separation-insulation.jpg', alt: 'Stone wool insulation between steel studs with wiring and a drywall panel', caption: 'Fire separation in progress on one of our legal basement projects: stone wool insulation between the studs before the drywall goes on.' },
+            { type: 'figure', src: '/guides/basement-apartment-fire-separation-corridor.jpg', alt: 'Finished basement hallway with drywall walls and ceiling and self-closing doors', caption: 'A finished hallway on one of our legal basement projects. Once the work is done, the fire separation is hidden inside the walls and ceiling.' },
             { type: 'p', text: 'The exact assembly comes from your drawings, and it must match a tested or code-listed design. A common approach for a basement ceiling and walls looks like this:' },
             { type: 'steps', items: [
                 { title: 'Insulation in the cavities', text: 'Stone wool (mineral fibre) insulation is placed between the floor joists or studs. It is non-combustible and also cuts noise between units.' },
@@ -169,7 +169,7 @@ export const guides = [
             { type: 'p', text: 'Never prop these doors open, remove the closer, or cut a pet door into them. A door that stays open turns a rated separation into an open path for smoke.' },
             { type: 'h2', text: 'Ducts and shared heating' },
             { type: 'p', text: 'Many Toronto houses with a basement apartment share one furnace. Shared ductwork can carry smoke from one unit to the other, so it needs a plan. Depending on the house and the code path, solutions can include separate heating for the suite, sealing off return air openings, metal ductwork where it passes through the separation, fire dampers, or a smoke detector that shuts the furnace down. The rules here are detailed, so your designer or HVAC contractor should specify what is needed and show it on the drawings.' },
-            { type: 'figure', src: '/guides/interconnected-smoke-alarm.jpg', alt: 'Duct smoke detector housing being wired on a basement wall', caption: 'A duct smoke detector being wired on one of our legal basement projects. Where both units share a furnace, a detector like this can shut the fan down so smoke is not carried from one unit to the other.' },
+            { type: 'figure', src: '/guides/basement-apartment-fire-separation-stairs.jpg', alt: 'Finished basement stairway with wood treads and drywall walls', caption: 'The stairway in the same suite. Walls and ceilings around stairs that connect or serve both units are often part of the fire separation.' },
             { type: 'h2', text: 'Getting it inspected' },
             { type: 'p', text: 'For a suite built under a building permit, the inspector usually wants to see the fire separation before it is covered up, then again at the final inspection. Keep the drawings on site, use the materials they specify, and do not close up the ceiling until it has been checked. Take photos of the insulation, channel and drywall labels as you go. They are useful if questions come up later.' },
             { type: 'p', text: 'When we legalize a basement apartment, the fire separation, doors, alarms and egress windows are planned together from the start, so the suite is safe and passes inspection the first time.' },
