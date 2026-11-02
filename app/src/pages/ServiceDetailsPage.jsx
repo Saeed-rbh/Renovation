@@ -67,11 +67,16 @@ const ServiceDetailsPage = () => {
         return <Navigate to="/services" replace />;
     }
 
+    // Descriptions can hold several paragraphs separated by blank lines; the
+    // first one doubles as the meta description.
+    const paragraphs = (service.description || '').split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
+    const summary = paragraphs[0] || '';
+
     return (
         <PageTransition>
             <SEO
                 title={`${service.title} Services in Toronto & the GTA`}
-                description={service.description ? `${service.description.substring(0, 155).trim()}${service.description.length > 155 ? '…' : ''}` : `${service.title} by Homev Construction, serving Toronto and the GTA.`}
+                description={summary ? `${summary.substring(0, 155).trim()}${summary.length > 155 ? '…' : ''}` : `${service.title} by Homev Construction, serving Toronto and the GTA.`}
                 path={`/services/${slugify(service.title)}`}
                 image={service.image}
             />
@@ -97,13 +102,13 @@ const ServiceDetailsPage = () => {
                     <div className="service-content-grid">
                         <div className="service-info glass-panel">
                             <h2>Service Description</h2>
-                            <p>{service.description}</p>
+                            {paragraphs.map((text, index) => <p key={index}>{text}</p>)}
                         </div>
 
                         <div className="service-features section">
                             <h2 className="section-subtitle">Key Features</h2>
                             <div className="features-grid">
-                                {service.features.map((feature, index) => (
+                                {(service.features || []).map((feature, index) => (
                                     <div key={index} className="feature-item glass-panel">
                                         <CheckCircle size={24} className="feature-icon" />
                                         <span>{feature}</span>

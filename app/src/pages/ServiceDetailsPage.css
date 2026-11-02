@@ -46,6 +46,10 @@
     line-height: 1.8;
 }
 
+.service-info p + p {
+    margin-top: 1em;
+}
+
 .service-features .section-subtitle {
     margin-bottom: 30px;
     color: var(--text-light);
